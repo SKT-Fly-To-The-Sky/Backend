@@ -37,6 +37,7 @@ async def upload_board(file: UploadFile, db: Session = Depends(get_db)):
 
     currentTime = datetime.now().strftime("%Y%m%d%H%M%S")
     saved_file_name = ''.join([currentTime, secrets.token_hex(16)])
+    print(IMG_DIR)
     print(saved_file_name)
     file_location = os.path.join(IMG_DIR, saved_file_name)
     with open(file_location, "wb+") as file_object:

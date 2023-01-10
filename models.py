@@ -25,9 +25,9 @@ if __name__ == "__main__":
     from database import SessionLocal
     db = SessionLocal()
 
-    # m = Member(account="jung-su-lee")
-    # db.add(m)
-    # db.commit()
+    m = Member(account="jeong-su-lee")
+    db.add(m)
+    db.commit()
 
     '''
     ### C
