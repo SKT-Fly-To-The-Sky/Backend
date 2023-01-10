@@ -4,7 +4,8 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
-from starlette.responses import FileResponse
+# from starlette.responses import FileResponse
+from fastapi.responses import FileResponse
 
 from database import get_db
 from domain.picture import picture_schema, picture_crud
