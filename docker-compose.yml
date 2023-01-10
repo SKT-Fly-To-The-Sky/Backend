@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+#  mysql:
+#    image: mysql:8.0.31
+#    ports:
+#      - 3306:3306
+#    container_name: "mysql"
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=0000
+
+  fastapi:
+    image: "fastapi"
+#    platform: "linux/amd64"
+    build:
+      context: .
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/code/
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+    container_name: "fastapi"

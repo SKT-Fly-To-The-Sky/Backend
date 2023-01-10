@@ -1,0 +1,5 @@
+fastapi[all]
+SQLAlchemy
+alembic
+cryptography
+pymysql
