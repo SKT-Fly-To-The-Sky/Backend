@@ -18,7 +18,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - /home/ubuntu/workspace/server/:/code/
+      - ../../server/:/code/
 #    extra_hosts:
 #      - "host.docker.internal:host-gateway"
     container_name: "fastapi"
