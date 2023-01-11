@@ -19,7 +19,7 @@ services:
       - 8000:8000
     volumes:
 #      - /var/jenkins_home/workspace/back-end-server:/code/
-      - /temp/:/code/
+      - /home/ubuntu/workspace/:/code/
 #    extra_hosts:
 #      - "host.docker.internal:host-gateway"
 
