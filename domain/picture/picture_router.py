@@ -9,6 +9,8 @@ from fastapi.responses import FileResponse
 
 from database import get_db
 from domain.picture import picture_schema, picture_crud
+from models import Picture
+
 # from typing import List
 
 router = APIRouter(
@@ -54,3 +56,11 @@ def get_image(file_name: str):
     result = FileResponse(''.join([IMG_DIR, file_name]))
     print(result)
     return result
+
+
+@router.delete('/images/all')
+def del_image(db: Session = Depends(get_db)):
+    u = db.query(Picture)
+    db.delete(u)
+    db.commit()
+    return True
