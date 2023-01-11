@@ -60,7 +60,8 @@ def get_image(file_name: str):
 
 @router.delete('/images/all')
 def del_image(db: Session = Depends(get_db)):
-    u = db.query(Picture)
-    db.delete(u)
+    ul = db.query(Picture)
+    for u in ul:
+        db.delete(u)
     db.commit()
     return True
