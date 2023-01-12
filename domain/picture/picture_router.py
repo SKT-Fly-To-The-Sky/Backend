@@ -36,8 +36,7 @@ SERVER_IMG_DIR = os.path.join('filestorge/', 'static/', 'images/')
 
 @router.post('/upload-images')
 # def upload_board(file: UploadFile = File(...)):#, db: Session = Depends(get_db)):
-def upload_board(file: bytes = File(), db: Session = Depends(get_db)):
-
+def upload_board(file: bytes, db: Session = Depends(get_db)):
     os.makedirs(IMG_DIR, exist_ok=True)
     print("-------------------------------")
     print(file)
@@ -48,7 +47,8 @@ def upload_board(file: bytes = File(), db: Session = Depends(get_db)):
     print(saved_file_name)
     file_location = os.path.join(IMG_DIR, saved_file_name)
     with open(file_location, "wb+") as file_object:
-        file_object.write(file.file.read())
+        # file_object.write(file.file.read())
+        file_object.write(file)
 
     picture_crud.add_picture(db=db, member_id=1, date=datetime.now(), image_name=saved_file_name)
     result = {'fileName': saved_file_name}
