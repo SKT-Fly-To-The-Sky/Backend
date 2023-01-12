@@ -11,7 +11,7 @@ from database import get_db
 from domain.picture import picture_schema, picture_crud
 from models import Picture
 
-# from typing import List
+from ai_service.classification import classification
 
 router = APIRouter(
     prefix="/api/picture",
@@ -35,15 +35,17 @@ SERVER_IMG_DIR = os.path.join('filestorge/', 'static/', 'images/')
 
 
 @router.post('/upload-images')
-def upload_board(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_board(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         os.makedirs(IMG_DIR, exist_ok=True)
         currentTime = datetime.now().strftime("%Y%m%d%H%M%S")
         saved_file_name = ''.join([currentTime, secrets.token_hex(16)])
 
+        content = await file.read()
+
         file_location = os.path.join(IMG_DIR, saved_file_name)
         with open(file_location, "wb+") as file_object:
-            file_object.write(file.file.read())
+            file_object.write(content)
 
         picture_crud.add_picture(db=db, member_id=1, date=datetime.now(), image_name=saved_file_name)
         result = {'fileName': saved_file_name}
@@ -55,9 +57,13 @@ def upload_board(file: UploadFile = File(...), db: Session = Depends(get_db)):
 @router.get('/images/{file_name}')
 def get_image(file_name: str):
     result = FileResponse(''.join([IMG_DIR, file_name]))
-    print(result)
     return result
 
+
+@router.get('/images/ai/{file_name}')
+def get_classification(file_name: str):
+    img = ''.join([IMG_DIR, file_name])
+    return classification(img)
 
 @router.delete('/images/all')
 def del_image(db: Session = Depends(get_db)):
@@ -66,3 +72,4 @@ def del_image(db: Session = Depends(get_db)):
         db.delete(u)
     db.commit()
     return True
+
