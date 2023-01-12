@@ -19,7 +19,7 @@ router = APIRouter(
 
 
 @router.get("/list", response_model=list[picture_schema.Picture])
-def question_list(db: Session = Depends(get_db)):
+def picture_list(db: Session = Depends(get_db)):
     _picture_list = picture_crud.get_picture_list(db)
     return _picture_list
 
@@ -35,9 +35,11 @@ SERVER_IMG_DIR = os.path.join('filestorge/', 'static/', 'images/')
 
 
 @router.post('/upload-images')
-async def upload_board(file: UploadFile, db: Session = Depends(get_db)):
+def upload_board(file: UploadFile, db: Session = Depends(get_db)):
     os.makedirs(IMG_DIR, exist_ok=True)
-
+    print("-------------------------------")
+    print(file)
+    print(type(file))
     currentTime = datetime.now().strftime("%Y%m%d%H%M%S")
     saved_file_name = ''.join([currentTime, secrets.token_hex(16)])
     print(IMG_DIR)
