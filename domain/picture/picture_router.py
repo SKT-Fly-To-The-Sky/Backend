@@ -35,7 +35,7 @@ SERVER_IMG_DIR = os.path.join('filestorge/', 'static/', 'images/')
 
 
 @router.post('/upload-images')
-def upload_board(file: UploadFile, db: Session = Depends(get_db)):
+def upload_board(file, db: Session = Depends(get_db)):
     os.makedirs(IMG_DIR, exist_ok=True)
     print("-------------------------------")
     print(file)
