@@ -5,7 +5,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
 # from starlette.responses import FileResponse
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from database import get_db
 from domain.picture import picture_schema, picture_crud
@@ -65,7 +65,7 @@ def get_image(file_name: str):
 def get_classification(file_name: str):
     img = ''.join([IMG_DIR, file_name])
     result = classification(img)
-    return {"bound_box": result['bound_box'], "class": result["class"], "score": result["score"]}
+    return JSONResponse(content={"bound_box": result['bound_box'], "class": result["class"], "score": result["score"]})
 
 @router.delete('/images/all')
 def del_image(db: Session = Depends(get_db)):
