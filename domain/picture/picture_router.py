@@ -54,7 +54,7 @@ async def upload_board(file: UploadFile = File(...), db: Session = Depends(get_d
         raise HTTPException(status_code=999, detail=f"{e}")
 
 
-@router.get('/images/{file_name}')
+@router.get('/images/{file_name}', response_class=FileResponse)
 def get_image(file_name: str):
     result = FileResponse(''.join([IMG_DIR, file_name]))
     print(result)
