@@ -64,7 +64,8 @@ def get_image(file_name: str):
 @router.get('/images/ai/{file_name}')
 def get_classification(file_name: str):
     img = ''.join([IMG_DIR, file_name])
-    return classification(img)
+    result = classification(img)
+    return {"bound_box": result['bound_box'], "class": result["class"], "score": result["score"]}
 
 @router.delete('/images/all')
 def del_image(db: Session = Depends(get_db)):
