@@ -56,7 +56,7 @@ async def upload_board(file: UploadFile = File(...), db: Session = Depends(get_d
 
 @router.get('/images/{file_name}')
 def get_image(file_name: str):
-    result = FileResponse(''.join([IMG_DIR, file_name])).body
+    result = FileResponse(''.join([IMG_DIR, file_name])).body()
     return result
 
 
