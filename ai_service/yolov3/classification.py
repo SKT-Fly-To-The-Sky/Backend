@@ -265,9 +265,9 @@ def classification():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--cfg', type=str, default='cfg/yolov3-spp-403cls.cfg', help='*.cfg path')
-    parser.add_argument('--names', type=str, default='yolov3/data/403food.names', help='*.names path')
-    parser.add_argument('--weights', type=str, default='yolov3/weights/best_403food_e200b150v2.pt', help='weights path')
-    parser.add_argument('--source', type=str, default='yolov3/data/samples', help='source')  # input file/folder, 0 for webcam
+    parser.add_argument('--names', type=str, default='data/403food.names', help='*.names path')
+    parser.add_argument('--weights', type=str, default='weights/best_403food_e200b150v2.pt', help='weights path')
+    parser.add_argument('--source', type=str, default='data/samples', help='source')  # input file/folder, 0 for webcam
     parser.add_argument('--output', type=str, default='output', help='output folder')  # output folder
     parser.add_argument('--img-size', type=int, default=320, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')

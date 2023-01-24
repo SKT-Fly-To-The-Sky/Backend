@@ -1,27 +1,43 @@
-version: "3.7"
+# version: "3.7"
 
+# services:
+# #  mysql:
+# #    image: mysql:8.0.31
+# #    ports:
+# #      - 3306:3306
+# #    container_name: "mysql"
+# #    environment:
+# #      - MYSQL_ROOT_PASSWORD=0000
+
+#   fastapi:
+#     image: "fastapi"
+# #    platform: "linux/amd64"
+#     build:
+#       context: .
+#     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+#     ports:
+#       - 8000:8000
+#     volumes:
+# #      - /var/jenkins_home/workspace/back-end-server/:/code/
+#       - /home/ubuntu/workspace/jenkins/workspace/back-end-server:/code
+# #      - /home/ubuntu/workspace/:/code/
+# #    extra_hosts:
+# #      - "host.docker.internal:host-gateway"
+
+#     container_name: "fastapi"
+version: '3.8'
 services:
-#  mysql:
-#    image: mysql:8.0.31
-#    ports:
-#      - 3306:3306
-#    container_name: "mysql"
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=0000
-
-  fastapi:
-    image: "fastapi"
-#    platform: "linux/amd64"
+  ftts_back_end:
     build:
       context: .
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    ports:
-      - 8000:8000
+      dockerfile: Dockerfile
+    runtime: nvidia
     volumes:
-#      - /var/jenkins_home/workspace/back-end-server/:/code/
-      - /home/ubuntu/workspace/jenkins/workspace/back-end-server:/code
-#      - /home/ubuntu/workspace/:/code/
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
-
-    container_name: "fastapi"
+      - ~/ftts_back_end/:/code/
+    environment:
+      # - CUDA_HOME=$CUDA_HOME:${CUDA_PATH}
+      - CUDA_HOME:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA
+      - PATH:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/bin
+      - LD_LIBRARY_PATH:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/lib64
+    stdin_open: true 
+    tty: true
