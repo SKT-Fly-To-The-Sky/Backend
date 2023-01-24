@@ -4,14 +4,14 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
-# from starlette.responses import FileResponse
+
 from fastapi.responses import FileResponse, JSONResponse
 
 from database import get_db
 from domain.picture import picture_schema, picture_crud
 from models import Picture
 
-from ai_service.classification import classification
+from ai_service.yolov3.classification import classification
 
 router = APIRouter(
     prefix="/api/picture",
@@ -63,9 +63,11 @@ def get_image(file_name: str):
 
 @router.get('/images/ai/{file_name}')
 def get_classification(file_name: str):
+
     img = ''.join([IMG_DIR, file_name])
     result = classification(img)
-    return JSONResponse(content={"bound_box": result['bound_box'], "class": result["class"], "score": result["score"]})
+    return JSONResponse(content=result)
+
 
 @router.delete('/images/all')
 def del_image(db: Session = Depends(get_db)):
@@ -75,3 +77,6 @@ def del_image(db: Session = Depends(get_db)):
     db.commit()
     return True
 
+
+if __name__ == "__main__":
+    classification()

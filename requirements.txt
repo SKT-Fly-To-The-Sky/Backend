@@ -3,3 +3,8 @@ SQLAlchemy
 alembic
 cryptography
 pymysql
+seaborn
+torch
+numpy
+pandas
+torchvision

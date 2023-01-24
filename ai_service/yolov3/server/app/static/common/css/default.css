@@ -1,0 +1,99 @@
+@charset "utf-8";
+
+
+/* Font Style */
+/* noto-sans-kr-300 - korean_latin */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-300.eot'); /* IE9 Compat Modes */
+    src: local('Noto Sans KR Light'), local('NotoSansKR-Light'),
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-300.woff2') format('woff2'), /* Super Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-300.woff') format('woff'), /* Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-300.ttf') format('truetype'), /* Safari, Android, iOS */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-300.svg#NotoSansKR') format('svg'); /* Legacy iOS */
+}
+/* noto-sans-kr-regular - korean_latin */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-regular.eot'); /* IE9 Compat Modes */
+    src: local('Noto Sans KR Regular'), local('NotoSansKR-Regular'),
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-regular.woff') format('woff'), /* Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-regular.svg#NotoSansKR') format('svg'); /* Legacy iOS */
+}
+/* noto-sans-kr-500 - korean_latin */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-500.eot'); /* IE9 Compat Modes */
+    src: local('Noto Sans KR Medium'), local('NotoSansKR-Medium'),
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-500.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-500.woff2') format('woff2'), /* Super Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-500.woff') format('woff'), /* Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-500.ttf') format('truetype'), /* Safari, Android, iOS */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-500.svg#NotoSansKR') format('svg'); /* Legacy iOS */
+}
+/* noto-sans-kr-700 - korean_latin */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-700.eot'); /* IE9 Compat Modes */
+    src: local('Noto Sans KR Bold'), local('NotoSansKR-Bold'),
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-700.woff2') format('woff2'), /* Super Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-700.woff') format('woff'), /* Modern Browsers */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
+        url('../webfont/Fonts/noto-sans-kr-v11-korean_latin-700.svg#NotoSansKR') format('svg'); /* Legacy iOS */
+}
+
+/* Reset Style */
+*{margin:0;padding:0}
+body{color:#555;font-size:13px;line-height:1.2;letter-spacing:-0.05em}
+ul,ol,li{list-style:none}
+img,hr{border:none}
+img{max-width:100%;border:0px;vertical-align:top}
+table{width:100%;border-spacing:0;table-layout:fixed}
+table td img{vertical-align:middle}
+a{display:inline-block;color:#555}
+a:link, a:visited, a:active, a:hover{text-decoration:none;color:inherit}
+body,p,div,ul,li,dl,dt,dd,ol,fieldset,textarea,input,select,table,th,td,address,cite,h1,h2,h3,h4,h5,h6,strong,b,label,button{font-family:'Noto Sans KR', sans-serif;letter-spacing:-0.05em}
+strong,h1,h2,h3,h4,h5,h6,th,dt,li{font-size:inherit;font-weight:inherit;color:inherit}
+input{vertical-align:middle;outline:none}
+input::placeholder,
+textarea::placeholder{color:#999}
+input[type='text'],
+input[type='password'],
+input[type='tel']{display:inline-block;width:100%;height:50px;box-sizing:border-box;padding:0 10px;border:0;background-color:#f6f6f6;font-size:13px;color:#555;line-height:50px;box-sizing:border-box;border-radius:0;vertical-align:top;}
+input[type="password"]::placeholder{letter-spacing:-0.05em}
+input:disabled{background:#f4f4f4;border:1px solid #f4f4f4}
+select{display:inline-block;width:100%;height:50px;padding:0 0 0 15px;border:0;background:url(../common/images/default/mb_arrow_down_darkgray.png) no-repeat 100% 50% #f6f6f6;background-size:30px;font-size:13px;color:#555;line-height:50px;vertical-align:top;border-radius:0;-webkit-appearance:none;-moz-appearance: none;appearance: none}
+select::-ms-expand{display:none}
+textarea{display:inline-block;width:100%;height:150px;padding:18px 10px;border:0;background-color:#f6f6f6;box-sizing:border-box;vertical-align:middle;resize:none}
+input[type='file'], input[type='image'], input[type='reset'], input[type='button'], input[type='submit']{cursor:pointer}
+hr{position:absolute;top:-9999px;left:-9999px}
+caption{visibility:hidden;overflow:hidden;width:0;height:0;font-size:0;line-height:0}
+legend{position:absolute;height:0;font-size:0px;line-height:0;overflow:hidden;text-indent:-9999px}
+address,cite,em{font-style:normal}
+fieldset{padding:0;border:0}
+label{cursor:pointer}
+button{border:0;background:none;cursor:pointer;outline:none}
+/*** PC ***/
+@media screen and (min-width:768px){
+    body{font-size:16px;line-height:1.3;letter-spacing:-0.05em}
+    body,p,div,ul,li,dl,dt,dd,ol,fieldset,textarea,input,select,table,th,td,address,cite,h1,h2,h3,h4,h5,h6,strong,b,label,button{letter-spacing:-0.05em}
+    input[type='text'],
+    input[type='password'],
+    input[type='tel']{height:60px;padding:0 20px;font-size:16px;line-height:60px}
+    input[type="password"]::placeholder{letter-spacing:-0.05em}
+    select{height:60px;background:url(../images/default/pc_arrow_down_darkgray.png) no-repeat 100% 50% #f6f6f6;background-size:38px;font-size:16px;line-height:60px;letter-spacing:-0.05em}
+    textarea{height:260px;padding:20px 18px;font-size:16px}
+}

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" >
+<meta property="og:title" content="fooddata"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="./common/images/main/gf.jpg"/>
+<meta property="og:site_name" content="fooddata"/>
+<meta property="og:description" content="fooddata"/>
+<meta http-equiv="content-script-type" content="text/javascript">
+<title>AI 음식사진 인식</title>
+<link rel="shortcut icon" href="./common/images/default/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="./common/css/default.css"/>
+<link rel="stylesheet" href="./common/css/jquery-ui.css"/>
+<link rel="stylesheet" href="./common/css/layout.css"/>
+<link rel="stylesheet" type="text/css" href="./common/css/layout_pc.css" media="screen and (min-width:768px)">
+<link rel="stylesheet" href="./common/css/layout_ch.css"/>
+<link rel="stylesheet" type="text/css" href="./common/css/layout_pc_ch.css" media="screen and (min-width:768px)">
+<script src="./common/js/jquery-1.9.0.min.js"></script>
+<script src="./common/js/jquery-ui.js"></script>
+<script src="./common/js/jquery.history.js"></script>
+<script src="./common/js/function.js"></script>
+<script src="./common/js/picturefill.min.js"></script>
+<script src="./common/js/respond.min.js"></script>
+<!--[if lt IE 9]>
+<script src="./common/js/html5shiv.min.js"></script>
+<script src="./common/js/css3-mediaqueries.js"></script>
+<script src="./common/js/IE9.js"></script>
+<![endif]-->
+
+<script src="./common/js/common.js"></script>
+<script src="./common/js/front_ui.js"></script>
+<!-- script src="./common/js/login.js"></script-->
+<script src="./common/js/member.js"></script>
+<script src="./common/js/kakao.min.js"></script>
+
+<meta name="robots" content="noindex">
+<style>
+.foodname {display:flex;font: 300 34px 'Roboto';align-items: flex-start; width: 100%;justify-content: flex-start;}
+.foodprob {position: absolute;right: 0;font-size: 28px;vertical-align: middle;}
+.foodlist {float:right;width:300px;margin-left:50px}
+.foodlistcont {float:left;width:200px;text-align:left}
+.foodlistcont p{}
+.foodstroke{color:red;font-weight:900}
+.foodnormal{color:black:font-weight:400}
+.foodleft{float:left}
+.foodright{float:right}
+</style>
+</head>
+<body>
+<section class="wrapper" id="wrapper">
+		<!--  contents_wrap  -->
+		<section class="contents data_upload data_upload_regi_page" id="contents">
+			<!-- page_tit -->
+			<div class="page_tit">
+				<div class="tit_wrap mb_hidden">
+					<h2>AI 음식사진 인식</h2>
+				</div>
+				<div class="nav_wrap">
+				</div>
+			</div>			<!-- //page_tit -->
+
+			<div class="wrap">
+				<form id="Regist"  name="Regist" action="/rec/foodRec.do" method="post" enctype="multipart/form-data">
+					<div class="img_upload_box">
+						<div class="upload_box">
+							<div class="box">
+								<input type="file" name="img_file" value="" id="img_file" accept="image/*" >
+								<label class="file_label" for="img_file" id="label1">
+									<span>
+										<strong>이미지 선택</strong>
+										<br/><br/>(jpg, bmp, jpeg, gif, png)
+									</span>
+								</label>
+								<img src="" alt="" class="file_img" id="img_file_tag" >
+							        <div id="reclist" class="chart_contents" style="width:300px; float:right; display:none">
+								    <div id="recResult" class="chart_wrap column_type" style="margin-left:20px;float:left">
+								    </div>
+							        </div>
+								<div id="foodlist" class="foodlist">
+								    <div class="foodlistcont">
+									<div class="foodleft">
+										<p id="f1">고기만두</p>
+										<p id="f2">고추장아찌</p>
+										<p id="f3">군만두</p>
+										<p id="f4">김치볶음</p>
+										<p id="f5">김치볶음밥</p>
+										<p id="f6">깍두기</p>
+										<p id="f7">깻잎장아찌</p>
+										<p id="f8">단무지</p>
+										<p id="f9">단무지무침</p>
+										<p id="f10">닭튀김</p>
+										<p id="f11">돈가스</p>
+										<p id="f12">동치미</p>
+										<p id="f13">돼지고기볶음</p>
+										<p id="f14">된장찌개</p>
+										<p id="f15">떡볶이</p>
+										<p id="f16">라면</p>
+										<p id="f17">멸치볶음</p>
+										<p id="f18">무생채</p>
+										<p id="f19">무피클</p>
+										<p id="f20">미역국</p>
+										<p id="f21">배추겉절이</p>
+										<p id="f22">배추김치</p>
+										<p id="f23">볶음밥</p>
+										<p id="f24">소고기미역국</p>
+										<p id="f25">소불고기</p>
+									</div>
+									<div class="foodright">
+										<p id="f26">시금치나물</p>
+										<p id="f27">쌀밥</p>
+										<p id="f28">약과</p>
+										<p id="f29">양파장아찌</p>
+										<p id="f30">어묵국</p>
+										<p id="f31">어묵볶음</p>
+										<p id="f32">열무김치</p>
+										<p id="f33">오이생채</p>
+										<p id="f34">오이피클</p>
+										<p id="f35">오징어젓갈</p>
+										<p id="f36">오징어채볶음</p>
+										<p id="f37">일반김밥</p>
+										<p id="f38">일반비빔밥</p>
+										<p id="f39">잡곡밥</p>
+										<p id="f40">잡채</p>
+										<p id="f41">짬뽕</p>
+										<p id="f42">총각김치</p>
+										<p id="f43">카레라이스</p>
+										<p id="f44">콩나물</p>
+										<p id="f45">콩나물국</p>
+										<p id="f46">콩밥</p>
+										<p id="f47">탕수육</p>
+										<p id="f48">파김치</p>
+										<p id="f49">호박볶음</p>
+										<p id="f50">호박전</p>
+									</div>
+							        </div>
+								</div>
+							        <br/><br/>
+								<div style="display:inline-flex">
+								<button type="button" class="reset_btn" onclick="file_reset(event);">RESET</button>
+								<button id="btnSubmit" type="button" class="reset_btn btn_red" style="background:red;color:white" onclick="Submit();">인식</button>
+								</div>
+						         </div>
+
+
+						</div>
+					</div>
+					<!--div class="btn_area">
+						<button id="btnSubmit" type="button" class="btn_txt btn_red" onclick="Submit();">인식</button>
+					</div -->
+
+				</form>
+			</div>
+
+		</section>
+		<!-- //contents_wrap -->
+
+
+	</section>
+
+<!-- page_script -->
+<script>
+/*
+	// $("#image")[0].naturalWidth 또는 $("#image").get(0).naturalWidth
+	$(img).load(function () {
+    alert('height: ' + img.height);
+    alert('width: ' + img.width);
+    // garbage collect img
+    delete img;
+}) */
+
+function Submit() {
+	var form = document.Regist;
+	if (form.img_file.value == "") {
+		alert("이미지를 선택해 주세요");
+		form.img_file.focus();
+		return;
+	}
+
+	//preventDefault 는 기본으로 정의된 이벤트를 작동하지 못하게 하는 메서드이다. submit을 막음
+	event.preventDefault();
+
+	// Create an FormData object 
+	var data = new FormData(form);
+
+	// disabled the submit button
+	$("#btnSubmit").prop("disabled", true);
+
+	$.ajax({
+		type: "POST",
+		enctype: 'multipart/form-data',
+		url: "/rec/foodRec.do",
+		data: data,
+		processData: false,
+		contentType: false,
+		cache: false,
+		timeout: 600000,
+		beforeSend:function(){
+                 animateFoodList();
+		},
+		success: function(blob, status, xhr) {
+			stopAnimate();
+			$("#btnSubmit").prop("disabled", false);
+			$("#foodlist").hide();
+			$("#reclist").show();
+
+			// check for a filename
+			var filename = "";
+			var disposition = xhr.getResponseHeader('Content-Disposition');
+			if (disposition && disposition.indexOf('attachment') !== -1) {
+				var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+				var matches = filenameRegex.exec(disposition);
+				if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+			}
+
+			if (typeof window.navigator.msSaveBlob !== 'undefined') {
+				// IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+				window.navigator.msSaveBlob(blob, filename);
+			} else {
+				/*
+				var URL = window.URL || window.webkitURL;
+				var downloadUrl = URL.createObjectURL(blob);
+				*/
+				/*
+				var binaryData = [];
+				binaryData.push(blob);
+				var downloadUrl = window.URL.createObjectURL(new Blob(binaryData, {type: "image/jpg"}))
+				*/
+
+				//var image = new Image();
+				//image.src = URL.createObjectURL(blobImage);
+				//image.src = "data:image/jpeg;base64,"+blob.image;
+				//document.body.appendChild(image);
+				$("#img_file_tag").attr("src","data:image/jpeg;base64,"+blob.image);
+				var html = "";
+			        for(var i=0; i<blob.items.length;i++) {
+					html +="<p class='foodname'>"+blob.items[i].classnm+"<span class='foodprob'>"+(parseFloat(blob.items[i].conf)*100).toFixed(0)+"%</span></p>";
+				}
+				$("#recResult").html(html);
+/*
+				//new Blob(binaryData, {type: "application/zip"}
+				if (filename) {
+					// use HTML5 a[download] attribute to specify filename
+					var a = document.createElement("a");
+					// safari doesn't support this yet
+					if (typeof a.download === 'undefined') {
+						window.location.href = downloadUrl;
+					} else {
+						a.href = downloadUrl;
+						a.download = filename;
+						document.body.appendChild(a);
+						a.click();
+					}
+				} else {
+					window.location.href = downloadUrl;
+				}
+*/
+				//$("#tttt").attr('src',downloadUrl);
+
+//				setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+			}
+		},
+		error: function (e) {
+			stopAnimate();
+			$("#foodlist").show();
+			$("#reclist").hide();
+			$("#btnSubmit").prop("disabled", false);
+			alert("fail");
+
+		}
+	});
+
+}
+
+
+// 이미지파일등록
+function previewFile(input) {
+  var elem = $(input);
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+	var file    = input.files[0];
+	var maxSize  = 10 * 1024 * 1024    //10MB
+	var fileSize = file.size;
+	var fname = file.name;
+	var fextension = fname.substring(fname.lastIndexOf('.')+1).toLowerCase();
+	var validExtensions = ["jpg","bmp","jpeg","gif","png"];
+
+	if(maxSize < fileSize){
+		file_reset(elem);
+		alert('용량제한 10MB를 초과하였습니다.');
+		return false;
+	}
+	if ($.inArray(fextension, validExtensions) == -1){
+		file_reset(elem);
+		alert("이미지 파일만 가능합니다.");
+		return false;
+	}
+
+    reader.onload = function(e) {
+	/*    
+	elem.next('label').next('img').show();
+	elem.next('label').next('img').attr('src', e.target.result).attr('height', '600px');
+	elem.next('label').hide();
+	*/
+	var image = new Image();
+	image.src = e.target.result;
+	image.onload = function() {
+		console.log(this.width);
+		$("#img_file_tag").show();
+		if((600/this.height)*this.width>710) {
+			var height = (710/this.width*this.height).toFixed(0);
+			$("#img_file_tag").attr('height', height+'px');
+		} else {
+			$("#img_file_tag").attr('height', '600px');
+		}
+		$("#label1").hide();
+		$('#img_file_tag').attr('src', this.src);
+	
+	};
+    }
+    reader.readAsDataURL(elem.get(0).files[0]);
+  }
+}
+
+$("input[type='file']").change(function() {
+  previewFile(this);
+});
+
+
+function file_reset(event) {
+	$("#img_file").val('');
+	$(".file_img").hide();
+	$(".file_label").css("display","inline-block");
+	$("#foodlist").show();
+	$("#reclist").hide();
+}
+
+var foodIdx = 1;
+var timer;
+function animateFoodList() {
+  timer = setInterval(function() { 
+    $("#foodlist p").removeClass("foodstroke");
+    $("#f"+foodIdx).addClass("foodstroke");
+    if(foodIdx>50) foodIdx=1; 
+    else foodIdx++;
+  }, 80);
+}
+
+function stopAnimate() {
+  clearInterval(timer);
+  $("#foodlist p").removeClass("foodstroke");
+  foodIdx = 1;
+}
+
+</script>
+<!-- //page_script -->
+</body>
+</html>

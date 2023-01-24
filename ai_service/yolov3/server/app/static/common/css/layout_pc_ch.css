@@ -1,0 +1,135 @@
+@charset "utf-8";
+/* guide(홈페이지 가이드페이지X) */
+.guide .wrap .guide_page_tit{margin-bottom:75px}
+.guide .wrap .guide_page_tit h2.tit{margin-bottom:20px;font-size:30px;line-height:40px}
+.guide .wrap .guide_page_tit .sub_tit{font-size:16px;line-height:26px}
+.guide .wrap .chk_txt{font-size:20px;line-height:28px;background:url(../images/default/check_icon.png)0 8px no-repeat}
+.guide .wrap .txt{font-size:16px;line-height:34px}
+/* guide - confirm_way_page*/
+.confirm_way_page .wrap .main_box ul li{padding:40px 50px}
+.confirm_way_page .wrap .main_box ul li div .chk_txt{margin-bottom:20px}
+.confirm_way_page .wrap .main_box ul li div .txt.mb_margin{margin-top:30px;line-height:26px}
+/* guide - shooting_way_page*/
+.shooting_way_page .wrap .guide_page_tit{margin-bottom:80px}
+.shooting_way_page .wrap .guide_page_tit h2.tit{margin-bottom:30px}
+.shooting_way_page .wrap .guide_page_tit p.txt{color:#555;font-size:16px;line-height:100%;text-align:center}
+.shooting_way_page .wrap .main_box .box .img_info .photo_tit{margin-bottom:15px;width:96px;font-size:16px}
+.shooting_way_page .wrap .main_box .box .img_info ul::after{content:'';display:block;clear:both}
+.shooting_way_page .wrap .main_box .box .img_info ul li{margin-bottom:0}
+.shooting_way_page .wrap .main_box .box .img_info ul li.photo_success::after{width:54px;height:54px;background-size:25px}
+.shooting_way_page .wrap .main_box .box .img_info ul li.photo_fail::after{width:54px;height:54px;background-size:25px}
+.shooting_way_page .wrap .main_box .box .img_info .guide_txt{margin-bottom:30px;padding:0 0 10px 70px;font-size:18px}
+.shooting_way_page .wrap .main_box .box .img_info .guide_txt .point{top:-2px;font-size:16px}
+.shooting_way_page .wrap .main_box .box .img_info .guide_txt em{display:inline-block;margin-top:0;margin-right:10px}
+.shooting_way_page .wrap .main_box .box_01 .sub_tit{margin-bottom:60px;font-size:24px}
+.shooting_way_page .wrap .main_box .box_01 .list_info{padding:40px 0 40px 340px;margin:0 0 40px}
+.shooting_way_page .wrap .main_box .box_01 .list_info .txt{margin-bottom:15px;font-size:18px;line-height:100%}
+.shooting_way_page .wrap .main_box .box_01 .img_info ul li{float:left;margin-right:20px;width:490px}
+.shooting_way_page .wrap .main_box .box_01 .img_info ul li:last-of-type{margin-right:0}
+.shooting_way_page .wrap .main_box .box_02 .img_info{margin-top:50px}
+.shooting_way_page .wrap .main_box .box_02 .img_info ul li{float:left;margin-top:30px;margin-bottom:0;margin-right:20px;width:490px}
+.shooting_way_page .wrap .main_box .box_02 .img_info ul li.photo_success::before{content:'';display:block;position:absolute;left:170px;top:0;width:54px;height:54px;background:#cd2929 url(../images/default/photo_success_icon.png)center no-repeat;background-size:25px}
+.shooting_way_page .wrap .main_box .box_02 .img_info ul li:nth-of-type(1),
+.shooting_way_page .wrap .main_box .box_02 .img_info ul li:nth-of-type(2){margin-top:0}
+.shooting_way_page .wrap .main_box .box_02 .img_info ul li:nth-of-type(2n){margin-right:0}
+.shooting_way_page .wrap .main_box .box_02 .img_info ul li:nth-of-type(5){width:100%}
+/* guide - fee_except*/
+.fee_except_page .wrap .page_top .txt{padding-top:56px;margin-bottom:80px;font-size:16px;line-height:26px;background-size:36px}
+.fee_except_page .wrap .photo_list{padding:40px 50px 0}
+.fee_except_page .wrap .photo_list .photo_tit{padding-left:34px;margin-bottom:20px;font-size:20px;background-size:24px}
+.fee_except_page .wrap .photo_list .img_ul{margin-bottom:40px}
+.fee_except_page .wrap .photo_list .img_ul::after{content:'';display:block;clear:both}
+.fee_except_page .wrap .photo_list .img_ul li{float:left;margin-bottom:0px;margin-top:10px;margin-right:10px;width:445px}
+.fee_except_page .wrap .photo_list .img_ul li.pc_width{width:100%}
+.fee_except_page .wrap .photo_list .img_ul li:nth-of-type(1),
+.fee_except_page .wrap .photo_list .img_ul li:nth-of-type(2){margin-top:0}
+.fee_except_page .wrap .photo_list .img_ul li:nth-of-type(2n){margin-right:0}
+/* data_upload - data_upload_list */
+.data_upload .wrap .statistics_box{margin-bottom:80px}
+.data_upload .wrap .statistics_box ul li{margin-right:105px;width:150px}
+.data_upload .wrap .statistics_box ul li div .today{padding-bottom:15px;font-size:20px}
+.data_upload .wrap .statistics_box ul li div .today::after{bottom:-1px;width:20px;height:1px}
+.data_upload .wrap .statistics_box ul li div .number{padding-top:25px;font-size:30px}
+.data_upload_list_page .wrap .upload_box{padding-top:60px}
+.data_upload_list_page .wrap .upload_box .upload_btn_box .data_upload{padding:50px 0 0;margin-right:0;width:235px;height:235px}
+.data_upload_list_page .wrap .upload_box .upload_btn_box .data_upload a{font-size:16px}
+.data_upload_list_page .wrap .upload_box .upload_btn_box .data_upload a .tit{margin-bottom:15px;padding-top:80px;font-size:18px;background-size:56px}
+.data_upload_list_page .wrap .upload_box .upload_btn_box .img_list .img{margin-bottom:20px;margin-right:0;margin-left:20px;width:235px;height:235px}
+.data_upload_list_page .wrap .upload_box .upload_btn_box .img_list .img:nth-of-type(2n){margin-right:0}
+.data_upload_list_page .wrap .upload_box .upload_btn_box .img_list .img:nth-of-type(4n){margin-left:0}
+/* data_upload - data_upload_regi */
+.data_upload_regi_page .img_upload_box{padding:40px 0}
+.data_upload_regi_page .img_upload_box .upload_box{margin:0 0 0px}
+.data_upload_regi_page .img_upload_box .upload_box .box{display:inline-block}
+.data_upload_regi_page .img_upload_box .upload_box .box:first-of-type{margin-right:50px;margin-bottom:0}
+.data_upload_regi_page .img_upload_box .upload_box label{width:615px;height:615px}
+.data_upload_regi_page .img_upload_box .upload_box label span{padding-top:85px;font-size:18px;background-size:55px}
+.data_upload_regi_page .img_upload_box .upload_box label span strong{font-size:20px}
+.data_upload_regi_page .img_upload_box .upload_box .reset_btn{min-width:130px;height:36px;line-height:36px;font-size:16px}
+.data_upload .upload_ul li{display:table;width:100%;box-sizing:border-box}
+.data_upload .upload_ul li .tit{display:table-cell;vertical-align:middle;margin-bottom:0;width:255px;font-size:18px;text-align:center}
+.data_upload .upload_ul li .food_chk,
+.data_upload .upload_ul li .food_info{display:table-cell;vertical-align:middle;width:745px}
+.data_upload .upload_ul li .food_chk::after{content:'';display:block;clear:both}
+.data_upload .upload_ul li .food_chk input{float:left;width:460px}
+.data_upload .upload_ul li .food_chk .food_btn{float:left;width:120px;height:60px;font-size:16px;text-align:center;line-height:60px}
+.data_upload .upload_ul li .food_info textarea{height:60px;line-height:20px}
+.data_upload_regi_page .food_data_layer .layer_outer{width:720px}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con h2{margin-bottom:40px}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box{box-sizing:border-box}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box{-ms-overflow-style:none;/* IE and Edge */scrollbar-width:none;/* Firefox */}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list{padding:20px 0 0 0;box-sizing:border-box}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li{margin-bottom:10px}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li:last-of-type{margin-bottom:0}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .tit{width:160px}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .select_box{display:table-cell;vertical-align:middle}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .select_box::after{content:'';display:block;clear:both}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .select_box select{float:left;width:calc(50% - 5px)}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .select_box .select_01{margin-bottom:0;margin-right:10px}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .food_name{display:table-cell;vertical-align:middle}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .food_name input{width:calc(100% - 60px)}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box .fodd_list .upload_ul li .food_name .food_btn{width:60px;height:60px;background-size:24px}
+.data_upload_regi_page .food_data_layer .layer_outer .layer_inner .layer_con .scroll_box::-webkit-scrollbar{display:none}
+/* Hide scrollbar for IE, Edge and Firefox */
+.data_upload .food_table{margin-top:40px}
+.data_upload .food_table table{}
+.data_upload .food_table table col.mb_hidden{display:table-column !important}
+.data_upload .food_table table col.col_01{width:90px}
+.data_upload .food_table table col.col_02{width:120px}
+.data_upload .food_table table col.col_03{width:130px}
+.data_upload .food_table table col.col_04{width:90px}
+.data_upload .food_table table col.col_05{width:110px}
+.data_upload .food_table table col.col_06{width:90px}
+.data_upload .food_table table th,
+.data_upload .food_table table td{padding:25px 15px;font-size:16px}
+.data_upload .food_table table th.mb_hidden,
+.data_upload .food_table table td.mb_hidden{display:table-cell !important}
+.data_upload .food_table table td.food_chk .btn{width:60px;height:35px;font-size:16px}
+/* data_upload - data_total_list */
+.data_total_list_page .upload_box{padding:50px 0 30px}
+.data_total_list_page .upload_box .upload_ul li{display:table;width:100%;box-sizing:border-box}
+.data_total_list_page .upload_box .upload_ul li::after{content:'';display:block;clear:both}
+.data_total_list_page .upload_box .upload_ul li .tit,
+.data_total_list_page .upload_box .upload_ul li .select_box{display:table-cell;vertical-align:middle}
+.data_total_list_page .upload_box .upload_ul li .tit{width:255px}
+.data_total_list_page .upload_box .upload_ul li .select_box{width:745px}
+.data_total_list_page .upload_box .upload_ul li .select_box select{float:left;margin-bottom:0;margin-right:10px}
+.data_total_list_page .upload_box .upload_ul li .select_box .select_01{width:210px}
+.data_total_list_page .upload_box .upload_ul li .select_box .select_02{width:150px}
+.data_total_list_page .upload_box .upload_ul li .food_btn{float:left;width:365px}
+.data_total_list_page .upload_box .upload_ul li .food_btn input{width:calc(100% - 60px)}
+.data_total_list_page .upload_box .upload_ul li .food_btn .btn{width:60px;height:60px;background-size:24px}
+.data_total_list_page .food_table table col.col_01{width:600px}
+.data_total_list_page .food_table table col.col_02{width:200px}
+.data_total_list_page .food_table table col.col_03{width:200px}
+.data_total_list_page .food_table table th,
+.data_total_list_page .food_table table td{font-size:18px}
+.data_total_list_page .food_table table td.food_code .sub_food{margin-top:5px}
+/* business - business_info */
+.business_info_page .wrap{width:100%}
+.business_info_page .wrap .c_box{margin:0 auto;width:1000px}
+.business_info_page .img_area{padding:80px 0 90px;margin:80px 0 0;background:url(../images/business/pc_business_info_bg.jpg)center no-repeat}
+.business_info_page .img_area .txt_info{}
+.business_info_page .img_area .txt_info em{margin-bottom:30px;font-size:16px}
+.business_info_page .img_area .txt_info strong{margin-bottom:50px;font-size:30px}
+.business_info_page .img_area .txt_info .btn{width:240px;height:60px;font-size:18px;line-height:60px}
