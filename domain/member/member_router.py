@@ -9,7 +9,8 @@ router = APIRouter(
 )
 
 
-@router.get("/list", response_model=list[member_schema.Member])
+# @router.get("/list", response_model=list[member_schema.Member])
+@router.get("/list")
 def member_list(db: Session = Depends(get_db)):
     _member_list = member_crud.get_member_list(db)
     return _member_list

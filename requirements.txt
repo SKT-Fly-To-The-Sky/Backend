@@ -1,4 +1,5 @@
-torch==1.7.0=py3.7_cuda11.0.221_cudnn8.0.3_0
+torch>=1.6.0
+torchvision>=0.7.0
 fastapi[all]
 SQLAlchemy
 alembic
@@ -12,3 +13,8 @@ torchvision
 opencv-python
 psutil
 tqdm
+
+pydantic
+uvicorn
+matplotlib
+pillow

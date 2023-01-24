@@ -11,14 +11,15 @@ from database import get_db
 from domain.picture import picture_schema, picture_crud
 from models import Picture
 
-from ai_service.yolov3.classification import classification
+# from ai_service.yolov3.classification import classification
 
 router = APIRouter(
     prefix="/api/picture",
 )
 
 
-@router.get("/list", response_model=list[picture_schema.Picture])
+# @router.get("/list", response_model=list[picture_schema.Picture])
+@router.get("/list")
 def picture_list(db: Session = Depends(get_db)):
     _picture_list = picture_crud.get_picture_list(db)
     return _picture_list
@@ -65,7 +66,8 @@ def get_image(file_name: str):
 def get_classification(file_name: str):
 
     img = ''.join([IMG_DIR, file_name])
-    result = classification(img)
+    # result = classification(img)
+    result = ""
     return JSONResponse(content=result)
 
 
@@ -79,4 +81,5 @@ def del_image(db: Session = Depends(get_db)):
 
 
 if __name__ == "__main__":
-    classification()
+    # classification()
+    pass

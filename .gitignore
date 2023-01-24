@@ -21,6 +21,8 @@
 *.data
 *.json
 
+static/
+
 env/
 build/
 develop-eggs/

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 
 from domain.picture import picture_router
 from domain.member import member_router
@@ -16,3 +17,6 @@ async def say_hello(name: str):
 
 app.include_router(member_router.router)
 app.include_router(picture_router.router)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
