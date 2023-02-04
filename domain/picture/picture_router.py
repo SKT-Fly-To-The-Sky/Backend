@@ -41,7 +41,7 @@ async def upload_board(file: UploadFile = File(...), db: Session = Depends(get_d
         os.makedirs(IMG_DIR, exist_ok=True)
         currentTime = datetime.now().strftime("%Y%m%d%H%M%S")
         saved_file_name = ''.join([currentTime, secrets.token_hex(16)])
-
+        saved_file_name += '.jpeg'
         content = await file.read()
 
         file_location = os.path.join(IMG_DIR, saved_file_name)

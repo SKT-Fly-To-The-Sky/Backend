@@ -8,6 +8,7 @@
 # #    container_name: "mysql"
 # #    environment:
 # #      - MYSQL_ROOT_PASSWORD=0000
+# #      - MYSQL_DATABASE: ftts
 
 #   fastapi:
 #     image: "fastapi"
@@ -18,26 +19,34 @@
 #     ports:
 #       - 8000:8000
 #     volumes:
-# #      - /var/jenkins_home/workspace/back-end-server/:/code/
-#       - /home/ubuntu/workspace/jenkins/workspace/back-end-server:/code
+# #      - /var/jenkins_home/workspace/backEndServer/:/code/
+#       - /home/ubuntu/workspace/jenkins/workspace/backEndServer:/code
 # #      - /home/ubuntu/workspace/:/code/
 # #    extra_hosts:
 # #      - "host.docker.internal:host-gateway"
 
-#     container_name: "fastapi"
-version: '3.8'
+version: '3'
 services:
   ftts_back_end:
-    build:
-      context: .
-      dockerfile: Dockerfile
+#    image: pytorch/pytorch:1.7.1-cuda11.0-cudnn8-devel
+#    image: pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
+    build: .
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    ports:
+      - "8000:8000"
     runtime: nvidia
+#    command:
+#      - uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
-      - ~/ftts_back_end/:/code/
-    environment:
-      # - CUDA_HOME=$CUDA_HOME:${CUDA_PATH}
-      - CUDA_HOME:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA
-      - PATH:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/bin
-      - LD_LIBRARY_PATH:C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/lib64
-    stdin_open: true 
-    tty: true
+      - .:/workspace
+
+#  tensorboard:
+#    image: hsh0322/las-pytorch
+#    volumes:
+#      - ./:/opt/project
+#    ports:
+#      - "6006:6006"
+#    command: tensorboard --logdir=log/las_timit --port=6006 --host=0.0.0.0
+
+# PowerShell.exe -ExecutionPolicy Bypass -File wsl_port_forward.ps1

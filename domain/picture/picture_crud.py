@@ -17,3 +17,10 @@ def add_picture(db: Session, member_id, date, image_name):
         return True
     except Exception as e:
         return e
+
+
+'''
+create table Picture(id int, member_id int, date datetime, image_name VARCHAR(20));
+
+insert into Picture(id, member_id, date, image_name) Values(1, 11, '2017-12-12', '123.png');
+'''

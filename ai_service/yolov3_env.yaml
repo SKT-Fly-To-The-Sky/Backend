@@ -1,4 +1,4 @@
-name: back-end-server
+name: backEndServer
 channels:
   - pytorch
   - defaults
@@ -82,4 +82,4 @@ dependencies:
     - urllib3==1.26.4
     - werkzeug==1.0.1
     - zipp==3.4.1
-prefix: C:/Users/045/anaconda3/envs/back-end-server
+prefix: C:/Users/045/anaconda3/envs/backEndServer
