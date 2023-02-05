@@ -1,6 +1,6 @@
-from utils.google_utils import *
-from utils.layers import *
-from utils.parse_config import *
+from ai_service.yolov3.utils.google_utils import *
+from ai_service.yolov3.utils.layers import *
+from ai_service.yolov3.utils.parse_config import *
 
 ONNX_EXPORT = False
 

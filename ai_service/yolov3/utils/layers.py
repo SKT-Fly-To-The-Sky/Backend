@@ -1,6 +1,6 @@
 import torch.nn.functional as F
 
-from utils.utils import *
+from ai_service.yolov3.utils.utils import *
 
 
 def make_divisible(v, divisor):

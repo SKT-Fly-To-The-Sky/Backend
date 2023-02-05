@@ -1,15 +1,29 @@
 import os
 import secrets
+import sys
 from datetime import datetime
+
+# print("------------------------------")
+# print(sys.modules)
+# print("------------------------------")
 
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
 
 from fastapi.responses import FileResponse, JSONResponse
 
+# from ..ai_service.yolov3.detect_del import classification
+# from ..database import get_db
+# from ..
+# import picture_crud
+# from picture_schema import Picture
+# print()
+sys.path.append('/workspace')
+# sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from database import get_db
 from domain.picture import picture_schema, picture_crud
 from models import Picture
+from ai_service.yolov3.detect_del import classification
 
 # from ai_service.yolov3.classification import classification
 
@@ -34,9 +48,17 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static/')
 IMG_DIR = os.path.join(STATIC_DIR, 'images/')
 SERVER_IMG_DIR = os.path.join('filestorge/', 'static/', 'images/')
 
+from domain.picture.code_dict import foodname
+def code2name(result):
+    for d in result['object']:
+        d['name'] = foodname[d['name']]
+    return result
 
-@router.post('/upload-images')
-async def upload_board(file: UploadFile = File(...), db: Session = Depends(get_db)):
+
+@router.post('/classification')
+async def upload_get_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    import time
+    st = time.time()
     try:
         os.makedirs(IMG_DIR, exist_ok=True)
         currentTime = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -49,8 +71,13 @@ async def upload_board(file: UploadFile = File(...), db: Session = Depends(get_d
             file_object.write(content)
 
         picture_crud.add_picture(db=db, member_id=1, date=datetime.now(), image_name=saved_file_name)
-        result = {'fileName': saved_file_name}
-        return result
+
+        # get food classification
+        result = classification()
+        result['fileName'] = saved_file_name
+        result = code2name(result)
+        result['calculation time'] = time.time() - st
+        return JSONResponse(content=result)
     except Exception as e:
         raise HTTPException(status_code=999, detail=f"{e}")
 
@@ -62,13 +89,12 @@ def get_image(file_name: str):
     return result
 
 
-@router.get('/images/ai/{file_name}')
-def get_classification(file_name: str):
-
-    img = ''.join([IMG_DIR, file_name])
-    # result = classification(img)
-    result = ""
-    return JSONResponse(content=result)
+# @router.get('/images/ai')
+# def get_classification(file: UploadFile = File(...)):
+#     content = file.read()
+#     print(type(content))
+#     return "---test---"
+#     return JSONResponse(content=classification())
 
 
 @router.delete('/images/all')
@@ -81,5 +107,5 @@ def del_image(db: Session = Depends(get_db)):
 
 
 if __name__ == "__main__":
-    # classification()
+    print(classification())
     pass
