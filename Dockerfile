@@ -9,6 +9,6 @@ RUN apt-get -y install libglib2.0-0
 RUN apt-get -y install curl
 RUN pip install -r /workspace/requirements.txt
 
-CMD ["uvicorn", "main:app", "--host 0.0.0.0", "--port 8000", "--reload"]
+#CMD ["uvicorn", "main:app", "--host 0.0.0.0", "--port 8000", "--reload"]
 
 #VOLUME .
