@@ -131,6 +131,10 @@ def detect(path, img0):
     if classify:
         pred = apply_classifier(pred, modelc, img, img0)
 
+    print("_-------------------------")
+    print(type(pred))
+    print(len(pred))
+    print("_-------------------------")
     # Process detections
     for i, det in enumerate(pred):  # detections for image i
         p, s, im0 = path, '', img0
@@ -237,10 +241,6 @@ def classification(path, img0):
     opt.names = check_file(opt.names)  # check file
     print(os.path.realpath(__file__))
     print(len(os.listdir(opt.source)))
-
-    print('----------------------------------------')
-    print(type(img0))
-    print('----------------------------------------')
 
     return detect(path, img0)
 
