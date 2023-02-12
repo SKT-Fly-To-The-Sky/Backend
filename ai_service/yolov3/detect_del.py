@@ -102,7 +102,7 @@ def detect(path, img0):
     nND = 0
 
     # for path, img, im0s, vid_cap in dataset:
-    img = letterbox(img0, new_shape=self.img_size)[0]
+    img = letterbox(img0, new_shape=imgsz)[0]
 
     # Convert
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
@@ -241,7 +241,6 @@ def classification(path, img0):
 
     print('----------------------------------------')
     print(type(img0))
-    print(img0)
     print('----------------------------------------')
 
     return detect(path, img0)
