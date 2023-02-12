@@ -48,11 +48,6 @@ services:
       - .:/workspace
     environment:
       NVIDIA_VISIBLE_DEVICES: all
-      command: nvidia-smi
-      deploy:
-        resources:
-          limits:
-            gpus: all
 
 #  tensorboard:
 #    image: hsh0322/las-pytorch
