@@ -73,7 +73,7 @@ async def upload_get_classification(file: UploadFile = File(...), db: Session = 
         picture_crud.add_picture(db=db, member_id=1, date=datetime.now(), image_name=saved_file_name)
 
         # get food classification
-        result = classification()
+        result = classification(saved_file_name, content)
         result['fileName'] = saved_file_name
         result = code2name(result)
         result['calculation time'] = time.time() - st

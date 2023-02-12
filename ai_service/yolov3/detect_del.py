@@ -49,7 +49,7 @@ def ToF(file, cat):
     
     return output
     
-def detect(save_img=False):
+def detect(path, img0):
     global opt
     imgsz = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
     out, source, weights, half, view_img, save_txt, save_xml = opt.output, opt.source, opt.weights, opt.half, opt.view_img, opt.save_txt, opt.save_xml
@@ -85,188 +85,132 @@ def detect(save_img=False):
     # Fuse Conv2d + BatchNorm2d layers
     # model.fuse()
 
-    # Export mode
-    if ONNX_EXPORT:
-        model.fuse()
-        img = torch.zeros((1, 3) + imgsz)  # (1, 3, 320, 192)
-        f = opt.weights.replace(opt.weights.split('.')[-1], 'onnx')  # *.onnx filename
-        torch.onnx.export(model, img, f, verbose=False, opset_version=11,
-                          input_names=['images'], output_names=['classes', 'boxes'])
-
-        # Validate exported model
-        import onnx
-        model = onnx.load(f)  # Load the ONNX model
-        onnx.checker.check_model(model)  # Check that the IR is well formed
-        print(onnx.helper.printable_graph(model.graph))  # Print a human readable representation of the graph
-        return
-
     # Half precision
     half = half and device.type != 'cpu'  # half precision only supported on CUDA
     if half:
         model.half()
 
-    # Set Dataloader
-    vid_path, vid_writer = None, None
-    if webcam:
-        view_img = True
-        torch.backends.cudnn.benchmark = True  # set True to speed up constant image size inference
-        dataset = LoadStreams(source, img_size=imgsz)
-    else:
-        save_img = True
-        dataset = LoadImages(source, img_size=imgsz)
+    # dataset = LoadImages(source, img_size=imgsz)
 
     # Get names and colors
     names = load_classes(opt.names)
-    colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(names))]
+
     rslt = []
     nT = 0
     nF = 0
     nN = 0
     nND = 0
-    # Run inference
-    t0 = time.time()
-    img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
-    _ = model(img.half() if half else img.float()) if device.type != 'cpu' else None  # run once
-    for path, img, im0s, vid_cap in dataset:
-        img = torch.from_numpy(img).to(device)
-        img = img.half() if half else img.float()  # uint8 to fp16/32
-        img /= 255.0  # 0 - 255 to 0.0 - 1.0
-        if img.ndimension() == 3:
-            img = img.unsqueeze(0)
 
-        # Inference
-        t1 = torch_utils.time_synchronized()
-        pred = model(img, augment=opt.augment)[0]
-        t2 = torch_utils.time_synchronized()
+    # for path, img, im0s, vid_cap in dataset:
+    img = letterbox(img0, new_shape=self.img_size)[0]
 
-        # to float
-        if half:
-            pred = pred.float()
+    # Convert
+    img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+    img = np.ascontiguousarray(img)
 
-        # Apply NMS
-        pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres,
-                                   multi_label=False, classes=opt.classes, agnostic=opt.agnostic_nms)
+    img = torch.from_numpy(img).to(device)
+    img = img.half() if half else img.float()  # uint8 to fp16/32
+    img /= 255.0  # 0 - 255 to 0.0 - 1.0
+    if img.ndimension() == 3:
+        img = img.unsqueeze(0)
 
-        # Apply Classifier
-        if classify:
-            pred = apply_classifier(pred, modelc, img, im0s)
+    # Inference
+    pred = model(img, augment=opt.augment)[0]
 
-        # Process detections
-        for i, det in enumerate(pred):  # detections for image i
-            if webcam:  # batch_size >= 1
-                p, s, im0 = path[i], '%g: ' % i, im0s[i].copy()
-            else:
-                p, s, im0 = path, '', im0s
+    # to float
+    if half:
+        pred = pred.float()
 
-            save_path = str(Path(out) / Path(p).name)
-            #s += '%gx%g ' % img.shape[2:]  # print string
-            gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  #  normalization gain whwh
+    # Apply NMS
+    pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres,
+                               multi_label=False, classes=opt.classes, agnostic=opt.agnostic_nms)
 
-            root = Element('annotation')
-            SubElement(root, 'folder').text = str(Path(out))
-            SubElement(root, 'filename').text = str(Path(p))
-            SubElement(root, 'path').text = save_path
+    # Apply Classifier
+    if classify:
+        pred = apply_classifier(pred, modelc, img, im0s)
 
-            if det is not None and len(det):
-                # Rescale boxes from imgsz to im0 size
-                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-                count = 0
+    # Process detections
+    for i, det in enumerate(pred):  # detections for image i
+        if webcam:  # batch_size >= 1
+            p, s, im0 = path[i], '%g: ' % i, im0s[i].copy()
+        else:
+            p, s, im0 = path, '', im0s
 
-                # Print results
-                for c in det[:, -1].unique():
-                    n = (det[:, -1] == c).sum()  # detections per class
-                    s += '%g %s, ' % (n, names[int(c)])  # add to string
-                    s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
+        save_path = str(Path(out) / Path(p).name)
 
-                total = []
-                object_names = []
-                score=[]
+        root = Element('annotation')
+        SubElement(root, 'folder').text = str(Path(out))
+        SubElement(root, 'filename').text = str(Path(p))
+        SubElement(root, 'path').text = save_path
 
-                # Write results
-                for *xyxy, conf, cls in reversed(det):
-                    label = '%s %.2f' % (names[int(cls)], conf)
-                    score.append(label.split(' ')[1])
+        if det is not None and len(det):
+            # Rescale boxes from imgsz to im0 size
+            det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
+            count = 0
 
-                    #if save_xml:
-                    semi = []
-                    for nums in range(4):  ## total??좌표 ?�??
-                        str_x = str(xyxy[nums]).split('(')
-                        str_x = str_x[1].split('.')
-                        semi.append(str_x[0])
-                    total.append(semi)
-                    object_names.append(names[int(cls)])
-                    count = count + 1
-                    
-                    tnT = 0
-                    tnF = 0
-                    tnN = 0
+            # Print results
+            for c in det[:, -1].unique():
+                n = (det[:, -1] == c).sum()  # detections per class
+                s += '%g %s, ' % (n, names[int(c)])  # add to string
+                s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
 
-                    #정확도 측정
-                    for i in range(count):
-                        rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
-                        if ToF(Path(p),object_names[i]) == "T":
-                            tnT += 1
-                        elif ToF(Path(p),object_names[i]) == "F":
-                            tnF += 1
-                        elif ToF(Path(p),object_names[i]) == "N":
-                            tnN += 1
-                  
-                    #이미지 보기
-                    if save_img or view_img:  # Add bbox to image
-                        plot_one_box(xyxy, im0, label=label, color=colors[int(cls)])
-    
-                    data = {}
-                    data["object"] = []
-                    for i in range(count):  ##리스트 두 개 xml파일에 저장
-                        data["object"].append({
-                            "name" : object_names[i],
-                            "bndbox":{
-                            "xmin": str(total[i][0]),
-                            "ymin": str(total[i][1]),
-                            "xmax": str(total[i][2]),
-                            "ymax": str(total[i][3])
-                            },
-                            "score":score[i]
-                        })
-                        
-                        
-                nT += 1 if tnT > 1 else tnT
-                nND += 1 if tnF == 0 and tnT == 0 else 0
-                nF += 1 if tnF > 1 else tnF
+            total = []
+            object_names = []
+            score=[]
 
-                if save_xml:
-                    with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
-                        json.dump(data, outfile)
+            # Write results
+            for *xyxy, conf, cls in reversed(det):
+                label = '%s %.2f' % (names[int(cls)], conf)
+                score.append(label.split(' ')[1])
 
-    # print(type(data))
-    # print(data)
+                semi = []
+                for nums in range(4):
+                    str_x = str(xyxy[nums]).split('(')
+                    str_x = str_x[1].split('.')
+                    semi.append(str_x[0])
+                total.append(semi)
+                object_names.append(names[int(cls)])
+                count = count + 1
+
+                tnT = 0
+                tnF = 0
+                tnN = 0
+
+                #정확도 측정
+                for i in range(count):
+                    rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
+                    if ToF(Path(p),object_names[i]) == "T":
+                        tnT += 1
+                    elif ToF(Path(p),object_names[i]) == "F":
+                        tnF += 1
+                    elif ToF(Path(p),object_names[i]) == "N":
+                        tnN += 1
+
+                data = {}
+                data["object"] = []
+                for i in range(count):  ##리스트 두 개 xml파일에 저장
+                    data["object"].append({
+                        "name" : object_names[i],
+                        "bndbox":{
+                        "xmin": str(total[i][0]),
+                        "ymin": str(total[i][1]),
+                        "xmax": str(total[i][2]),
+                        "ymax": str(total[i][3])
+                        },
+                        "score":score[i]
+                    })
+
+
+            nT += 1 if tnT > 1 else tnT
+            nND += 1 if tnF == 0 and tnT == 0 else 0
+            nF += 1 if tnF > 1 else tnF
+
+            if save_xml:
+                with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
+                    json.dump(data, outfile)
     return data
-    #         # Print time (inference + NMS)
-    #         print('%s (%.3fs)' % (s, t2 - t1))
-    #
-    #         # Stream results
-    #         if view_img:
-    #             cv2.imshow(p, im0)
-    #             if cv2.waitKey(1) == ord('q'):  # q to quit
-    #                 raise StopIteration
-    #
-    # if save_txt or save_img:
-    #     print('Results saved to %s' % os.getcwd() + os.sep + out)
-    #     if platform == 'darwin':  # MacOS
-    #         os.system('open ' + save_path)
-    #
-    # print('Done. (%.3fs)' % (time.time() - t0))
-    # tot = nT + nF + nND
-    # accu = nT / tot
-    # print('Number of Detected Objects: {0}, True: {1}, False: {2}, Not Detected: {3}, Accuracy: {4}'.format(tot, nT, nF, nND, accu))
-    # with open('./classificaion_result.txt','w') as f:
-    #     rslt = [r + '\n' for r in rslt]
-    #     f.writelines(rslt)
 
-# def classification():
-#     return "test"
-
-def classification():
+def classification(path, img0):
     global opt
     base_path = '/workspace/ai_service/yolov3/'
     parser = argparse.ArgumentParser()
@@ -295,7 +239,12 @@ def classification():
     print(os.path.realpath(__file__))
     print(len(os.listdir(opt.source)))
 
-    return detect()
+    print('----------------------------------------')
+    print(type(img0))
+    print(img0)
+    print('----------------------------------------')
+
+    return detect(path, img0)
 
     # with torch.no_grad():
     #     print('Session START :', time.strftime('%Y-%m-%d %Z %H:%M:%S', time.localtime(time.time())))
