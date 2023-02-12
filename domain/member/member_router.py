@@ -14,3 +14,9 @@ router = APIRouter(
 def member_list(db: Session = Depends(get_db)):
     _member_list = member_crud.get_member_list(db)
     return _member_list
+
+
+@router.get("/add")
+def add_member(db: Session = Depends(get_db)):
+    member_crud.add_member(db)
+    return True
