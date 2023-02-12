@@ -129,14 +129,11 @@ def detect(path, img0):
 
     # Apply Classifier
     if classify:
-        pred = apply_classifier(pred, modelc, img, im0s)
+        pred = apply_classifier(pred, modelc, img, img0)
 
     # Process detections
     for i, det in enumerate(pred):  # detections for image i
-        if webcam:  # batch_size >= 1
-            p, s, im0 = path[i], '%g: ' % i, im0s[i].copy()
-        else:
-            p, s, im0 = path, '', im0s
+        p, s, im0 = path, '', img0
 
         save_path = str(Path(out) / Path(p).name)
 
