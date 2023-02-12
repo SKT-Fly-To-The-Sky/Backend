@@ -131,10 +131,6 @@ def detect(path, img0):
     if classify:
         pred = apply_classifier(pred, modelc, img, img0)
 
-    print("_-------------------------")
-    print(type(pred))
-    print(len(pred))
-    print("_-------------------------")
     # Process detections
     for i, det in enumerate(pred):  # detections for image i
         p, s, im0 = path, '', img0
@@ -211,7 +207,10 @@ def detect(path, img0):
             if save_xml:
                 with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
                     json.dump(data, outfile)
-    return data
+    if data:
+        return data
+    else:
+        return {}
 
 def classification(path, img0):
     global opt
