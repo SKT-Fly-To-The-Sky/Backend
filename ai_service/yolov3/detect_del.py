@@ -17,6 +17,7 @@ import PIL
 import pandas as pd
 import seaborn as sns
 import json
+import io
 
 # for parser.parse_arg error
 import sys
@@ -102,7 +103,7 @@ def detect(path, img0):
     nND = 0
 
     # for path, img, im0s, vid_cap in dataset:
-    img0 = np.array(Image.open(io.BytesIO(img0)))
+    img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
     img = letterbox(img0, new_shape=imgsz)[0]
 
     # Convert
