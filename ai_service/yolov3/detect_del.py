@@ -85,7 +85,13 @@ def detect(path, img0):
 
     # Fuse Conv2d + BatchNorm2d layers
     # model.fuse()
-
+    if webcam:
+        view_img = True
+        torch.backends.cudnn.benchmark = True  # set True to speed up constant image size inference
+        dataset = LoadStreams(source, img_size=imgsz)
+    else:
+        save_img = True
+        dataset = LoadImages(source, img_size=imgsz)
     # Half precision
     half = half and device.type != 'cpu'  # half precision only supported on CUDA
     if half:
