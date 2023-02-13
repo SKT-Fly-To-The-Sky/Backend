@@ -73,12 +73,12 @@ def detect(path, img0):
         load_darknet_weights(model, weights)
 
     # Second-stage classifier
-    classify = False
-    if classify:
-        modelc = torch_utils.load_classifier(name='resnet101', n=2)  # initialize
-        modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
-                               strict=False)  # load weights
-        modelc.to(device).eval()
+    # classify = False
+    # if classify:
+    #     modelc = torch_utils.load_classifier(name='resnet101', n=2)  # initialize
+    #     modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
+    #                            strict=False)  # load weights
+    #     modelc.to(device).eval()
 
     # Eval mode
     model.to(device).eval()
@@ -96,11 +96,11 @@ def detect(path, img0):
     # Get names and colors
     names = load_classes(opt.names)
 
-    rslt = []
-    nT = 0
-    nF = 0
-    nN = 0
-    nND = 0
+    # rslt = []
+    # nT = 0
+    # nF = 0
+    # nN = 0
+    # nND = 0
 
     # for path, img, im0s, vid_cap in dataset:
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
@@ -128,8 +128,8 @@ def detect(path, img0):
                                multi_label=False, classes=opt.classes, agnostic=opt.agnostic_nms)
 
     # Apply Classifier
-    if classify:
-        pred = apply_classifier(pred, modelc, img, img0)
+    # if classify:
+    #     pred = apply_classifier(pred, modelc, img, img0)
 
     # Process detections
     for i, det in enumerate(pred):  # detections for image i
@@ -171,19 +171,19 @@ def detect(path, img0):
                 object_names.append(names[int(cls)])
                 count = count + 1
 
-                tnT = 0
-                tnF = 0
-                tnN = 0
+                # tnT = 0
+                # tnF = 0
+                # tnN = 0
 
-                #정확도 측정
-                for i in range(count):
-                    rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
-                    if ToF(Path(p),object_names[i]) == "T":
-                        tnT += 1
-                    elif ToF(Path(p),object_names[i]) == "F":
-                        tnF += 1
-                    elif ToF(Path(p),object_names[i]) == "N":
-                        tnN += 1
+                # #정확도 측정
+                # for i in range(count):
+                #     rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
+                #     if ToF(Path(p),object_names[i]) == "T":
+                #         tnT += 1
+                #     elif ToF(Path(p),object_names[i]) == "F":
+                #         tnF += 1
+                #     elif ToF(Path(p),object_names[i]) == "N":
+                #         tnN += 1
 
                 data = {}
                 data["object"] = []
@@ -200,17 +200,17 @@ def detect(path, img0):
                     })
 
 
-            nT += 1 if tnT > 1 else tnT
-            nND += 1 if tnF == 0 and tnT == 0 else 0
-            nF += 1 if tnF > 1 else tnF
+            # nT += 1 if tnT > 1 else tnT
+            # nND += 1 if tnF == 0 and tnT == 0 else 0
+            # nF += 1 if tnF > 1 else tnF
 
             if save_xml:
                 with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
                     json.dump(data, outfile)
-    if data:
-        return data
-    else:
-        return {}
+    # if data:
+    #     return data
+    # else:
+    #     return {}
 
 def classification(path, img0):
     global opt
@@ -238,8 +238,8 @@ def classification(path, img0):
 
     opt.cfg = check_file(opt.cfg)  # check file
     opt.names = check_file(opt.names)  # check file
-    print(os.path.realpath(__file__))
-    print(len(os.listdir(opt.source)))
+    # print(os.path.realpath(__file__))
+    # print(len(os.listdir(opt.source)))
 
     return detect(path, img0)
 
