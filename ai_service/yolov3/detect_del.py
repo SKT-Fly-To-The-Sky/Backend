@@ -79,19 +79,6 @@ def detect(path, img0):
         modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
                                strict=False)  # load weights
         modelc.to(device).eval()
-    if ONNX_EXPORT:
-        model.fuse()
-        img = torch.zeros((1, 3) + imgsz)  # (1, 3, 320, 192)
-        f = opt.weights.replace(opt.weights.split('.')[-1], 'onnx')  # *.onnx filename
-        torch.onnx.export(model, img, f, verbose=False, opset_version=11,
-                          input_names=['images'], output_names=['classes', 'boxes'])
-
-        # Validate exported model
-        import onnx
-        model = onnx.load(f)  # Load the ONNX model
-        onnx.checker.check_model(model)  # Check that the IR is well formed
-        print(onnx.helper.printable_graph(model.graph))  # Print a human readable representation of the graph
-        return
 
     # Eval mode
     model.to(device).eval()
@@ -116,18 +103,14 @@ def detect(path, img0):
     nND = 0
 
     # for path, img, im0s, vid_cap in dataset:
-    img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
-    img = letterbox(img0, new_shape=imgsz)[0]
-
-    # Convert
-    img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-    img = np.ascontiguousarray(img)
-
-    img = torch.from_numpy(img).to(device)
-    img = img.half() if half else img.float()  # uint8 to fp16/32
-    img /= 255.0  # 0 - 255 to 0.0 - 1.0
-    if img.ndimension() == 3:
-        img = img.unsqueeze(0)
+    img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
+    _ = model(img.half() if half else img.float()) if device.type != 'cpu' else None  # run once
+    for path, img, im0s, vid_cap in dataset:
+        img = torch.from_numpy(img).to(device)
+        img = img.half() if half else img.float()  # uint8 to fp16/32
+        img /= 255.0  # 0 - 255 to 0.0 - 1.0
+        if img.ndimension() == 3:
+            img = img.unsqueeze(0)
 
     # Inference
     pred = model(img, augment=opt.augment)[0]
