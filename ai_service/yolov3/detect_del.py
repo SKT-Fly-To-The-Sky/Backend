@@ -176,14 +176,14 @@ def detect(path, img0):
                 tnN = 0
 
                 #정확도 측정
-                for i in range(count):
-                    rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
-                    if ToF(Path(p),object_names[i]) == "T":
-                        tnT += 1
-                    elif ToF(Path(p),object_names[i]) == "F":
-                        tnF += 1
-                    elif ToF(Path(p),object_names[i]) == "N":
-                        tnN += 1
+                # for i in range(count):
+                #     rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
+                #     if ToF(Path(p),object_names[i]) == "T":
+                #         tnT += 1
+                #     elif ToF(Path(p),object_names[i]) == "F":
+                #         tnF += 1
+                #     elif ToF(Path(p),object_names[i]) == "N":
+                #         tnN += 1
 
                 data = {}
                 data["object"] = []
@@ -200,9 +200,9 @@ def detect(path, img0):
                     })
 
 
-            nT += 1 if tnT > 1 else tnT
-            nND += 1 if tnF == 0 and tnT == 0 else 0
-            nF += 1 if tnF > 1 else tnF
+            # nT += 1 if tnT > 1 else tnT
+            # nND += 1 if tnF == 0 and tnT == 0 else 0
+            # nF += 1 if tnF > 1 else tnF
 
             if save_xml:
                 with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
