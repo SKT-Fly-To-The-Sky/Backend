@@ -104,7 +104,6 @@ def detect(path, img0):
     nND = 0
 
     # for path, img, im0s, vid_cap in dataset:
-    dataset = LoadImages(source, img_size=imgsz)
     
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
     img = letterbox(img0, new_shape=imgsz)[0]
@@ -113,7 +112,7 @@ def detect(path, img0):
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
     img = np.ascontiguousarray(img)
 
-    for path, img, im0s, vid_cap in dataset:
+    for path, img in dataset:
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
