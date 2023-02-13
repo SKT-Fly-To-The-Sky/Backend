@@ -85,6 +85,7 @@ def detect(path, img0):
 
     # Fuse Conv2d + BatchNorm2d layers
     # model.fuse()
+    #hmm
 
     # Half precision
     half = half and device.type != 'cpu'  # half precision only supported on CUDA
