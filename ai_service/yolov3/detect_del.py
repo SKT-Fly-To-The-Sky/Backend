@@ -69,16 +69,16 @@ def detect(path, img0):
     attempt_download(weights)
     if weights.endswith('.pt'):  # pytorch format
         model.load_state_dict(torch.load(weights, map_location=device)['model'], strict=False)
-    else:  # darknet format
-        load_darknet_weights(model, weights)
+    # else:  # darknet format
+    #     load_darknet_weights(model, weights)
 
     # Second-stage classifier
-    classify = False
-    if classify:
-        modelc = torch_utils.load_classifier(name='resnet101', n=2)  # initialize
-        modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
-                               strict=False)  # load weights
-        modelc.to(device).eval()
+    # classify = False
+    # if classify:
+    #     modelc = torch_utils.load_classifier(name='resnet101', n=2)  # initialize
+    #     modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
+    #                            strict=False)  # load weights
+    #     modelc.to(device).eval()
 
     # Eval mode
     model.to(device).eval()
@@ -128,8 +128,8 @@ def detect(path, img0):
                                multi_label=False, classes=opt.classes, agnostic=opt.agnostic_nms)
 
     # Apply Classifier
-    if classify:
-        pred = apply_classifier(pred, modelc, img, img0)
+    # if classify:
+    #     pred = apply_classifier(pred, modelc, img, img0)
 
     # Process detections
     for i, det in enumerate(pred):  # detections for image i
@@ -171,19 +171,19 @@ def detect(path, img0):
                 object_names.append(names[int(cls)])
                 count = count + 1
 
-                tnT = 0
-                tnF = 0
-                tnN = 0
+                # tnT = 0
+                # tnF = 0
+                # tnN = 0
 
                 #정확도 측정
-                for i in range(count):
-                    rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
-                    if ToF(Path(p),object_names[i]) == "T":
-                        tnT += 1
-                    elif ToF(Path(p),object_names[i]) == "F":
-                        tnF += 1
-                    elif ToF(Path(p),object_names[i]) == "N":
-                        tnN += 1
+                # for i in range(count):
+                #     rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
+                #     if ToF(Path(p),object_names[i]) == "T":
+                #         tnT += 1
+                #     elif ToF(Path(p),object_names[i]) == "F":
+                #         tnF += 1
+                #     elif ToF(Path(p),object_names[i]) == "N":
+                #         tnN += 1
 
                 data = {}
                 data["object"] = []
