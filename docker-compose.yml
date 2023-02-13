@@ -45,7 +45,7 @@ services:
       "--port", "8000",
       "--reload" ]
     volumes:
-      - .:/workspace
+      - ../backend_volume:/workspace
 #    environment:
 #      NVIDIA_VISIBLE_DEVICES: all
 
