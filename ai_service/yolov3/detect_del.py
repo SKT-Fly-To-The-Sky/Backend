@@ -79,13 +79,25 @@ def detect(path, img0):
         modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
                                strict=False)  # load weights
         modelc.to(device).eval()
+    if ONNX_EXPORT:
+        model.fuse()
+        img = torch.zeros((1, 3) + imgsz)  # (1, 3, 320, 192)
+        f = opt.weights.replace(opt.weights.split('.')[-1], 'onnx')  # *.onnx filename
+        torch.onnx.export(model, img, f, verbose=False, opset_version=11,
+                          input_names=['images'], output_names=['classes', 'boxes'])
+
+        # Validate exported model
+        import onnx
+        model = onnx.load(f)  # Load the ONNX model
+        onnx.checker.check_model(model)  # Check that the IR is well formed
+        print(onnx.helper.printable_graph(model.graph))  # Print a human readable representation of the graph
+        return
 
     # Eval mode
     model.to(device).eval()
 
     # Fuse Conv2d + BatchNorm2d layers
     # model.fuse()
-    #hmm
 
     # Half precision
     half = half and device.type != 'cpu'  # half precision only supported on CUDA
