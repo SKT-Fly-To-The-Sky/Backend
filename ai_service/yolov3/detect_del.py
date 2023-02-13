@@ -137,10 +137,10 @@ def detect(path, img0):
 
         save_path = str(Path(out) / Path(p).name)
 
-        # root = Element('annotation')
-        # SubElement(root, 'folder').text = str(Path(out))
-        # SubElement(root, 'filename').text = str(Path(p))
-        # SubElement(root, 'path').text = save_path
+        root = Element('annotation')
+        SubElement(root, 'folder').text = str(Path(out))
+        SubElement(root, 'filename').text = str(Path(p))
+        SubElement(root, 'path').text = save_path
 
         if det is not None and len(det):
             # Rescale boxes from imgsz to im0 size
