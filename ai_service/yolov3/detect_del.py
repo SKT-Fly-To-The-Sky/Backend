@@ -1,9 +1,14 @@
 # -*-coding:utf-8-*-
+import sys
+# sys.path.append('/workspace/ai_service/yolo3/')
+# sys.path.append('/workspace/ai_service/yolo3/utils/')
 import argparse
 
-from models import *  # set ONNX_EXPORT in models.py
-from utils.datasets import *
-from utils.utils import *
+
+from ai_service.yolov3.utils.models import *  # set ONNX_EXPORT in models.py
+from ai_service.yolov3.utils.datasets import *
+from ai_service.yolov3.utils.utils import *
+
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 import numpy as np
 import platform as pf
@@ -12,6 +17,12 @@ import PIL
 import pandas as pd
 import seaborn as sns
 import json
+import io
+
+# for parser.parse_arg error
+import sys
+sys.argv = ['']
+del sys
 
 
 def indent(elem, level=0):  #
