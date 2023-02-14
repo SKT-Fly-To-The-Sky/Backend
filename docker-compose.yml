@@ -1,6 +1,6 @@
 version: '3'
 services:
-  ftts_back_end:
+  ftts_back_end_main:
     build: .
     stdin_open: true # docker run -i
     tty: true        # docker run -t
