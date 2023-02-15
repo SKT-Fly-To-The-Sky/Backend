@@ -17,6 +17,7 @@ services:
       "--reload" ]
     volumes:
       - .:/workspace
+    restart: always
 
 #  tensorboard:
 #    image: hsh0322/las-pytorch
