@@ -130,6 +130,7 @@ def detect(path, img0):
     # Process detections
     for i, det in enumerate(pred):  # detections for image i
         p, s, im0 = path, '', img0
+        print(im0)
 
         save_path = str(Path(out) / Path(p).name)
 
@@ -140,7 +141,6 @@ def detect(path, img0):
 
         if det is not None and len(det):
             # Rescale boxes from imgsz to im0 size
-            print(img)
             det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
             count = 0
 
