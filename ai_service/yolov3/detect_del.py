@@ -102,6 +102,7 @@ def detect(path, img0):
     
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
     img = letterbox(img0, new_shape=imgsz)[0]
+    print(img0)
 
     # Convert
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
