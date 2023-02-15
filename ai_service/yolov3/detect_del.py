@@ -102,7 +102,6 @@ def detect(path, img0):
     
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
     img = letterbox(img0, new_shape=imgsz)[0]
-    print(img)
 
     # Convert
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
@@ -141,6 +140,7 @@ def detect(path, img0):
 
         if det is not None and len(det):
             # Rescale boxes from imgsz to im0 size
+            print(img)
             det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
             count = 0
 
