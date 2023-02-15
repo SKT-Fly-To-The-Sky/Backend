@@ -101,8 +101,10 @@ def detect(path, img0):
     # for path, img, im0s, vid_cap in dataset:
     
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
-    img0 = np.flip(np.transpose(img0, (0, 2, 1)), axis=1)
-    print(img0)
+    for i in range(len(img0)):
+        for j in range(len(img0[0])):
+            img0[i][j] = img0[i][j][::-1]
+
     img = letterbox(img0, new_shape=imgsz)[0]
 
     # Convert
