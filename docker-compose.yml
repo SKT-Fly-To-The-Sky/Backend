@@ -34,7 +34,7 @@ services:
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     ports:
-      - "10019:8000"
+      - "10018:8000"
     runtime: nvidia
 #    command:
 #      - uvicorn main:app --host 0.0.0.0 --port 8000 --reload
