@@ -55,7 +55,8 @@ def detect(path, img0):
     imgsz = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
     out, source, weights, half, view_img, save_txt, save_xml = opt.output, opt.source, opt.weights, opt.half, opt.view_img, opt.save_txt, opt.save_xml
     webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
-
+    data = {}
+    data["object"] = []
     # Initialize
     device = torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
     if os.path.exists(out):
@@ -186,8 +187,7 @@ def detect(path, img0):
                     elif ToF(Path(p),object_names[i]) == "N":
                         tnN += 1
 
-                data = {}
-                data["object"] = []
+
                 for i in range(count):  ##리스트 두 개 xml파일에 저장
                     data["object"].append({
                         "name" : object_names[i],
@@ -211,7 +211,17 @@ def detect(path, img0):
     if data:
         return data
     else:
-        return {}
+        data["object"]={
+                        "name" : 'unknown',
+                        "bndbox":{
+                        "xmin": '0',
+                        "ymin": '0',
+                        "xmax": '0',
+                        "ymax": '0'
+                        },
+                        "score":score[i]
+                    }
+        return  data
 
 def classification(path, img0):
     global opt
