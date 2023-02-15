@@ -149,10 +149,10 @@ def detect(path, img0):
             count = 0
 
             # Print results
-            for c in det[:, -1].unique():
-                n = (det[:, -1] == c).sum()  # detections per class
-                s += '%g %s, ' % (n, names[int(c)])  # add to string
-                s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
+            # for c in det[:, -1].unique():
+            #     n = (det[:, -1] == c).sum()  # detections per class
+            #     s += '%g %s, ' % (n, names[int(c)])  # add to string
+            #     s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
 
             total = []
             object_names = []
