@@ -55,8 +55,7 @@ def detect(path, img0):
     imgsz = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
     out, source, weights, half, view_img, save_txt, save_xml = opt.output, opt.source, opt.weights, opt.half, opt.view_img, opt.save_txt, opt.save_xml
     webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
-    data = {}
-    data["object"] = []
+
     # Initialize
     device = torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
     if os.path.exists(out):
@@ -98,11 +97,6 @@ def detect(path, img0):
     # Get names and colors
     names = load_classes(opt.names)
 
-    rslt = []
-    nT = 0
-    nF = 0
-    nN = 0
-    nND = 0
 
     # for path, img, im0s, vid_cap in dataset:
     
@@ -158,6 +152,8 @@ def detect(path, img0):
             total = []
             object_names = []
             score=[]
+            data = {}
+            data["object"] = []
 
             # Write results
             for *xyxy, conf, cls in reversed(det):
@@ -174,17 +170,17 @@ def detect(path, img0):
                 count = count + 1
                 print(count)
 
-                for i in range(count):  ##리스트 두 개 xml파일에 저장
-                    data["object"].append({
-                        "name" : object_names[i],
-                        "bndbox":{
-                        "xmin": str(total[i][0]),
-                        "ymin": str(total[i][1]),
-                        "xmax": str(total[i][2]),
-                        "ymax": str(total[i][3])
-                        },
-                        "score":score[i]
-                    })
+            for i in range(count):  ##리스트 두 개 xml파일에 저장
+                data["object"].append({
+                    "name" : object_names[i],
+                    "bndbox":{
+                    "xmin": str(total[i][0]),
+                    "ymin": str(total[i][1]),
+                    "xmax": str(total[i][2]),
+                    "ymax": str(total[i][3])
+                    },
+                    "score":score[i]
+                })
 
 
             if save_xml:
