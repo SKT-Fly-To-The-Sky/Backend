@@ -163,7 +163,6 @@ def detect(path, img0):
             for *xyxy, conf, cls in reversed(det):
                 label = '%s %.2f' % (names[int(cls)], conf)
                 score.append(label.split(' ')[1])
-                print(score)
 
                 semi = []
                 for nums in range(4):
@@ -173,21 +172,7 @@ def detect(path, img0):
                 total.append(semi)
                 object_names.append(names[int(cls)])
                 count = count + 1
-
-                tnT = 0
-                tnF = 0
-                tnN = 0
-
-                #정확도 측정
-                for i in range(count):
-                    rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
-                    if ToF(Path(p),object_names[i]) == "T":
-                        tnT += 1
-                    elif ToF(Path(p),object_names[i]) == "F":
-                        tnF += 1
-                    elif ToF(Path(p),object_names[i]) == "N":
-                        tnN += 1
-
+                print(count)
 
                 for i in range(count):  ##리스트 두 개 xml파일에 저장
                     data["object"].append({
@@ -201,10 +186,6 @@ def detect(path, img0):
                         "score":score[i]
                     })
 
-
-            nT += 1 if tnT > 1 else tnT
-            nND += 1 if tnF == 0 and tnT == 0 else 0
-            nF += 1 if tnF > 1 else tnF
 
             if save_xml:
                 with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
