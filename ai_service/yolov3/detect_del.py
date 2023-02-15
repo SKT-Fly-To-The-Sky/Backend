@@ -163,6 +163,7 @@ def detect(path, img0):
             for *xyxy, conf, cls in reversed(det):
                 label = '%s %.2f' % (names[int(cls)], conf)
                 score.append(label.split(' ')[1])
+                print(score)
 
                 semi = []
                 for nums in range(4):
@@ -211,7 +212,7 @@ def detect(path, img0):
     if data:
         return data
     else:
-        data["object"]={
+        data["object"].append({
                         "name" : 'unknown',
                         "bndbox":{
                         "xmin": '0',
@@ -220,7 +221,7 @@ def detect(path, img0):
                         "ymax": '0'
                         },
                         "score":score[i]
-                    }
+                    })
         return  data
 
 def classification(path, img0):
