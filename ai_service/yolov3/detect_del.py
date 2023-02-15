@@ -101,12 +101,12 @@ def detect(path, img0):
     # for path, img, im0s, vid_cap in dataset:
     
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
+    print(img0)
     img = letterbox(img0, new_shape=imgsz)[0]
 
     # Convert
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
     img = np.ascontiguousarray(img)
-    print(img)
 
     img = torch.from_numpy(img).to(device)
     img = img.half() if half else img.float()  # uint8 to fp16/32
