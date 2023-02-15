@@ -102,6 +102,7 @@ def detect(path, img0):
     
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
     img0 = np.flip(np.transpose(img0, (0, 2, 1)), axis=1)
+    print(img0)
     img = letterbox(img0, new_shape=imgsz)[0]
 
     # Convert
