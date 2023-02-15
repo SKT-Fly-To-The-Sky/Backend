@@ -106,6 +106,7 @@ def detect(path, img0):
     # Convert
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
     img = np.ascontiguousarray(img)
+    print(img)
 
     img = torch.from_numpy(img).to(device)
     img = img.half() if half else img.float()  # uint8 to fp16/32
@@ -130,7 +131,7 @@ def detect(path, img0):
     # Process detections
     for i, det in enumerate(pred):  # detections for image i
         p, s, im0 = path, '', img0
-        print(im0)
+        
 
         save_path = str(Path(out) / Path(p).name)
 
@@ -169,7 +170,7 @@ def detect(path, img0):
                 total.append(semi)
                 object_names.append(names[int(cls)])
                 count = count + 1
-                print(count)
+
 
             for i in range(count):  ##리스트 두 개 xml파일에 저장
                 data["object"].append({
