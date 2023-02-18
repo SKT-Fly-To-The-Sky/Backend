@@ -460,7 +460,7 @@ class VolumeEstimator():
                 self.__set_weights_trainable(layer, trainable)
 
 
-def qual(): # if __name__ == "__main__":
+if __name__ == "__main__": # if __name__ == "__main__":
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
 
@@ -500,13 +500,13 @@ def qual(): # if __name__ == "__main__":
     
     print(np.sum(results['volumes'][0]), 'L')
 
-    return np.sum(results['volumes'][0])
+    # return np.sum(results['volumes'][0])
     # if estimator.args.results_file is not None: # to csv
     #     # Save results in CSV format
     #     volumes_df = pd.DataFrame(data=results)
     #     volumes_df.to_csv(estimator.args.results_file, index=False)
 
-if __name__ == "__main__":
-    qual()
+# if __name__ == "__main__":
+#     qual()
     # VolumeEstimator(arg~~~~)
     # return VolumeEstimator.estimate_volume()
