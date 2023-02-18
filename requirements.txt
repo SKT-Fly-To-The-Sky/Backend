@@ -19,3 +19,4 @@ pillow
 mysql-connector-python
 PyJWT
 passlib
+bcrypt
