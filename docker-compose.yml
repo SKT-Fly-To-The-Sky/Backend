@@ -6,7 +6,7 @@ services:
     tty: true
     runtime: nvidia
     ports:
-      - "8000:8000"
+      - "10017:8000"
     command: [
       "uvicorn",
       "main:app",
