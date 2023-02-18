@@ -217,3 +217,5 @@ async def init_database():
 if __name__ == "__main__":
     init_db()
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# curl -L -o ./ai_service/yolov3/weights/best_403food_e200b150v2.pt https://www.dropbox.com/s/msz9yfrmsrs0zst/best_403food_e200b150v2.pt?dl=0

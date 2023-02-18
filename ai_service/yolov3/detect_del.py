@@ -214,7 +214,7 @@ def detect(path, img0):
 
 def classification(img0):
     global opt
-    base_path = '/workspace/ai_service/yolov3/'
+    base_path = './ai_service/yolov3/'
     parser = argparse.ArgumentParser()
     parser.add_argument('--cfg', type=str, default=base_path + 'cfg/yolov3-spp-403cls.cfg', help='*.cfg path')
     parser.add_argument('--names', type=str, default=base_path + 'data/403food.names', help='*.names path')
