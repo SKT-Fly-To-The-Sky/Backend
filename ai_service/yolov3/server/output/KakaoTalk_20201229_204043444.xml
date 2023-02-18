@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<annotation>
+  <folder>output</folder>
+  <filename>/home/aiuser7/food/yolov3/data/samples/KakaoTalk_20201229_204043444.jpg</filename>
+  <path>output/KakaoTalk_20201229_204043444.jpg</path>
+  <object>
+    <name>01014004</name>
+    <bndbox>
+      <xmin>548</xmin>
+      <ymin>75</ymin>
+      <xmax>1032</xmax>
+      <ymax>578</ymax>
+    </bndbox>
+  </object>
+</annotation>

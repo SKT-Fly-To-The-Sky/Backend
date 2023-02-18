@@ -13,7 +13,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from starlette import status
 
-from ai_service.food_classification.detect import classification
+from ai_service.yolov3.detect_del import classification
 from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
