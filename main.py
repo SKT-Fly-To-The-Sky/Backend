@@ -18,7 +18,7 @@ from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
-from models import UserTable, FoodItemTable, ConfigTable
+from models import UserTable, FoodItemTable, ConfigTable, NutrientTable
 from schema import User, FoodItemRequest, Token
 
 from utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
@@ -204,6 +204,16 @@ async def get_classification(img_name: str, db: Session = Depends(get_db)):
         return JSONResponse(content=result)
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"{e}")
+
+@app.get("/nutrients/names")
+async def read_nutrients_name(db: Session = Depends(get_db)):
+    nut_names = db.query(NutrientTable).all()
+
+    if not nut_names:
+        raise HTTPException(status_code=404, detail="nut names not found")
+
+    return JSONResponse(content=nut_names)
+
 
 @app.get("/error")
 async def raise_error():
