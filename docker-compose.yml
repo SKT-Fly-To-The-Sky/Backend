@@ -2,13 +2,10 @@ version: '3'
 services:
   ftts_back_end:
     build: .
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+    stdin_open: true
+    tty: true
     ports:
-      - "10017:8000"
-    runtime: nvidia
-#    command:
-#      - uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - "8000:8000"
     command: [
       "uvicorn",
       "main:app",
@@ -17,14 +14,3 @@ services:
       "--reload" ]
     volumes:
       - .:/workspace
-
-#  tensorboard:
-#    image: hsh0322/las-pytorch
-#    volumes:
-#      - ./:/opt/project
-#    ports:
-#      - "6006:6006"
-#    command: tensorboard --logdir=log/las_timit --port=6006 --host=0.0.0.0
-
-# PowerShell.exe -ExecutionPolicy Bypass -File wsl_port_forward.ps1
-# curl -L -o ./ai_service/yolov3/weights/best_403food_e200b150v2.pt https://www.dropbox.com/s/msz9yfrmsrs0zst/best_403food_e200b150v2.pt?dl=0

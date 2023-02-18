@@ -23,7 +23,7 @@ sys.path.append('/workspace')
 from database import get_db
 from domain.picture import picture_schema, picture_crud
 from models import Picture
-from ai_service.yolov3.detect_del import classification
+from ai_service.food_classification.detect import classification
 
 # from ai_service.yolov3.classification import classification
 
