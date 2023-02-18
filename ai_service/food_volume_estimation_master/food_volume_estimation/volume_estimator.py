@@ -498,7 +498,7 @@ def qual(): # if __name__ == "__main__":
     # with open('total.json', 'w', encoding='UTF-8') as make_file:
     #     json.dump(res, make_file, ensure_ascii=False, indent='\t')
     
-    # print(np.sum(results['volumes'][0]), 'L')
+    print(np.sum(results['volumes'][0]), 'L')
 
     return np.sum(results['volumes'][0])
     # if estimator.args.results_file is not None: # to csv
@@ -507,5 +507,6 @@ def qual(): # if __name__ == "__main__":
     #     volumes_df.to_csv(estimator.args.results_file, index=False)
 
 if __name__ == "__main__":
-    VolumeEstimator(arg~~~~)
-    return VolumeEstimator.estimate_volume()
+    qual()
+    # VolumeEstimator(arg~~~~)
+    # return VolumeEstimator.estimate_volume()
