@@ -18,3 +18,4 @@ matplotlib
 pillow
 mysql-connector-python
 PyJWT
+passlib
