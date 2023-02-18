@@ -14,4 +14,3 @@ class Token(BaseModel):
 class FoodItemRequest(BaseModel):
     userid: str
     time_div: str
-

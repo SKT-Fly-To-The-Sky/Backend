@@ -193,9 +193,13 @@ async def read_json_data(name: str, db: Session = Depends(get_db)):
 
 
 @app.get('/classification')
-async def upload_get_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def get_classification(img_name: str, db: Session = Depends(get_db)):
+    food_item = db.query(FoodItemTable).filter(FoodItemTable.img_name == img_name).first()
+    if not food_item:
+        raise HTTPException(status_code=404, detail="Food item not found")
+
     try:
-        content = await file.read()
+        content = food_item.image
         result = classification(content)
         return JSONResponse(content=result)
     except Exception as e:
