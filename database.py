@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # engine = create_engine("mysql+mysqlconnector://root:kaykay2412@localhost/ftts")
-engine = create_engine("mysql+mysqlconnector://root:0000@jeongsuri.iptime.org:10012/ftts?charset=utf8mb4")
+engine = create_engine("mysql+mysqlconnector://root:0000@jeongsuri.iptime.org:10012/ftts_dev?charset=utf8mb4")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
