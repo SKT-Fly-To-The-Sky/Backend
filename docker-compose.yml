@@ -4,6 +4,7 @@ services:
     build: .
     stdin_open: true
     tty: true
+    runtime: Nvidia
     ports:
       - "8000:8000"
     command: [
