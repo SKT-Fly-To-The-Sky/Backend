@@ -255,18 +255,17 @@ async def read_intake_image(userid: str, time_div: str, db: Session = Depends(ge
 
 
 @app.get("/{userid}/intakes/nutrients")
-async def read_intake_nutrient_image(userid: str):#, time_div: str, db: Session = Depends(get_db)):
-    # nutrients = db.query(IntakeNutrientTable).filter(
-    #     IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
-    # ).first()
-    #
-    # if not nutrients:
-    #     raise HTTPException(status_code=404, detail="Food item not found")
-    #
-    # nutrients.image = None
-    #
-    # return JSONResponse(content=nutrients)
-    return userid
+async def read_intake_nutrient_image(userid: str, time_div: str, db: Session = Depends(get_db)):
+    nutrients = db.query(IntakeNutrientTable).filter(
+        IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
+    ).first()
+
+    if not nutrients:
+        raise HTTPException(status_code=404, detail="Food item not found")
+
+    nutrients.image = None
+
+    return JSONResponse(content=nutrients)
 
 
 @app.get("/error")
