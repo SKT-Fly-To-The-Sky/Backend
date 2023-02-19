@@ -257,14 +257,16 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, time
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def update_intake_nutrient(userid: str, time_div: str, date: str, nut_data: IntakeNutrientRequest,
+async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
                                  db: Session = Depends(get_db)):
     intake = db.query(IntakeNutrientTable).filter(
         and_(
             IntakeNutrientTable.userid == userid,
-            IntakeNutrientTable.time_div == time_div,
-            IntakeNutrientTable.date == date)
+            IntakeNutrientTable.time_div == nut_data.time_div,
+            IntakeNutrientTable.date == nut_data.date)
     ).first()
+    if intake is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no image in that date, time-div.")
     try:
         if nut_data.date is None:
             nut_data.date = datetime.now().strftime("%Y-%m-%d")
