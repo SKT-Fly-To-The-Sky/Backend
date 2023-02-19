@@ -2,7 +2,7 @@ import math
 
 import numpy as np
 
-from ellipse_detection.ellipse import Ellipse
+from ai_service.food_volume_estimation_master.food_volume_estimation.ellipse_detection.ellipse import Ellipse
 
 
 class EllipseEstimator(object):

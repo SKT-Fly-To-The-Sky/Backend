@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
 
-from ellipse_detection.ellipse_center_estimator import EllipseCenterEstimator
-from ellipse_detection.ellipse_candidate import EllipseCandidate
+from ai_service.food_volume_estimation_master.food_volume_estimation.ellipse_detection.ellipse_center_estimator import EllipseCenterEstimator
+from ai_service.food_volume_estimation_master.food_volume_estimation.ellipse_detection.ellipse_candidate import EllipseCandidate
 
 
 class EllipseCandidateMaker(object):

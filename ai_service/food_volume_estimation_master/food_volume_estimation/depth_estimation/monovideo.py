@@ -7,8 +7,8 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.callbacks import LearningRateScheduler, LambdaCallback
 import keras.preprocessing.image as pre
-from food_volume_estimation.depth_estimation.custom_modules import *
-from food_volume_estimation.depth_estimation.networks import NetworkBuilder
+from ai_service.food_volume_estimation_master.food_volume_estimation.depth_estimation.custom_modules import *
+from ai_service.food_volume_estimation_master.food_volume_estimation.depth_estimation.networks import NetworkBuilder
 
 
 class MonovideoModel:
