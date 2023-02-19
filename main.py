@@ -174,6 +174,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
     try:
         content = food_item.image
         result = classification(content)
+        result['object_num'] = len(result['object'])
         return JSONResponse(content=result)
     except Exception as e:
         print(e)
@@ -256,17 +257,25 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, time
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
+async def update_intake_nutrient(userid: str, time_div: str, date: str, nut_data: IntakeNutrientRequest,
                                  db: Session = Depends(get_db)):
-
+    intake = db.query(IntakeNutrientTable).filter(
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == time_div,
+            IntakeNutrientTable.date == date)
+    ).first()
     try:
         if nut_data.date is None:
             nut_data.date = datetime.now().strftime("%Y-%m-%d")
         if nut_data.time is None:
             nut_data.time = datetime.now()
 
-        intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
-        db.add(intake)
+        for attr, value in vars(nut_data).items():
+            if hasattr(intake, attr):
+                setattr(intake, attr, value)
+
+        # intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
         db.commit()
         db.refresh(intake)
     except Exception as e:
@@ -277,9 +286,12 @@ async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
     return {"message": "nutrient data saved successfully"}
 
 @app.get("/{userid}/intakes/images")
-async def read_intake_image(userid: str, time_div: str, db: Session = Depends(get_db)):
+async def read_intake_image(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     img = db.query(IntakeNutrientTable).filter(
-        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div)
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == time_div,
+            IntakeNutrientTable.date == date)
     ).first().image
 
     if not img:
@@ -291,7 +303,10 @@ async def read_intake_image(userid: str, time_div: str, db: Session = Depends(ge
 @app.get("/{userid}/intakes/nutrients")
 async def read_intake_nutrient(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     nutrients = db.query(IntakeNutrientTable).filter(
-        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div, IntakeNutrientTable.date == date)
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == time_div,
+            IntakeNutrientTable.date == date)
     ).first()
 
     if not nutrients:
