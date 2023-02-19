@@ -3,13 +3,13 @@ import sys
 import argparse
 import json
 import numpy as np
-from food_volume_estimation.food_segmentation.mrcnn.config import Config
-from food_volume_estimation.food_segmentation.mrcnn import (
+from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn.config import Config
+from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn import (
     model as modellib,
     utils)
-from food_volume_estimation.food_segmentation.mrcnn import visualize
-from food_volume_estimation.food_segmentation.mrcnn.visualize import display_images
-from food_volume_estimation.food_segmentation.mrcnn.model import log
+from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn import visualize
+from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn.visualize import display_images
+from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn.model import log
 # Import food dataset utils
 from food_instance_segmentation import FoodConfig, FoodDataset, cluster_dict
 

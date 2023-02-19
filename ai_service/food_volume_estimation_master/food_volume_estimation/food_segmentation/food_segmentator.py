@@ -1,11 +1,11 @@
 import sys
 import os
 # from mrcnn.config import Config
-from mrcnn.config import Config
+from ai_service.food_volume_estimation_master.food_volume_estimation.mrcnn.config import Config
 # from food_segmentation.mrcnn import (
 #     model as modellib,
 #     utils)
-import mrcnn.model as modellib, mrcnn.utils
+import ai_service.food_volume_estimation_master.food_volume_estimation.mrcnn.model as modellib, ai_service.food_volume_estimation_master.food_volume_estimation.mrcnn.utils
 
 # Using the single-cluster model
 clusters = ['food']

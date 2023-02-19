@@ -25,7 +25,7 @@ ROOT_DIR = os.path.abspath("../")
 
 # Import Mask RCNN
 sys.path.append(ROOT_DIR)  # To find local version of the library
-import food_volume_estimation.food_segmentation.mrcnn.utils
+import ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn.utils
 
 
 ############################################################

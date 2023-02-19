@@ -12,11 +12,11 @@ from keras.models import Model, model_from_json
 import keras.backend as K
 from fuzzywuzzy import fuzz, process 
 import matplotlib.pyplot as plt
-from depth_estimation.custom_modules import *
-from depth_estimation.project import *
-from food_segmentation.food_segmentator import FoodSegmentator
-from ellipse_detection.ellipse_detector import EllipseDetector
-from point_cloud_utils import *
+from ai_service.food_volume_estimation_master.food_volume_estimation.depth_estimation.custom_modules import *
+from ai_service.food_volume_estimation_master.food_volume_estimation.depth_estimation.project import *
+from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.food_segmentator import FoodSegmentator
+from ai_service.food_volume_estimation_master.food_volume_estimation.ellipse_detection.ellipse_detector import EllipseDetector
+from ai_service.food_volume_estimation_master.food_volume_estimation.point_cloud_utils import *
 
 
 class DensityDatabase():
@@ -119,6 +119,10 @@ class VolumeEstimator():
 
 
     def __parse_args(self):
+<<<<<<< HEAD
+=======
+        base_path = r'./ai_service/food_volume_estimation_master/food_volume_estimation'
+>>>>>>> 4f54fc6b2639c1805b68d7d45712b389145a3f5e
         """Parse command-line input arguments.
 
         Returns:
@@ -135,17 +139,29 @@ class VolumeEstimator():
                             help=('Depth estimation model '
                                   'architecture (.json).'),
                             metavar='/path/to/architecture.json',
+<<<<<<< HEAD
                             default='monovideo_fine_tune_food_videos.json',)
+=======
+                            default=f'{base_path}/monovideo_fine_tune_food_videos.json',)
+>>>>>>> 4f54fc6b2639c1805b68d7d45712b389145a3f5e
                             #required=True)
         parser.add_argument('--depth_model_weights', type=str,
                             help='Depth estimation model weights (.h5).',
                             metavar='/path/to/weights.h5',
+<<<<<<< HEAD
                             default='monovideo_fine_tune_food_videos.h5',)
+=======
+                            default=f'{base_path}/monovideo_fine_tune_food_videos.h5',)
+>>>>>>> 4f54fc6b2639c1805b68d7d45712b389145a3f5e
                             #required=True)
         parser.add_argument('--segmentation_weights', type=str,
                             help='Food segmentation model weights (.h5).',
                             metavar='/path/to/weights.h5',
+<<<<<<< HEAD
                             default='mask_rcnn_food_segmentation.h5',)
+=======
+                            default=f'{base_path}/mask_rcnn_food_segmentation.h5',)
+>>>>>>> 4f54fc6b2639c1805b68d7d45712b389145a3f5e
                             #required=True)
         parser.add_argument('--fov', type=float,
                             help='Camera Field of View (in deg).',

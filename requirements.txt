@@ -5,19 +5,19 @@ SQLAlchemy
 alembic
 cryptography
 pymysql
-seaborn
-torch
 numpy
 pandas
 torchvision
-opencv-python
 psutil
 tqdm
-
+seaborn
 pydantic
 uvicorn
-matplotlib
 pillow
+mysql-connector-python
+PyJWT
+passlib
+bcrypt
 
 numpy==1.16.3
 pandas==0.24.2

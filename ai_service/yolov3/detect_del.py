@@ -4,7 +4,7 @@ import sys
 # sys.path.append('/workspace/ai_service/yolo3/utils/')
 import argparse
 
-
+from ai_service.yolov3.code_dict import foodname
 from ai_service.yolov3.utils.models import *  # set ONNX_EXPORT in models.py
 from ai_service.yolov3.utils.datasets import *
 from ai_service.yolov3.utils.utils import *
@@ -21,6 +21,7 @@ import io
 
 # for parser.parse_arg error
 import sys
+
 sys.argv = ['']
 del sys
 
@@ -40,6 +41,7 @@ def indent(elem, level=0):  #
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
+
 def ToF(file, cat):
     if cat == '00000000':
         output = "N"
@@ -47,9 +49,10 @@ def ToF(file, cat):
         output = "T"
     else:
         output = "F"
-    
+
     return output
-    
+
+
 def detect(path, img0):
     global opt
     data = None
@@ -97,14 +100,13 @@ def detect(path, img0):
     # Get names and colors
     names = load_classes(opt.names)
 
-    rslt = []
-    nT = 0
-    nF = 0
-    nN = 0
-    nND = 0
-
     # for path, img, im0s, vid_cap in dataset:
+
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
+    for i in range(len(img0)):
+        for j in range(len(img0[0])):
+            img0[i][j] = img0[i][j][::-1]
+
     img = letterbox(img0, new_shape=imgsz)[0]
 
     # Convert
@@ -116,7 +118,6 @@ def detect(path, img0):
     img /= 255.0  # 0 - 255 to 0.0 - 1.0
     if img.ndimension() == 3:
         img = img.unsqueeze(0)
-
     # Inference
     pred = model(img, augment=opt.augment)[0]
 
@@ -149,14 +150,16 @@ def detect(path, img0):
             count = 0
 
             # Print results
-            for c in det[:, -1].unique():
-                n = (det[:, -1] == c).sum()  # detections per class
-                s += '%g %s, ' % (n, names[int(c)])  # add to string
-                s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
+            # for c in det[:, -1].unique():
+            #     n = (det[:, -1] == c).sum()  # detections per class
+            #     s += '%g %s, ' % (n, names[int(c)])  # add to string
+            #     s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
 
             total = []
             object_names = []
-            score=[]
+            score = []
+            data = {}
+            data["object"] = []
 
             # Write results
             for *xyxy, conf, cls in reversed(det):
@@ -172,38 +175,17 @@ def detect(path, img0):
                 object_names.append(names[int(cls)])
                 count = count + 1
 
-                tnT = 0
-                tnF = 0
-                tnN = 0
-
-                #정확도 측정
-                for i in range(count):
-                    rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
-                    if ToF(Path(p),object_names[i]) == "T":
-                        tnT += 1
-                    elif ToF(Path(p),object_names[i]) == "F":
-                        tnF += 1
-                    elif ToF(Path(p),object_names[i]) == "N":
-                        tnN += 1
-
-                data = {}
-                data["object"] = []
-                for i in range(count):  ##리스트 두 개 xml파일에 저장
-                    data["object"].append({
-                        "name" : object_names[i],
-                        "bndbox":{
+            for i in range(count):  ##리스트 두 개 xml파일에 저장
+                data["object"].append({
+                    "name": object_names[i],
+                    "bndbox": {
                         "xmin": str(total[i][0]),
                         "ymin": str(total[i][1]),
                         "xmax": str(total[i][2]),
                         "ymax": str(total[i][3])
-                        },
-                        "score":score[i]
-                    })
-
-
-            nT += 1 if tnT > 1 else tnT
-            nND += 1 if tnF == 0 and tnT == 0 else 0
-            nF += 1 if tnF > 1 else tnF
+                    },
+                    "score": score[i]
+                })
 
             if save_xml:
                 with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
@@ -211,11 +193,21 @@ def detect(path, img0):
     if data:
         return data
     else:
-        return {}
+        data["object"].append({
+            "name": 'unknown',
+            "bndbox": {
+                "xmin": '0',
+                "ymin": '0',
+                "xmax": '0',
+                "ymax": '0'
+            },
+            "score": score[i]
+        })
+        return data
 
-def classification(path, img0):
+def classification(img0):
     global opt
-    base_path = '/workspace/ai_service/yolov3/'
+    base_path = './ai_service/yolov3/'
     parser = argparse.ArgumentParser()
     parser.add_argument('--cfg', type=str, default=base_path + 'cfg/yolov3-spp-403cls.cfg', help='*.cfg path')
     parser.add_argument('--names', type=str, default=base_path + 'data/403food.names', help='*.names path')
@@ -227,7 +219,7 @@ def classification(path, img0):
     parser.add_argument('--iou-thres', type=float, default=0.5, help='IOU threshold for NMS')
     parser.add_argument('--fourcc', type=str, default='mp4v', help='output video codec (verify ffmpeg support)')
     parser.add_argument('--half', action='store_true', help='half precision FP16 inference')
-    parser.add_argument('--device', default='cpu', help='device id (i.e. 0 or 0,1) or cpu')
+    parser.add_argument('--device', default='0', help='device id (i.e. 0 or 0,1) or cpu')
     parser.add_argument('--view-img', action='store_true', help='display results')
     parser.add_argument('--save-txt', action='store_true',default=True, help='save results to *.txt')
     parser.add_argument('--classes', nargs='+', type=int, help='filter by class')
@@ -242,7 +234,10 @@ def classification(path, img0):
     print(os.path.realpath(__file__))
     print(len(os.listdir(opt.source)))
 
-    return detect(path, img0)
+    result = detect("asdf", img0)
+    for d in result['object']:
+        d['name'] = foodname[d['name']]
+    return result
 
     # with torch.no_grad():
     #     print('Session START :', time.strftime('%Y-%m-%d %Z %H:%M:%S', time.localtime(time.time())))

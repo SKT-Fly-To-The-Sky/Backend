@@ -2,6 +2,7 @@ version: '3'
 services:
   ftts_back_end:
     build: .
+
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     ports:
@@ -9,6 +10,7 @@ services:
 #    runtime: nvidia
 #    command:
 #      - uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
     command: [
       "uvicorn",
       "main:app",

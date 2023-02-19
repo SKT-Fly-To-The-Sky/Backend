@@ -1,2 +1,4 @@
 *.pt
 static/
+*.log
+__pycache__/

@@ -5,8 +5,8 @@ import json
 from keras.models import Model, model_from_json
 import keras.preprocessing.image as pre
 import matplotlib.pyplot as plt
-from food_volume_estimation.depth_estimation.networks import NetworkBuilder
-from food_volume_estimation.depth_estimation.custom_modules import *
+from ai_service.food_volume_estimation_master.food_volume_estimation.depth_estimation.networks import NetworkBuilder
+from ai_service.food_volume_estimation_master.food_volume_estimation.depth_estimation.custom_modules import *
 
 
 class ModelTests:

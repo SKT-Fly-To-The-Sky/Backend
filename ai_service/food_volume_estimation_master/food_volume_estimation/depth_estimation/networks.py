@@ -4,7 +4,7 @@ from keras.models import Model
 from keras.layers import Conv2D, UpSampling2D, GlobalAveragePooling2D, \
     LeakyReLU, Dense, Flatten, Input, Concatenate, Lambda, BatchNormalization
 from classification_models.keras import Classifiers
-from food_volume_estimation.depth_estimation.custom_modules import *
+from ai_service.food_volume_estimation_master.food_volume_estimation.depth_estimation.custom_modules import *
 
 ResNet18, _ = Classifiers.get('resnet18')
 
