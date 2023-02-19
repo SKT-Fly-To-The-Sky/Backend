@@ -177,6 +177,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         result['object_num'] = len(result['object'])
         return JSONResponse(content=result)
     except Exception as e:
+        print(result)
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"{e}")
 
