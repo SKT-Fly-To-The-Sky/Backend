@@ -244,7 +244,7 @@ def classification(img0):
         return result
     except Exception as e:
         torch.cuda.empty_cache()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f'error at classification model\n{e}')
+        raise HTTPException(status_code=999, detail=f'error at classification model\n{e}')
 
     # with torch.no_grad():
     #     print('Session START :', time.strftime('%Y-%m-%d %Z %H:%M:%S', time.localtime(time.time())))
