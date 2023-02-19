@@ -106,7 +106,7 @@ def detect(path, img0):
     # for path, img, im0s, vid_cap in dataset:
     # img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
     # img0 = np.array(PIL.Image.open(img0))
-    image_array = np.asarray(bytearray(img0.image_data), dtype=np.uint8)
+    image_array = np.asarray(bytearray(img0), dtype=np.uint8)
     img0 = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
     print(img0)
     img = letterbox(img0, new_shape=imgsz)[0]
