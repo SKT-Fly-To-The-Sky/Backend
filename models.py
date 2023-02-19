@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from passlib.hash import bcrypt
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, LargeBinary, Float, Text
 from database import Base
@@ -46,7 +44,7 @@ class SupplementTable(Base):
     __tablename__ = "supplement_info"
 
     nut_name = Column(String(200), primary_key=True)
-    intake_time = Column(String(50))
+    intake_time_div = Column(String(50))
     buy_link = Column(String(300))
     vitA = Column(Float)
     vitB1 = Column(Float)
@@ -155,6 +153,7 @@ class IntakeNutrientTable(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     userid = Column(String(50), ForeignKey('users.userid'))
     date = Column(String(50))
+    time = Column(DateTime)
     time_div = Column(String(10))
     image = Column(LargeBinary)
     kcal = Column(Float)

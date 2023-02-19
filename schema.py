@@ -21,6 +21,7 @@ class Token(BaseModel):
 class IntakeNutrientRequest(BaseModel):
     time_div: str
     date: Optional[str]
+    time: Optional[str]
     protein = str
     fat = str
     carbo = str
@@ -67,7 +68,8 @@ class IntakeNutrientRequest(BaseModel):
         schema_extra = {
             'example': {
                 'time_div': 'str',
-                'date': '%Y-%m-%d_%H:%M:%S',
+                'date': '%Y-%m-%d',
+                'time': 'str',
                 'protein': 'str',
                 'fat': 'str',
                 'carbo': 'str',

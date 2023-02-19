@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -156,9 +157,11 @@ async def read_json_data(name: str, db: Session = Depends(get_db)):
 
 
 @app.get('/classification')
-async def get_classification(userid: str, time_div: str, db: Session = Depends(get_db)):
+async def get_classification(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     food_item = db.query(IntakeNutrientTable).filter(
-        IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
+        and_(IntakeNutrientTable.userid == userid,
+             IntakeNutrientTable.time_div == time_div,
+             IntakeNutrientTable.date == date)
     ).first()
 
     if not food_item:
@@ -209,7 +212,8 @@ async def read_food_info(food_name: str, db: Session = Depends(get_db)):
 @app.get("/nutrients/recommand")
 async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends(get_db)):
     recommand = db.query(RecommendedNutrientTable).filter(
-        RecommendedNutrientTable.age == age and RecommendedNutrientTable.gender == gender).first()
+        and_(RecommendedNutrientTable.age == age, RecommendedNutrientTable.gender == gender)
+    ).first()
 
     if not recommand:
         raise HTTPException(status_code=404, detail="food info not found")
@@ -218,7 +222,7 @@ async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends
 
 
 @app.post("/{userid}/intakes/images")
-async def create_intake_image(userid: str, time_div: str, date: str = None, file: UploadFile = File(...),
+async def create_intake_image(userid: str, time_div: str, date: str = None, time: str = None, file: UploadFile = File(...),
                                  db: Session = Depends(get_db)):
     try:
         image = await file.read()
@@ -233,9 +237,11 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, file
 
     try:
         if date is None:
-            date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+            date = datetime.now().strftime("%Y-%m-%d")
+        if time is None:
+            time = datetime.now()
 
-        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date,
+        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, time=time,
                                      image=image_data)
         db.add(intake)
         db.commit()
@@ -254,7 +260,9 @@ async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
 
     try:
         if nut_data.date is None:
-            nut_data.date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+            nut_data.date = datetime.now().strftime("%Y-%m-%d")
+        if nut_data.time is None:
+            nut_data.time = datetime.now()
 
         intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
         db.add(intake)
@@ -270,7 +278,7 @@ async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
 @app.get("/{userid}/intakes/images")
 async def read_intake_image(userid: str, time_div: str, db: Session = Depends(get_db)):
     img = db.query(IntakeNutrientTable).filter(
-        IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
+        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div)
     ).first().image
 
     if not img:
@@ -282,7 +290,7 @@ async def read_intake_image(userid: str, time_div: str, db: Session = Depends(ge
 @app.get("/{userid}/intakes/nutrients")
 async def read_intake_nutrient(userid: str, time_div: str, db: Session = Depends(get_db)):
     nutrients = db.query(IntakeNutrientTable).filter(
-        IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
+        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div)
     ).first()
 
     if not nutrients:
