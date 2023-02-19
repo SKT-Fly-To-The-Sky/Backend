@@ -349,27 +349,27 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     return nut_sum
     # return JSONResponse(content=json.dumps(nut_sum))
 
-# @app.get("/volume")
-# async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
-#     food_item = db.query(IntakeNutrientTable).filter(
-#         and_(IntakeNutrientTable.userid == userid,
-#              IntakeNutrientTable.time_div == time_div,
-#              IntakeNutrientTable.date == date)
-#     ).first()
-#
-#     if not food_item:
-#         raise HTTPException(status_code=404, detail="Food item not found")
-#
-#     if not food_item.image:
-#         raise HTTPException(status_code=404, detail="Food image not found")
-#
-#     try:
-#         content = food_item.image
-#         result = qual(content)
-#         return JSONResponse(content=result)
-#     except Exception as e:
-#         print(e)
-#         raise HTTPException(status_code=501, detail=f"{e}")
+@app.get("/volume")
+async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+    food_item = db.query(IntakeNutrientTable).filter(
+        and_(IntakeNutrientTable.userid == userid,
+             IntakeNutrientTable.time_div == time_div,
+             IntakeNutrientTable.date == date)
+    ).first()
+
+    if not food_item:
+        raise HTTPException(status_code=404, detail="Food item not found")
+
+    if not food_item.image:
+        raise HTTPException(status_code=404, detail="Food image not found")
+
+    try:
+        content = food_item.image
+        result = qual(content)
+        return JSONResponse(content=result)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=501, detail=f"{e}")
 
 
 @app.get("/error")
