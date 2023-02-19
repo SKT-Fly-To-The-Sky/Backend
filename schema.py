@@ -53,7 +53,7 @@ class IntakeNutrientRequest(BaseModel):
 
     @root_validator
     def check_foo_bar(cls, values):
-        except_col = ['time_div', 'date']
+        except_col = ['time', 'time_div', 'date']
 
         for k, v in values.items():
             if k in except_col:
