@@ -244,14 +244,14 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, file
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def create_intake_nutrient(userid: str, time_div: str, date: str = None, nut_data: IntakeNutrientRequest = Depends(),
+async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest = Depends(),
                                  db: Session = Depends(get_db)):
 
     try:
-        if date is None:
-            date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+        if nut_data.date is None:
+            nut_data.date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 
-        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, **json.loads(nut_data))
+        intake = IntakeNutrientTable(userid=userid, **json.loads(nut_data))
         db.add(intake)
         db.commit()
         db.refresh(intake)
