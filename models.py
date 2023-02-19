@@ -46,6 +46,8 @@ class SupplementTable(Base):
     __tablename__ = "supplement_info"
 
     nut_name = Column(String(200), primary_key=True)
+    intake_time = Column(String(50))
+    buy_link = Column(String(300))
     vitA = Column(Float)
     vitB1 = Column(Float)
     vitB2 = Column(Float)
