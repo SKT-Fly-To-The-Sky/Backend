@@ -273,7 +273,7 @@ async def read_intake_image(userid: str, time_div: str, db: Session = Depends(ge
 
 
 @app.get("/{userid}/intakes/nutrients")
-async def read_intake_nutrient_image(userid: str, time_div: str, db: Session = Depends(get_db)):
+async def read_intake_nutrient(userid: str, time_div: str, db: Session = Depends(get_db)):
     nutrients = db.query(IntakeNutrientTable).filter(
         IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
     ).first()
