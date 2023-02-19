@@ -164,6 +164,9 @@ async def get_classification(userid: str, time_div: str, db: Session = Depends(g
     if not food_item:
         raise HTTPException(status_code=404, detail="Food item not found")
 
+    if not food_item.image:
+        raise HTTPException(status_code=404, detail="Food image not found")
+
     try:
         content = food_item.image
         result = classification(content)
