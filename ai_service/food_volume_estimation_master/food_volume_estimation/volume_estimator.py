@@ -127,10 +127,10 @@ class VolumeEstimator():
         # Parse command line arguments
         parser = argparse.ArgumentParser(
             description='Estimate food volume in input images.')
-        parser.add_argument('--input_images', type=str, nargs='+',
-                            help='Paths to input images.',
-                            metavar='/path/to/image1 /path/to/image2 ...',
-                            required=True)
+        # parser.add_argument('--input_images', type=str, nargs='+', # 모듈화를 위한 주석처리
+        #                     help='Paths to input images.',
+        #                     metavar='/path/to/image1 /path/to/image2 ...',
+        #                     required=True)
         parser.add_argument('--depth_model_architecture', type=str,
                             help=('Depth estimation model '
                                   'architecture (.json).'),
@@ -463,37 +463,37 @@ class VolumeEstimator():
                 self.__set_weights_trainable(layer, trainable)
 
 
-def qual(): # if __name__ == "__main__":
+def qual(img): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
-
+    input_image = img # 수정 추가
     # Iterate over input images to estimate volumes
     results = {'image_path': [], 'volumes': []}
-    for input_image in estimator.args.input_images:
+    # for input_image in estimator.args.input_images:
         # 수정 print('[*] Input:', input_image)
-        volumes = estimator.estimate_volume(
-            input_image, estimator.args.fov, 
-            estimator.args.plate_diameter_prior,# 수정 estimator.args.plot_results,
-            estimator.args.plots_directory)
+    volumes = estimator.estimate_volume(
+        input_image, estimator.args.fov, 
+        estimator.args.plate_diameter_prior,# 수정 estimator.args.plot_results,
+        estimator.args.plots_directory)
 
-        # Store results per input image
-        results['image_path'].append(input_image)
-        if (estimator.args.plots_directory is not None): # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
-            results['volumes'].append([x[0] * 1000 for x in volumes])
-            plt.close('all')
-        else:
-            results['volumes'].append(volumes * 1000)
+    # Store results per input image
+    results['image_path'].append(input_image)
+    if (estimator.args.plots_directory is not None): # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
+        results['volumes'].append([x[0] * 1000 for x in volumes])
+        plt.close('all')
+    else:
+        results['volumes'].append(volumes * 1000)
 
-        # Print weight if density database is given
-        if estimator.args.density_db is not None:
-            db_entry = estimator.density_db.query(
-                estimator.args.food_type)
-            density = db_entry[1]
-            print('[*] Density database match:', db_entry)
-            # All foods found in the input image are considered to be
-            # of the same type
-            for v in results['volumes'][-1]:
-                print('[*] Food weight:', 1000 * v * density, 'g')
+    # Print weight if density database is given
+    if estimator.args.density_db is not None:
+        db_entry = estimator.density_db.query(
+            estimator.args.food_type)
+        density = db_entry[1]
+        print('[*] Density database match:', db_entry)
+        # All foods found in the input image are considered to be
+        # of the same type
+        for v in results['volumes'][-1]:
+            print('[*] Food weight:', 1000 * v * density, 'g')
 
     # res = OrderedDict() # json 파일 만들기
     # res['total'] = np.sum(results['volumes'][0])
