@@ -135,15 +135,18 @@ class VolumeEstimator():
                             help=('Depth estimation model '
                                   'architecture (.json).'),
                             metavar='/path/to/architecture.json',
-                            required=True)
+                            default='monovideo_fine_tune_food_videos.json',)
+                            #required=True)
         parser.add_argument('--depth_model_weights', type=str,
                             help='Depth estimation model weights (.h5).',
                             metavar='/path/to/weights.h5',
-                            required=True)
+                            default='monovideo_fine_tune_food_videos.h5',)
+                            #required=True)
         parser.add_argument('--segmentation_weights', type=str,
                             help='Food segmentation model weights (.h5).',
                             metavar='/path/to/weights.h5',
-                            required=True)
+                            default='mask_rcnn_food_segmentation.h5',)
+                            #required=True)
         parser.add_argument('--fov', type=float,
                             help='Camera Field of View (in deg).',
                             metavar='<fov>',
@@ -460,7 +463,7 @@ class VolumeEstimator():
                 self.__set_weights_trainable(layer, trainable)
 
 
-if __name__ == "__main__": # if __name__ == "__main__":
+def qual(): # if __name__ == "__main__":
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
 
@@ -498,7 +501,7 @@ if __name__ == "__main__": # if __name__ == "__main__":
     # with open('total.json', 'w', encoding='UTF-8') as make_file:
     #     json.dump(res, make_file, ensure_ascii=False, indent='\t')
     
-    print(np.sum(results['volumes'][0]), 'L')
+    return(np.sum(results['volumes'][0]))
 
     # return np.sum(results['volumes'][0])
     # if estimator.args.results_file is not None: # to csv
