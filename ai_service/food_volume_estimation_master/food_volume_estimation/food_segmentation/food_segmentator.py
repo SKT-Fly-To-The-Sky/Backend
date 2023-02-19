@@ -1,7 +1,7 @@
 import sys
 import os
 # from mrcnn.config import Config
-from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn.config import Config
+from ai_service.food_volume_estimation_master.food_volume_estimation.mrcnn.config import Config
 # from food_segmentation.mrcnn import (
 #     model as modellib,
 #     utils)
