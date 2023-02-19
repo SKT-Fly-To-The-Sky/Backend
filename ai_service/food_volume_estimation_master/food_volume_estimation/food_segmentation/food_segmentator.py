@@ -5,7 +5,7 @@ from ai_service.food_volume_estimation_master.food_volume_estimation.food_segmen
 # from food_segmentation.mrcnn import (
 #     model as modellib,
 #     utils)
-import ai_service.food_volume_estimation_master.food_volume_estimation.food_segmentation.mrcnn.model as modellib, mrcnn.utils
+import ai_service.food_volume_estimation_master.food_volume_estimation.mrcnn.model as modellib, mrcnn.utils
 
 # Using the single-cluster model
 clusters = ['food']
