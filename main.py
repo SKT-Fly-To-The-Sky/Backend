@@ -243,7 +243,7 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, file
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def create_intake_nutrient(userid: str, time_div: str, nut_data: IntakeNutrientRequest, date: str = None,
+async def create_intake_nutrient(userid: str, time_div: str, nut_data: IntakeNutrientRequest = Depends(), date: str = None,
                                  db: Session = Depends(get_db)):
 
     try:
