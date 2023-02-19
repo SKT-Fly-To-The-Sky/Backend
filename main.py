@@ -242,6 +242,8 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, file
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
 
+    return {"message": "image data saved successfully"}
+
 
 @app.post("/{userid}/intakes/nutrients")
 async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
