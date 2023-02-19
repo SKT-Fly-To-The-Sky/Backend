@@ -8,6 +8,7 @@ import argparse
 from ai_service.yolov3.utils.models import *  # set ONNX_EXPORT in models.py
 from ai_service.yolov3.utils.datasets import *
 from ai_service.yolov3.utils.utils import *
+from ai_service.yolov3.code_dict import foodname
 
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 import numpy as np
@@ -241,7 +242,10 @@ def classification(img0):
     print(os.path.realpath(__file__))
     print(len(os.listdir(opt.source)))
 
-    return detect("asdf", img0)
+    result = detect("asdf", img0)
+    for d in result['object']:
+        d['name'] = foodname[d['name']]
+    return result
 
     # with torch.no_grad():
     #     print('Session START :', time.strftime('%Y-%m-%d %Z %H:%M:%S', time.localtime(time.time())))
