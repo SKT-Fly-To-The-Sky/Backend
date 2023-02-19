@@ -4,11 +4,10 @@ import sys
 # sys.path.append('/workspace/ai_service/yolo3/utils/')
 import argparse
 
-
+from ai_service.yolov3.code_dict import foodname
 from ai_service.yolov3.utils.models import *  # set ONNX_EXPORT in models.py
 from ai_service.yolov3.utils.datasets import *
 from ai_service.yolov3.utils.utils import *
-from ai_service.yolov3.code_dict import foodname
 
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 import numpy as np
@@ -22,6 +21,7 @@ import io
 
 # for parser.parse_arg error
 import sys
+
 sys.argv = ['']
 del sys
 
@@ -41,6 +41,7 @@ def indent(elem, level=0):  #
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
+
 def ToF(file, cat):
     if cat == '00000000':
         output = "N"
@@ -48,9 +49,10 @@ def ToF(file, cat):
         output = "T"
     else:
         output = "F"
-    
+
     return output
-    
+
+
 def detect(path, img0):
     global opt
     imgsz = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
@@ -97,18 +99,13 @@ def detect(path, img0):
     # Get names and colors
     names = load_classes(opt.names)
 
-    rslt = []
-    nT = 0
-    nF = 0
-    nN = 0
-    nND = 0
-
     # for path, img, im0s, vid_cap in dataset:
+
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
-    # img0 = np.array(PIL.Image.open(img0))
-    # image_array = np.asarray(bytearray(img0), dtype=np.uint8)
-    # img0 = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-    print(img0)
+    for i in range(len(img0)):
+        for j in range(len(img0[0])):
+            img0[i][j] = img0[i][j][::-1]
+
     img = letterbox(img0, new_shape=imgsz)[0]
 
     # Convert
@@ -120,7 +117,6 @@ def detect(path, img0):
     img /= 255.0  # 0 - 255 to 0.0 - 1.0
     if img.ndimension() == 3:
         img = img.unsqueeze(0)
-
     # Inference
     pred = model(img, augment=opt.augment)[0]
 
@@ -153,14 +149,16 @@ def detect(path, img0):
             count = 0
 
             # Print results
-            for c in det[:, -1].unique():
-                n = (det[:, -1] == c).sum()  # detections per class
-                s += '%g %s, ' % (n, names[int(c)])  # add to string
-                s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
+            # for c in det[:, -1].unique():
+            #     n = (det[:, -1] == c).sum()  # detections per class
+            #     s += '%g %s, ' % (n, names[int(c)])  # add to string
+            #     s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
 
             total = []
             object_names = []
-            score=[]
+            score = []
+            data = {}
+            data["object"] = []
 
             # Write results
             for *xyxy, conf, cls in reversed(det):
@@ -176,38 +174,17 @@ def detect(path, img0):
                 object_names.append(names[int(cls)])
                 count = count + 1
 
-                tnT = 0
-                tnF = 0
-                tnN = 0
-
-                #정확도 측정
-                for i in range(count):
-                    rslt.append('{0},{1},{2}'.format(Path(p),object_names[i],ToF(Path(p),object_names[i])))
-                    if ToF(Path(p),object_names[i]) == "T":
-                        tnT += 1
-                    elif ToF(Path(p),object_names[i]) == "F":
-                        tnF += 1
-                    elif ToF(Path(p),object_names[i]) == "N":
-                        tnN += 1
-
-                data = {}
-                data["object"] = []
-                for i in range(count):  ##리스트 두 개 xml파일에 저장
-                    data["object"].append({
-                        "name" : object_names[i],
-                        "bndbox":{
+            for i in range(count):  ##리스트 두 개 xml파일에 저장
+                data["object"].append({
+                    "name": object_names[i],
+                    "bndbox": {
                         "xmin": str(total[i][0]),
                         "ymin": str(total[i][1]),
                         "xmax": str(total[i][2]),
                         "ymax": str(total[i][3])
-                        },
-                        "score":score[i]
-                    })
-
-
-            nT += 1 if tnT > 1 else tnT
-            nND += 1 if tnF == 0 and tnT == 0 else 0
-            nF += 1 if tnF > 1 else tnF
+                    },
+                    "score": score[i]
+                })
 
             if save_xml:
                 with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
@@ -215,7 +192,17 @@ def detect(path, img0):
     if data:
         return data
     else:
-        return {}
+        data["object"].append({
+            "name": 'unknown',
+            "bndbox": {
+                "xmin": '0',
+                "ymin": '0',
+                "xmax": '0',
+                "ymax": '0'
+            },
+            "score": score[i]
+        })
+        return data
 
 def classification(img0):
     global opt
