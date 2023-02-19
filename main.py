@@ -276,7 +276,6 @@ async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
         for attr, value in vars(nut_data).items():
             if hasattr(intake, attr):
                 setattr(intake, attr, value)
-
         # intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
         db.commit()
         db.refresh(intake)
@@ -285,7 +284,7 @@ async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
 
-    return {"message": "nutrient data saved successfully"}
+    return {"message": "nutrient data saved successfully" + f':::::{intake.carbo}'}
 
 @app.get("/{userid}/intakes/images")
 async def read_intake_image(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
