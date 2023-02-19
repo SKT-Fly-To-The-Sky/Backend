@@ -18,7 +18,8 @@ from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
-from models import UserTable, FoodItemTable, ConfigTable, NutrientTable
+from models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
+    RecommendedNutrientTable, IntakeNutrientTable
 from schema import User, FoodItemRequest, Token
 
 from utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
@@ -115,47 +116,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     return user
 
 
-@app.post("/food_items")
-async def create_food_item(food_item: FoodItemRequest = Depends(), file: UploadFile = File(...),
-                           db: Session = Depends(get_db)):
-    try:
-        image = await file.read()
-        pil_image = Image.open(BytesIO(image))
-        output = BytesIO()
-        pil_image.save(output, format='JPEG')
-        image_data = output.getvalue()
-    except Exception as e:
-        logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
-        print(e)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
-
-    try:
-        date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-        img_name = {"userid": food_item.userid, "date": date}
-        img_name = jwt.encode(img_name, SECRET_KEY, algorithm=ALGORITHM)
-        food_item = FoodItemTable(img_name=img_name, userid=food_item.userid, time_div=food_item.time_div,
-                                  date=date, image=image_data)
-        db.add(food_item)
-        db.commit()
-        db.refresh(food_item)
-    except Exception as e:
-        logger.exception(f"create_food_item fail:\n\t{e}\nfail to save image to database")
-        print(e)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
-
-    return {"img_name": img_name}
-
-
-@app.get("/food_items/{food_item_id}/image")
-async def read_food_item_image(img_name: str, db: Session = Depends(get_db)):
-    food_item = db.query(FoodItemTable).filter(FoodItemTable.img_name == img_name).first()
-
-    if not food_item:
-        raise HTTPException(status_code=404, detail="Food item not found")
-
-    return Response(content=food_item.image, media_type="image/jpeg")
-
-
 # app.include_router(member_router.router)
 # app.include_router(picture_router.router)
 
@@ -167,6 +127,7 @@ async def create_json_data(json_data: ConfigTable = Depends(), db: Session = Dep
         db.commit()
         db.refresh(config_data)
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
 
     # return the newly created record
@@ -185,6 +146,7 @@ async def read_json_data(name: str, db: Session = Depends(get_db)):
     try:
         json_data = loads(data.data)
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="fail to convert to json from database's data")
 
@@ -193,8 +155,11 @@ async def read_json_data(name: str, db: Session = Depends(get_db)):
 
 
 @app.get('/classification')
-async def get_classification(img_name: str, db: Session = Depends(get_db)):
-    food_item = db.query(FoodItemTable).filter(FoodItemTable.img_name == img_name).first()
+async def get_classification(userid: str, time_div: str, db: Session = Depends(get_db)):
+    food_item = db.query(IntakeNutrientTable).filter(
+        IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
+    ).first()
+
     if not food_item:
         raise HTTPException(status_code=404, detail="Food item not found")
 
@@ -203,11 +168,13 @@ async def get_classification(img_name: str, db: Session = Depends(get_db)):
         result = classification(content)
         return JSONResponse(content=result)
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=501, detail=f"{e}")
 
-@app.get("/nutrients/names")
+
+@app.get("/supplements/names")
 async def read_nutrients_name(db: Session = Depends(get_db)):
-    nut_names = db.query(NutrientTable).all()
+    nut_names = db.query(SupplementTable).all()
 
     if not nut_names:
         raise HTTPException(status_code=404, detail="nut names not found")
@@ -215,13 +182,101 @@ async def read_nutrients_name(db: Session = Depends(get_db)):
     return JSONResponse(content=nut_names)
 
 
+@app.get("/supplements/name")
+async def read_nutrients_info(nut_name: str, db: Session = Depends(get_db)):
+    nut = db.query(SupplementTable).filter(SupplementTable.nut_name == nut_name).first()
+
+    if not nut:
+        raise HTTPException(status_code=404, detail="nut info not found")
+
+    return JSONResponse(content=nut)
+
+
+@app.get("/foods/info")
+async def read_food_info(food_name: str, db: Session = Depends(get_db)):
+    food = db.query(FoodNutrientTable).filter(FoodNutrientTable.food_name == food_name).first()
+
+    if not food:
+        raise HTTPException(status_code=404, detail="food info not found")
+
+    return JSONResponse(content=food)
+
+
+@app.get("/nutrients/recommand")
+async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends(get_db)):
+    recommand = db.query(RecommendedNutrientTable).filter(
+        RecommendedNutrientTable.age == age and RecommendedNutrientTable.gender == gender).first()
+
+    if not recommand:
+        raise HTTPException(status_code=404, detail="food info not found")
+
+    return JSONResponse(content=recommand)
+
+
+@app.post("/{userid}/intakes")
+async def create_intake_nutrient(userid: str, time_div: str, date: str = None, file: UploadFile = File(...),
+                                 db: Session = Depends(get_db)):
+    try:
+        image = await file.read()
+        pil_image = Image.open(BytesIO(image))
+        output = BytesIO()
+        pil_image.save(output, format='JPEG')
+        image_data = output.getvalue()
+    except Exception as e:
+        logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
+        print(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
+
+    try:
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+
+        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date,
+                                     image=image_data)
+        db.add(intake)
+        db.commit()
+        db.refresh(intake)
+    except Exception as e:
+        logger.exception(f"create_food_item fail:\n\t{e}\nfail to save image to database")
+        print(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
+
+
+@app.get("/{userid}/intakes/images")
+async def read_intake_image(userid: str, time_div: str, db: Session = Depends(get_db)):
+    img = db.query(IntakeNutrientTable).filter(
+        IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
+    ).first().image
+
+    if not img:
+        raise HTTPException(status_code=404, detail="Intake img not found")
+
+    return Response(content=img, media_type="image/jpeg")
+
+
+@app.get("/{userid}/intakes/nutrients")
+async def read_intake_nutrient_image(userid: str, time_div: str, db: Session = Depends(get_db)):
+    nutrients = db.query(IntakeNutrientTable).filter(
+        IntakeNutrientTable.userid == userid and IntakeNutrientTable.time_div == time_div
+    ).first()
+
+    if not nutrients:
+        raise HTTPException(status_code=404, detail="Food item not found")
+
+    nutrients.image = None
+
+    return JSONResponse(content=nutrients)
+
+
 @app.get("/error")
 async def raise_error():
     1 / 0
 
+
 @app.get("/init")
 async def init_database():
     init_db()
+
 
 #
 if __name__ == "__main__":

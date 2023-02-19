@@ -6,19 +6,19 @@ from database import Base
 from sqlalchemy.orm import relationship
 
 
-class FoodItemTable(Base):
-    __tablename__ = "food_items"
-
-    img_name = Column(String(300), primary_key=True)
-    userid = Column(String(50), ForeignKey('users.userid'))
-    date = Column(String(50))
-    time_div = Column(String(50))
-    image = Column(LargeBinary)
-
-    user = relationship("UserTable", backref="food_items")
-
-    def to_dict(self):
-        return {"id": self.id, "userid": self.userid, "name": self.name, "date": self.date}
+# class FoodItemTable(Base):
+#     __tablename__ = "food_items"
+#
+#     img_name = Column(String(300), primary_key=True)
+#     userid = Column(String(50), ForeignKey('users.userid'))
+#     date = Column(String(50))
+#     time_div = Column(String(50))
+#     image = Column(LargeBinary)
+#
+#     user = relationship("UserTable", backref="food_items")
+#
+#     def to_dict(self):
+#         return {"id": self.id, "userid": self.userid, "name": self.name, "date": self.date}
 
 
 class UserTable(Base):
@@ -42,10 +42,10 @@ class ConfigTable(Base):
     data = Column(Text)
 
 
-class NutrientTable(Base):
-    __tablename__ = "nut_info"
+class SupplementTable(Base):
+    __tablename__ = "supplement_info"
 
-    nut_name = Column(String(100), primary_key=True)
+    nut_name = Column(String(200), primary_key=True)
     vitA = Column(Float)
     vitB1 = Column(Float)
     vitB2 = Column(Float)
@@ -76,7 +76,7 @@ class NutrientTable(Base):
     copper = Column(Float)
 
 
-class FoodInfoTable(Base):
+class FoodNutrientTable(Base):
     __tablename__ = "food_info"
 
     food_name = Column(String(100), primary_key=True)
@@ -111,11 +111,11 @@ class FoodInfoTable(Base):
     omega = Column(Float)
 
 
-class RecommendedNutTable(Base):
+class RecommendedNutrientTable(Base):
     __tablename__ = "recommended_nut"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    age = Column(Integer)
+    age = Column(String(10))
     gender = Column(String(10))
     vitA = Column(Float)
     vitB1 = Column(Float)
@@ -147,13 +147,14 @@ class RecommendedNutTable(Base):
     copper = Column(Float)
 
 
-class NutIntakeTable(Base):
-    __tablename__ = "nut_intake"
+class IntakeNutrientTable(Base):
+    __tablename__ = "intake_nut"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     userid = Column(String(50), ForeignKey('users.userid'))
-    date = Column(DateTime)
+    date = Column(String(50))
     time_div = Column(String(10))
+    image = Column(LargeBinary)
     kcal = Column(Float)
     protein = Column(Float)
     fat = Column(Float)
