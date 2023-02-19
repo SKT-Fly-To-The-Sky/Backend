@@ -204,7 +204,7 @@ def detect(path, img0):
                 "xmax": '0',
                 "ymax": '0'
             },
-            "score": score[i]
+            "score": 0
         })
         return data
 
