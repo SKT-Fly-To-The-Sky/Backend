@@ -119,6 +119,7 @@ class VolumeEstimator():
 
 
     def __parse_args(self):
+        base_path = r'/ai_service/food_volume_estimation_master/food_volume_estimation'
         """Parse command-line input arguments.
 
         Returns:
@@ -135,17 +136,17 @@ class VolumeEstimator():
                             help=('Depth estimation model '
                                   'architecture (.json).'),
                             metavar='/path/to/architecture.json',
-                            default='monovideo_fine_tune_food_videos.json',)
+                            default=f'{base_path}/monovideo_fine_tune_food_videos.json',)
                             #required=True)
         parser.add_argument('--depth_model_weights', type=str,
                             help='Depth estimation model weights (.h5).',
                             metavar='/path/to/weights.h5',
-                            default='monovideo_fine_tune_food_videos.h5',)
+                            default=f'{base_path}/monovideo_fine_tune_food_videos.h5',)
                             #required=True)
         parser.add_argument('--segmentation_weights', type=str,
                             help='Food segmentation model weights (.h5).',
                             metavar='/path/to/weights.h5',
-                            default='mask_rcnn_food_segmentation.h5',)
+                            default=f'{base_path}/mask_rcnn_food_segmentation.h5',)
                             #required=True)
         parser.add_argument('--fov', type=float,
                             help='Camera Field of View (in deg).',
