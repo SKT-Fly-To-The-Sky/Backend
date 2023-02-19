@@ -119,7 +119,7 @@ class VolumeEstimator():
 
 
     def __parse_args(self):
-        base_path = r'/ai_service/food_volume_estimation_master/food_volume_estimation'
+        base_path = r'./ai_service/food_volume_estimation_master/food_volume_estimation'
         """Parse command-line input arguments.
 
         Returns:
