@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import timedelta
 from json import loads
@@ -243,14 +244,14 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, file
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def create_intake_nutrient(userid: str, time_div: str, nut_data: IntakeNutrientRequest = Depends(), date: str = None,
+async def create_intake_nutrient(userid: str, time_div: str, date: str = None, nut_data: IntakeNutrientRequest = Depends(),
                                  db: Session = Depends(get_db)):
 
     try:
         if date is None:
             date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 
-        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, **nut_data)
+        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, **json.loads(nut_data))
         db.add(intake)
         db.commit()
         db.refresh(intake)
