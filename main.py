@@ -15,6 +15,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from starlette import status
 
+from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual
 from ai_service.yolov3.detect_del import classification
 from database import engine, Base, get_db, init_db
 from PIL import Image
@@ -300,6 +301,28 @@ async def read_intake_nutrient(userid: str, time_div: str, db: Session = Depends
 
     return JSONResponse(content=nutrients)
 
+@app.get("/volume")
+async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+    food_item = db.query(IntakeNutrientTable).filter(
+        and_(IntakeNutrientTable.userid == userid,
+             IntakeNutrientTable.time_div == time_div,
+             IntakeNutrientTable.date == date)
+    ).first()
+
+    if not food_item:
+        raise HTTPException(status_code=404, detail="Food item not found")
+
+    if not food_item.image:
+        raise HTTPException(status_code=404, detail="Food image not found")
+
+    try:
+        content = food_item.image
+        result = qual(content)
+        return JSONResponse(content=result)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=501, detail=f"{e}")
+
 
 @app.get("/error")
 async def raise_error():
@@ -318,3 +341,4 @@ if __name__ == "__main__":
 
 # curl -L -o ./ai_service/yolov3/weights/best_403food_e200b150v2.pt https://www.dropbox.com/s/msz9yfrmsrs0zst/best_403food_e200b150v2.pt?dl=0
 # curl -L -o ./ai_service/food_volume_estimation_master/food_volume_estimation/monovideo_fine_tune_food_videos.h5 https://www.dropbox.com/s/zqo3qfzoy7b9spp/monovideo_fine_tune_food_videos.h5?dl=0
+# curl -L -o ./ai_service/food_volume_estimation_master/food_volume_estimation/mask_rcnn_food_segmentation.h5 https://www.dropbox.com/s/uewabex707xh2n0/mask_rcnn_food_segmentation.h5?dl=0
