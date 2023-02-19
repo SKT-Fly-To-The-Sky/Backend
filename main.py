@@ -15,7 +15,7 @@ from sqlalchemy import and_, inspect, func
 from sqlalchemy.orm import Session
 from starlette import status
 
-# from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual
+from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual
 from ai_service.yolov3.detect_del import classification
 from database import engine, Base, get_db, init_db
 from PIL import Image
@@ -178,7 +178,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         return JSONResponse(content=result)
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=501, detail=f"{e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"{e}")
 
 
 @app.get("/supplements/names")
@@ -337,6 +337,9 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     for nutrient in nutrients:
         for column in columns:
             if column in not_include_list:
+                continue
+            if getattr(nutrient, column) is None:
+                nut_sum[column] = 0
                 continue
             if column not in nut_sum or column in not_sum_list:
                 nut_sum[column] = getattr(nutrient, column)
