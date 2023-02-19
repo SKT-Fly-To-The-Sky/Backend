@@ -244,14 +244,14 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, file
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest = Depends(),
+async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
                                  db: Session = Depends(get_db)):
 
     try:
         if nut_data.date is None:
             nut_data.date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 
-        intake = IntakeNutrientTable(userid=userid, **json.loads(nut_data))
+        intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
         db.add(intake)
         db.commit()
         db.refresh(intake)
@@ -259,6 +259,8 @@ async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest = 
         logger.exception(f"create_food_item fail:\n\t{e}\nfail to save image to database")
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
+
+    return {"message": "nutrient data saved successfully"}
 
 @app.get("/{userid}/intakes/images")
 async def read_intake_image(userid: str, time_div: str, db: Session = Depends(get_db)):
