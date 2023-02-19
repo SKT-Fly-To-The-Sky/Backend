@@ -20,7 +20,7 @@ from io import BytesIO
 from passlib.hash import bcrypt
 from models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
     RecommendedNutrientTable, IntakeNutrientTable
-from schema import User, FoodItemRequest, Token
+from schema import User, Token, IntakeNutrientRequest
 
 from utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
     ALGORITHM, oauth2_scheme, is_token_expired
@@ -213,8 +213,8 @@ async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends
     return JSONResponse(content=recommand)
 
 
-@app.post("/{userid}/intakes")
-async def create_intake_nutrient(userid: str, time_div: str, date: str = None, file: UploadFile = File(...),
+@app.post("/{userid}/intakes/images")
+async def create_intake_image(userid: str, time_div: str, date: str = None, file: UploadFile = File(...),
                                  db: Session = Depends(get_db)):
     try:
         image = await file.read()
@@ -242,6 +242,23 @@ async def create_intake_nutrient(userid: str, time_div: str, date: str = None, f
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
 
 
+@app.post("/{userid}/intakes/nutrients")
+async def create_intake_nutrient(userid: str, time_div: str, nut_data: IntakeNutrientRequest, date: str = None,
+                                 db: Session = Depends(get_db)):
+
+    try:
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+
+        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, **nut_data)
+        db.add(intake)
+        db.commit()
+        db.refresh(intake)
+    except Exception as e:
+        logger.exception(f"create_food_item fail:\n\t{e}\nfail to save image to database")
+        print(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
+
 @app.get("/{userid}/intakes/images")
 async def read_intake_image(userid: str, time_div: str, db: Session = Depends(get_db)):
     img = db.query(IntakeNutrientTable).filter(
@@ -261,7 +278,7 @@ async def read_intake_nutrient_image(userid: str, time_div: str, db: Session = D
     ).first()
 
     if not nutrients:
-        raise HTTPException(status_code=404, detail="Food item not found")
+        raise HTTPException(status_code=404, detail="Intake nutrients not found")
 
     nutrients.image = None
 
