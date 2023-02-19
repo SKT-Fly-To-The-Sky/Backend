@@ -289,9 +289,9 @@ async def read_intake_image(userid: str, time_div: str, db: Session = Depends(ge
 
 
 @app.get("/{userid}/intakes/nutrients")
-async def read_intake_nutrient(userid: str, time_div: str, db: Session = Depends(get_db)):
+async def read_intake_nutrient(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     nutrients = db.query(IntakeNutrientTable).filter(
-        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div)
+        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div, IntakeNutrientTable.date == date)
     ).first()
 
     if not nutrients:
