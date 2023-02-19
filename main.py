@@ -300,8 +300,8 @@ async def read_intake_image(userid: str, time_div: str, date: str, db: Session =
     return Response(content=img, media_type="image/jpeg")
 
 
-@app.get("/{userid}/intakes/nutrients")
-async def read_intake_nutrient(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+@app.get("/{userid}/intakes/nutrients/time-div")
+async def read_intake_nutrient_time_dev(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     nutrients = db.query(IntakeNutrientTable).filter(
         and_(
             IntakeNutrientTable.userid == userid,
@@ -315,6 +315,27 @@ async def read_intake_nutrient(userid: str, time_div: str, date: str, db: Sessio
     nutrients.image = None
 
     return JSONResponse(content=nutrients)
+
+@app.get("/{userid}/intakes/nutrients/day")
+async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends(get_db)):
+    nutrients = db.query(IntakeNutrientTable).filter(
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.date == date)
+    ).all()
+
+    if not nutrients:
+        raise HTTPException(status_code=404, detail="Intake nutrients not found")
+
+    sum_nut = nutrients[0]
+    sum_nut.image = None
+    for nutrient in nutrients[1:]:
+        nutrient.image = None
+        for attr, value in vars(nutrient).items():
+            if hasattr(sum_nut, attr):
+                setattr(sum_nut, attr, nutrient.attr+value)
+
+    return JSONResponse(content=sum_nut)
 
 @app.get("/volume")
 async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
