@@ -11,11 +11,11 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
-from sqlalchemy import and_
+from sqlalchemy import and_, inspect, func
 from sqlalchemy.orm import Session
 from starlette import status
 
-from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual
+# from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual
 from ai_service.yolov3.detect_del import classification
 from database import engine, Base, get_db, init_db
 from PIL import Image
@@ -284,7 +284,7 @@ async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
 
-    return {"message": "nutrient data saved successfully" + f':::::{intake.carbo}'}
+    return {"message": "nutrient data saved successfully"}
 
 @app.get("/{userid}/intakes/images")
 async def read_intake_image(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
@@ -328,37 +328,48 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     if not nutrients:
         raise HTTPException(status_code=404, detail="Intake nutrients not found")
 
-    sum_nut = nutrients[0]
-    sum_nut.image = None
-    for nutrient in nutrients[1:]:
-        nutrient.image = None
-        for attr, value in vars(nutrient).items():
-            if hasattr(sum_nut, attr):
-                setattr(sum_nut, attr, nutrient.attr+value)
+    nut_sum = {}
+    columns = [c.name for c in inspect(IntakeNutrientTable).c if c.name != 'id']
+    not_sum_list = ['userid', 'date']
+    not_include_list = ['time', 'time_div', 'image']
+    # Use a list comprehension to construct a list of sum functions for each column
+    # Use SQLAlchemy's query function to calculate the total for each column
+    for nutrient in nutrients:
+        for column in columns:
+            if column in not_include_list:
+                continue
+            if column not in nut_sum or column in not_sum_list:
+                nut_sum[column] = getattr(nutrient, column)
+            else:
+                nut_sum[column] += getattr(nutrient, column)
 
-    return JSONResponse(content=sum_nut)
+    # Create a new instance of the model with the column sums
+    # new_instance = IntakeNutrientTable(**nut_sum)
+    # print(nut_sum)
+    return nut_sum
+    # return JSONResponse(content=json.dumps(nut_sum))
 
-@app.get("/volume")
-async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
-    food_item = db.query(IntakeNutrientTable).filter(
-        and_(IntakeNutrientTable.userid == userid,
-             IntakeNutrientTable.time_div == time_div,
-             IntakeNutrientTable.date == date)
-    ).first()
-
-    if not food_item:
-        raise HTTPException(status_code=404, detail="Food item not found")
-
-    if not food_item.image:
-        raise HTTPException(status_code=404, detail="Food image not found")
-
-    try:
-        content = food_item.image
-        result = qual(content)
-        return JSONResponse(content=result)
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=501, detail=f"{e}")
+# @app.get("/volume")
+# async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+#     food_item = db.query(IntakeNutrientTable).filter(
+#         and_(IntakeNutrientTable.userid == userid,
+#              IntakeNutrientTable.time_div == time_div,
+#              IntakeNutrientTable.date == date)
+#     ).first()
+#
+#     if not food_item:
+#         raise HTTPException(status_code=404, detail="Food item not found")
+#
+#     if not food_item.image:
+#         raise HTTPException(status_code=404, detail="Food image not found")
+#
+#     try:
+#         content = food_item.image
+#         result = qual(content)
+#         return JSONResponse(content=result)
+#     except Exception as e:
+#         print(e)
+#         raise HTTPException(status_code=501, detail=f"{e}")
 
 
 @app.get("/error")

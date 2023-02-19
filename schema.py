@@ -22,84 +22,84 @@ class IntakeNutrientRequest(BaseModel):
     time_div: str
     date: Optional[str]
     time: Optional[str]
-    protein = float
-    fat = float
-    carbo = float
-    sugar = float
-    chole = float
-    fiber = float
-    calcium = float
-    iron = float
-    magne = float
-    potass = float
-    sodium = float
-    zinc = float
-    copper = float
-    vitA = float
-    vitB1 = float
-    vitB2 = float
-    vitB3 = float
-    vitB5 = float
-    vitB6 = float
-    vitB7 = float
-    vitB9 = float
-    vitB12 = float
-    vitC = float
-    vitD = float
-    vitE = float
-    vitK = float
-    omega = float
-    kcal = float
+    protein: float
+    fat: float
+    carbo: float
+    sugar: float
+    chole: float
+    fiber: float
+    calcium: float
+    iron: float
+    magne: float
+    potass: float
+    sodium: float
+    zinc: float
+    copper: float
+    vitA: float
+    vitB1: float
+    vitB2: float
+    vitB3: float
+    vitB5: float
+    vitB6: float
+    vitB7: float
+    vitB9: float
+    vitB12: float
+    vitC: float
+    vitD: float
+    vitE: float
+    vitK: float
+    omega: float
+    kcal: float
 
-    @root_validator
-    def check_foo_bar(cls, values):
-        except_col = ['time', 'time_div', 'date']
+    # @root_validator
+    # def str_to_float(cls, values):
+    #     except_col = ['time', 'time_div', 'date']
+    #
+    #     for k, v in values.items():
+    #         if k in except_col:
+    #             continue
+    #         values[k] = float(v)
+    #
+    #     return values
 
-        for k, v in values.items():
-            if k in except_col:
-                continue
-            values[k] = float(v)
-
-        return values
-
-    class Config:
-        arbitrary_types_allowed = True
-
-        schema_extra = {
-            'example': {
-                'time_div': 'str',
-                'date': '%Y-%m-%d',
-                'time': 'str',
-                'protein': 'str',
-                'fat': 'str',
-                'carbo': 'str',
-                'sugar': 'str',
-                'chole': 'str',
-                'fiber': 'str',
-                'calcium': 'str',
-                'iron': 'str',
-                'magne': 'str',
-                'potass': 'str',
-                'sodium': 'str',
-                'zinc': 'str',
-                'copper': 'str',
-                'vitA': 'str',
-                'vitB1': 'str',
-                'vitB2': 'str',
-                'vitB3': 'str',
-                'vitB5': 'str',
-                'vitB6': 'str',
-                'vitB7': 'str',
-                'vitB9': 'str',
-                'vitB12': 'str',
-                'vitC': 'str',
-                'vitD': 'str',
-                'vitE': 'str',
-                'vitK': 'str',
-                'omega': 'str',
-                'kcal': 'str'
-            }
-        }
+    # class Config:
+    #     # arbitrary_types_allowed = True
+    #
+    #     schema_extra = {
+    #         'example': {
+    #             'time_div': 'str',
+    #             'date': '%Y-%m-%d',
+    #             'time': 'str',
+    #             'protein': 'str',
+    #             'fat': 'str',
+    #             'carbo': 'str',
+    #             'sugar': 'str',
+    #             'chole': 'str',
+    #             'fiber': 'str',
+    #             'calcium': 'str',
+    #             'iron': 'str',
+    #             'magne': 'str',
+    #             'potass': 'str',
+    #             'sodium': 'str',
+    #             'zinc': 'str',
+    #             'copper': 'str',
+    #             'vitA': 'str',
+    #             'vitB1': 'str',
+    #             'vitB2': 'str',
+    #             'vitB3': 'str',
+    #             'vitB5': 'str',
+    #             'vitB6': 'str',
+    #             'vitB7': 'str',
+    #             'vitB9': 'str',
+    #             'vitB12': 'str',
+    #             'vitC': 'str',
+    #             'vitD': 'str',
+    #             'vitE': 'str',
+    #             'vitK': 'str',
+    #             'omega': 'str',
+    #             'kcal': 'str'
+    #         }
+    #     }
 
     @classmethod
     def to_dict(cls, model_instance: 'IntakeNutrientRequest') -> Dict[str, Any]:
@@ -389,5 +389,41 @@ time_div: str
   "vitK": "1",
   "omega": "1",
   "kcal": "1"
+}
+'''
+
+'''
+{
+  "time_div": "점심",
+  "date": "2023-02-19",
+  "time": "2023-02-19 12:05:32",
+  "protein": 1,
+  "fat": 1,
+  "carbo": 1,
+  "sugar": 1,
+  "chole": 1,
+  "fiber": 1,
+  "calcium": 1,
+  "iron": 1,
+  "magne": 1,
+  "potass": 1,
+  "sodium": 1,
+  "zinc": 1,
+  "copper": 1,
+  "vitA": 1,
+  "vitB1": 1,
+  "vitB2": 1,
+  "vitB3": 1,
+  "vitB5": 1,
+  "vitB6": 1,
+  "vitB7": 1,
+  "vitB9": 1,
+  "vitB12": 1,
+  "vitC": 1,
+  "vitD": 1,
+  "vitE": 1,
+  "vitK": 1,
+  "omega": 1,
+  "kcal": 1
 }
 '''
