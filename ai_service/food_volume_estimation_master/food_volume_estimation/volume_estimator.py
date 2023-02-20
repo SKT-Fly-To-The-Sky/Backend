@@ -530,9 +530,7 @@ def quals(img, class_result):
         try:
             masked_img = masking(img, bound_box)
             #############
-            is_success, buffer = cv.imencode(".jpeg", masked_img)
-            io_buf = io.BytesIO(buffer)
-            return io_buf.read()
+            return Image.fromarray(masked_img)
             ###########
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
