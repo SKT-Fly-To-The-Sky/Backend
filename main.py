@@ -189,7 +189,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         return JSONResponse(content=qual_result)
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at qual \n{e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at qual {e}")
 
 
 @app.get("/supplements/names")

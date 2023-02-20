@@ -530,14 +530,15 @@ def quals(img, class_result):
         try:
             masked_img = masking(img, bound_box)
             #############
-            return Image.fromarray(masked_img.astype('uint8'), 'RGB')
+            _, img_encoded = cv2.imencode('.png', masked_img)
+            return img_encoded.tobytes()
             ###########
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
             return class_result
         except Exception as e:
             # print(masked_img)
-            print(e)
+            print(f'at quals: {e}')
 
 # if __name__ == "__main__":
 #     qual()
