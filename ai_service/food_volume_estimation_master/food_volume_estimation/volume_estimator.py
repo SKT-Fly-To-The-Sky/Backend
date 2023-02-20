@@ -468,13 +468,10 @@ class VolumeEstimator():
                 self.__set_weights_trainable(layer, trainable)
 
 
-def qual(img): # if __name__ == "__main__": # 파라미터 추가
+def qual(input_image): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
 
-    img_bytes = np.array(Image.open(io.BytesIO(img))) # 수정 추가
-
-    input_image = img_bytes # 수정 추가
     # Iterate over input images to estimate volumes
     results = {'image_path': [], 'volumes': []}
     # for input_image in estimator.args.input_images:
@@ -486,7 +483,7 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
 
     # Store results per input image
     # results['image_path'].append(input_image) # 수정 주석
-    if (estimator.args.plots_directory is not None): # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
+    if estimator.args.plots_directory is not None: # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
         results['volumes'].append([x[0] * 1000 for x in volumes])
         plt.close('all')
     else:
@@ -503,19 +500,43 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
         for v in results['volumes'][-1]:
             print('[*] Food weight:', 1000 * v * density, 'g')
 
-    # res = OrderedDict() # json 파일 만들기
-    # res['total'] = np.sum(results['volumes'][0])
-    # # print(json.dumps(res, ensure_ascii=False, indent='\t'))
-    # with open('total.json', 'w', encoding='UTF-8') as make_file:
-    #     json.dump(res, make_file, ensure_ascii=False, indent='\t')
     
-    return(np.sum(results['volumes'][0]))
+    return np.sum(results['volumes'][0])
 
-    # return np.sum(results['volumes'][0])
-    # if estimator.args.results_file is not None: # to csv
-    #     # Save results in CSV format
-    #     volumes_df = pd.DataFrame(data=results)
-    #     volumes_df.to_csv(estimator.args.results_file, index=False)
+
+def masking(img, bndbox):
+    try:
+        x_min, y_min, x_max, y_max = map(int, [bndbox["xmin"], bndbox["ymin"], bndbox["xmax"], bndbox["ymax"]])
+
+        masked_img = img.copy()
+
+        # Set pixels outside the mask to black
+        masked_img[:y_min, :] = 0
+        masked_img[y_max:, :] = 0
+        masked_img[:, :x_min] = 0
+        masked_img[:, x_max:] = 0
+        return masked_img
+    except Exception as e:
+        print(e)
+
+def quals(img, class_result):
+    print(class_result)
+    img = np.array(Image.open(io.BytesIO(img)))
+
+    for i in range(class_result["object_num"]):
+        obj = class_result["object"][i]
+        if obj['name'] == "unknown":
+            continue
+        bound_box = obj["bndbox"]
+
+        try:
+            masked_img = masking(img, bound_box)
+            qual_result = qual(masked_img)
+            class_result['object'][i]['qual'] = qual_result
+            return class_result
+        except Exception as e:
+            # print(masked_img)
+            print(f'at quals: {e}')
 
 # if __name__ == "__main__":
 #     qual()
