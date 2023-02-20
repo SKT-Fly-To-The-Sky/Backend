@@ -2,19 +2,16 @@ version: '3'
 services:
   ftts_back_end:
     build: .
-
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
-
     ports:
-      - "10017:8000"
-    runtime: nvidia
-#    environment:
-#      - POSTGRES_HOST=${DB_HOST}
-#      - POSTGRES_PORT=${DB_PORT}
-#    env_file:
-#      - ./config/config.env
-
+      - ${CON_PORT}:8000
+#    runtime: nvidia
+    environment:
+      - DB_ROOT=${DB_ROOT}
+      - DB_PWD=${DB_PWD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+    env_file:
+      - ./config/dev.env
     command: [
       "uvicorn",
       "main:app",
@@ -23,7 +20,10 @@ services:
       "--reload" ]
     volumes:
       - .:/workspace
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     restart: always
+
 
 #  tensorboard:
 #    image: hsh0322/las-pytorch
