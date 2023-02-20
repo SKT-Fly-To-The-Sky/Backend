@@ -216,24 +216,26 @@ async def read_supplement_info(sup_name: str, db: Session = Depends(get_db)):
 
 @app.get("/foods/info")
 async def read_food_info(food_name: str, db: Session = Depends(get_db)):
-    food = db.query(FoodNutrientTable).filter(FoodNutrientTable.food_name == food_name).first()
-
-    if not food:
-        raise HTTPException(status_code=404, detail="food info not found")
-
-    return JSONResponse(content=food)
+    # food = db.query(FoodNutrientTable).filter(FoodNutrientTable.food_name == food_name).first()
+    #
+    # if not food:
+    #     raise HTTPException(status_code=404, detail="food info not found")
+    #
+    # return JSONResponse(content=food)
+    return JSONResponse(content={"food_name": "닭갈비", "serving_size": 400, "kcal": 595.61, "protein": 45.9, "fat": 25.8, "carbo": 44.9, "sugar": 21.2, "chole": 193.4, "fiber": 11.6, "calcium": 98.64, "iron": 3.38, "magne": 104.42, "potass": 1200.24, "sodium": 1535.83, "zinc": 3.55, "copper": 0.34, "vitA": 0, "vitB1": 0.24, "vitB2": 0.37, "vitB3": 1.23, "vitB5": 0, "vitB6": 0, "vitB7": 0, "vitB9": 0, "vitB12": 0, "vitC": 108.13, "vitD": 1.12, "vitE": 5.54, "vitK": 0, "omega": 0 })
 
 
 @app.get("/nutrients/recommand")
 async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends(get_db)):
-    recommand = db.query(RecommendedNutrientTable).filter(
-        and_(RecommendedNutrientTable.age == age, RecommendedNutrientTable.gender == gender)
-    ).first()
+    # recommand = db.query(RecommendedNutrientTable).filter(
+    #     and_(RecommendedNutrientTable.age == age, RecommendedNutrientTable.gender == gender)
+    # ).first()
+    #
+    # if not recommand:
+    #     raise HTTPException(status_code=404, detail="food info not found")
 
-    if not recommand:
-        raise HTTPException(status_code=404, detail="food info not found")
-
-    return JSONResponse(content=recommand)
+    # return JSONResponse(content=recommand)
+    return JSONResponse(content={"age": "19~29", "gender": "M", "vitA": 3000, "vitB1": 1.2, "vitB2": 1.5, "vitB3": 16, "vitB5": 5, "vitB6": 100, "vitB7": 30, "vitB9": 1000, "vitB12": 2.4, "vitC": 2000, "vitD": 100, "vitE": 540, "vitK": 75, "omega": 210, "kcal": 2600, "protein": 65, "fat": 65, "carbo": 130, "sugar": 100, "chole": 300, "fiber": 30, "calcium": 2500, "iron": 45, "magne": 360, "potass": 3500, "sodium": 2300, "zinc": 35, "copper": 10000 })
 
 
 @app.post("/{userid}/intakes/images")
