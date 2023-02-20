@@ -520,6 +520,7 @@ def masking(img, bndbox):
         print(e)
 
 def quals(img, class_result):
+    print(class_result)
     img = np.array(Image.open(io.BytesIO(img)))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
