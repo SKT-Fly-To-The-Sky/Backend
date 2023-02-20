@@ -369,7 +369,7 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     # return JSONResponse(content=json.dumps(nut_sum))
 
 @app.post("/supplements/classification")
-async def get_volume(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         image = await file.read()
         pil_image = Image.open(BytesIO(image))
