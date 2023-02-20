@@ -57,156 +57,161 @@ def ToF(file, cat):
 
 
 def detect(path, img0):
-    global opt
-    data = None
-    imgsz = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
-    out, source, weights, half, view_img, save_txt, save_xml = opt.output, opt.source, opt.weights, opt.half, opt.view_img, opt.save_txt, opt.save_xml
-    webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
+    try:
+        global opt
+        data = None
+        imgsz = (320, 192) if ONNX_EXPORT else opt.img_size  # (320, 192) or (416, 256) or (608, 352) for (height, width)
+        out, source, weights, half, view_img, save_txt, save_xml = opt.output, opt.source, opt.weights, opt.half, opt.view_img, opt.save_txt, opt.save_xml
+        webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
 
-    # Initialize
-    device = torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
-    if os.path.exists(out):
-        shutil.rmtree(out)  # delete output folder
-    os.makedirs(out)  # make new output folder
+        # Initialize
+        device = torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
+        if os.path.exists(out):
+            shutil.rmtree(out)  # delete output folder
+        os.makedirs(out)  # make new output folder
 
-    # Initialize model
-    model = Darknet(opt.cfg, imgsz)
+        # Initialize model
+        model = Darknet(opt.cfg, imgsz)
 
-    # Load weights
-    attempt_download(weights)
-    if weights.endswith('.pt'):  # pytorch format
-        model.load_state_dict(torch.load(weights, map_location=device)['model'], strict=False)
-    else:  # darknet format
-        load_darknet_weights(model, weights)
+        # Load weights
+        attempt_download(weights)
+        if weights.endswith('.pt'):  # pytorch format
+            model.load_state_dict(torch.load(weights, map_location=device)['model'], strict=False)
+        else:  # darknet format
+            load_darknet_weights(model, weights)
 
-    # Second-stage classifier
-    classify = False
-    if classify:
-        modelc = torch_utils.load_classifier(name='resnet101', n=2)  # initialize
-        modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
-                               strict=False)  # load weights
-        modelc.to(device).eval()
+        # Second-stage classifier
+        classify = False
+        if classify:
+            modelc = torch_utils.load_classifier(name='resnet101', n=2)  # initialize
+            modelc.load_state_dict(torch.load('weights/resnet101.pt', map_location=device)['model'],
+                                   strict=False)  # load weights
+            modelc.to(device).eval()
 
-    # Eval mode
-    model.to(device).eval()
+        # Eval mode
+        model.to(device).eval()
 
-    # Fuse Conv2d + BatchNorm2d layers
-    # model.fuse()
+        # Fuse Conv2d + BatchNorm2d layers
+        # model.fuse()
 
-    # Half precision
-    half = half and device.type != 'cpu'  # half precision only supported on CUDA
-    if half:
-        model.half()
+        # Half precision
+        half = half and device.type != 'cpu'  # half precision only supported on CUDA
+        if half:
+            model.half()
 
-    # dataset = LoadImages(source, img_size=imgsz)
+        # dataset = LoadImages(source, img_size=imgsz)
 
-    # Get names and colors
-    names = load_classes(opt.names)
+        # Get names and colors
+        names = load_classes(opt.names)
 
-    # for path, img, im0s, vid_cap in dataset:
+        # for path, img, im0s, vid_cap in dataset:
 
-    img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
-    for i in range(len(img0)):
-        for j in range(len(img0[0])):
-            img0[i][j] = img0[i][j][::-1]
+        img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
+        for i in range(len(img0)):
+            for j in range(len(img0[0])):
+                img0[i][j] = img0[i][j][::-1]
 
-    img = letterbox(img0, new_shape=imgsz)[0]
+        img = letterbox(img0, new_shape=imgsz)[0]
 
-    # Convert
-    img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-    img = np.ascontiguousarray(img)
+        # Convert
+        img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+        img = np.ascontiguousarray(img)
 
-    img = torch.from_numpy(img).to(device)
-    img = img.half() if half else img.float()  # uint8 to fp16/32
-    img /= 255.0  # 0 - 255 to 0.0 - 1.0
-    if img.ndimension() == 3:
-        img = img.unsqueeze(0)
-    # Inference
-    pred = model(img, augment=opt.augment)[0]
+        img = torch.from_numpy(img).to(device)
+        img = img.half() if half else img.float()  # uint8 to fp16/32
+        img /= 255.0  # 0 - 255 to 0.0 - 1.0
+        if img.ndimension() == 3:
+            img = img.unsqueeze(0)
+        # Inference
+        pred = model(img, augment=opt.augment)[0]
 
-    # to float
-    if half:
-        pred = pred.float()
+        # to float
+        if half:
+            pred = pred.float()
 
-    # Apply NMS
-    pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres,
-                               multi_label=False, classes=opt.classes, agnostic=opt.agnostic_nms)
+        # Apply NMS
+        pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres,
+                                   multi_label=False, classes=opt.classes, agnostic=opt.agnostic_nms)
 
-    # Apply Classifier
-    if classify:
-        pred = apply_classifier(pred, modelc, img, img0)
+        # Apply Classifier
+        if classify:
+            pred = apply_classifier(pred, modelc, img, img0)
 
-    # Process detections
-    for i, det in enumerate(pred):  # detections for image i
-        p, s, im0 = path, '', img0
+        # Process detections
+        for i, det in enumerate(pred):  # detections for image i
+            p, s, im0 = path, '', img0
 
-        save_path = str(Path(out) / Path(p).name)
+            save_path = str(Path(out) / Path(p).name)
 
-        root = Element('annotation')
-        SubElement(root, 'folder').text = str(Path(out))
-        SubElement(root, 'filename').text = str(Path(p))
-        SubElement(root, 'path').text = save_path
+            root = Element('annotation')
+            SubElement(root, 'folder').text = str(Path(out))
+            SubElement(root, 'filename').text = str(Path(p))
+            SubElement(root, 'path').text = save_path
 
-        if det is not None and len(det):
-            # Rescale boxes from imgsz to im0 size
-            det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
-            count = 0
+            if det is not None and len(det):
+                # Rescale boxes from imgsz to im0 size
+                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
+                count = 0
 
-            # Print results
-            # for c in det[:, -1].unique():
-            #     n = (det[:, -1] == c).sum()  # detections per class
-            #     s += '%g %s, ' % (n, names[int(c)])  # add to string
-            #     s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
+                # Print results
+                # for c in det[:, -1].unique():
+                #     n = (det[:, -1] == c).sum()  # detections per class
+                #     s += '%g %s, ' % (n, names[int(c)])  # add to string
+                #     s += '%s, ' % (ToF(str(Path(p)), names[int(c)]))  # add True or False
 
-            total = []
-            object_names = []
-            score = []
-            data = {}
-            data["object"] = []
+                total = []
+                object_names = []
+                score = []
+                data = {}
+                data["object"] = []
 
-            # Write results
-            for *xyxy, conf, cls in reversed(det):
-                label = '%s %.2f' % (names[int(cls)], conf)
-                score.append(label.split(' ')[1])
+                # Write results
+                for *xyxy, conf, cls in reversed(det):
+                    label = '%s %.2f' % (names[int(cls)], conf)
+                    score.append(label.split(' ')[1])
 
-                semi = []
-                for nums in range(4):
-                    str_x = str(xyxy[nums]).split('(')
-                    str_x = str_x[1].split('.')
-                    semi.append(str_x[0])
-                total.append(semi)
-                object_names.append(names[int(cls)])
-                count = count + 1
+                    semi = []
+                    for nums in range(4):
+                        str_x = str(xyxy[nums]).split('(')
+                        str_x = str_x[1].split('.')
+                        semi.append(str_x[0])
+                    total.append(semi)
+                    object_names.append(names[int(cls)])
+                    count = count + 1
 
-            for i in range(count):  ##리스트 두 개 xml파일에 저장
-                data["object"].append({
-                    "name": object_names[i],
-                    "bndbox": {
-                        "xmin": str(total[i][0]),
-                        "ymin": str(total[i][1]),
-                        "xmax": str(total[i][2]),
-                        "ymax": str(total[i][3])
-                    },
-                    "score": score[i]
-                })
+                for i in range(count):  ##리스트 두 개 xml파일에 저장
+                    data["object"].append({
+                        "name": object_names[i],
+                        "bndbox": {
+                            "xmin": str(total[i][0]),
+                            "ymin": str(total[i][1]),
+                            "xmax": str(total[i][2]),
+                            "ymax": str(total[i][3])
+                        },
+                        "score": score[i]
+                    })
 
-            if save_xml:
-                with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
-                    json.dump(data, outfile)
-    if data:
-        return data
-    else:
-        data["object"].append({
-            "name": 'unknown',
-            "bndbox": {
-                "xmin": '0',
-                "ymin": '0',
-                "xmax": '0',
-                "ymax": '0'
-            },
-            "score": 0
-        })
-        return data
+                if save_xml:
+                    with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
+                        json.dump(data, outfile)
+        if data:
+            return data
+        else:
+            data["object"].append({
+                "name": 'unknown',
+                "bndbox": {
+                    "xmin": '0',
+                    "ymin": '0',
+                    "xmax": '0',
+                    "ymax": '0'
+                },
+                "score": 0
+            })
+            return data
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f'error in classification model\n{e}')
 
 def classification(img0):
     try:
@@ -236,7 +241,6 @@ def classification(img0):
         opt.cfg = check_file(opt.cfg)  # check file
         opt.names = check_file(opt.names)  # check file
         print(os.path.realpath(__file__))
-        print(len(os.listdir(opt.source)))
 
         result = detect("asdf", img0)
         for d in result['object']:
