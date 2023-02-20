@@ -517,6 +517,23 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
     #     volumes_df = pd.DataFrame(data=results)
     #     volumes_df.to_csv(estimator.args.results_file, index=False)
 
+def masking(img, bndbox):
+    x_min, y_min, x_max, y_max = bndbox
+    mask = np.zeros_like(img)
+    cv2.rectangle(mask, (x_min, y_min), (x_max, y_max), (255, 255, 255), -1)
+    masked_img = np.bitwise_and(img, mask)
+    return masked_img
+
+def quals(img, class_result):
+    for i in range(class_result["object_num"]):
+        obj = class_result["object"][i]
+        bound_box = obj["bndbox"]
+        masked_img = masking(img, bound_box)
+
+        qual_result = qual(masked_img)
+
+        class_result['object'][i]['qual'] = qual_result
+    return class_result
 # if __name__ == "__main__":
 #     qual()
     # VolumeEstimator(arg~~~~)
