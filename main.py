@@ -48,6 +48,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# db_host = os.environ['POSTGRES_HOST']
+# db_port = os.environ['POSTGRES_PORT']
+
 
 @app.exception_handler(Exception)
 async def handle_exception(request: Request, exc: Exception):
@@ -178,7 +181,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         return JSONResponse(content=result)
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=987, detail=f"{e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"{e}")
 
 
 @app.get("/supplements/names")

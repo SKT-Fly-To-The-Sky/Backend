@@ -244,40 +244,7 @@ def classification(img0):
         return result
     except Exception as e:
         torch.cuda.empty_cache()
-        raise HTTPException(status_code=999, detail=f'error at classification model\n{e}')
-
-    # with torch.no_grad():
-    #     print('Session START :', time.strftime('%Y-%m-%d %Z %H:%M:%S', time.localtime(time.time())))
-    #     print('command : python3 detect_1231.py --cfg {0} --names {1} --weights {2}'.format(opt.cfg, opt.names, opt.weights))
-    #     print('===============================================================')
-    #     #print(d.isoformat())
-    #     def printOsInfo():
-    #         print('GPU                  :\t', torch.cuda.get_device_name(0)) 
-    #         print('OS                   :\t', pf.system())
-    #         #  print('OS Version           :\t', platform.version())
-
-    #     if __name__ == '__main__':
-    #         printOsInfo()
-
-    #     def printSystemInfor():
-    #         print('Process information  :\t', pf.processor())
-    #         print('Process Architecture :\t', pf.machine())
-    #         print('RAM Size             :\t',str(round(psutil.virtual_memory().total / (1024.0 **3)))+"(GB)")
-    #         print('===============================================================')
-          
-    #     if __name__ == '__main__':
-    #         printSystemInfor()  
-
-    #     print('Pytorch')
-    #     print('torch ' + torch.__version__)
-    #     print('numpy ' + np.__version__)
-    #     print('torchvision ' + torch.__version__)
-    #     print('matplotlib ' + matplotlib.__version__)
-    #     print('pillow ' + PIL.__version__)
-    #     print('pandas ' + pd.__version__)
-    #     print('seaborn ' + sns.__version__)   
-    #     print('psutil ' + psutil.__version__) 
-    #     print('===============================================================')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f'error at classification model\n{e}')
 
 if __name__ == '__main__':
     classification()
