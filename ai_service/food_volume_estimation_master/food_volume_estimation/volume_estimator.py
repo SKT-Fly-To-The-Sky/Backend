@@ -508,7 +508,7 @@ def masking(img, bndbox):
     try:
         x_min, y_min, x_max, y_max = bndbox
         mask = np.zeros_like(img)
-        cv2.rectangle(mask, (x_min, y_min), (x_min + x_max, y_min + y_max), (255, 255, 255), -1)
+        cv2.rectangle(mask, (x_min, y_min), (x_max, y_max), (255, 255, 255), -1)
         masked_img = np.bitwise_and(img, mask)
         return masked_img
         # return img
