@@ -509,9 +509,6 @@ def masking(img, bndbox):
         x_min, y_min, x_max, y_max = map(int, [bndbox["xmin"], bndbox["ymin"], bndbox["xmax"], bndbox["ymax"]])
 
         masked_img = img.copy()
-        print('-----------------------')
-        print(bndbox)
-        print('-----------------------')
 
         # Set pixels outside the mask to black
         masked_img[:y_min, :] = 0
@@ -532,6 +529,7 @@ def quals(img, class_result):
 
         try:
             masked_img = masking(img, bound_box)
+            return masked_img
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
             return class_result
