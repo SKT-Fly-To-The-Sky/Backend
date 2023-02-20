@@ -197,9 +197,9 @@ async def read_nutrients_name(db: Session = Depends(get_db)):
     if not sup_names:
         raise HTTPException(status_code=404, detail="nut names not found")
 
-    sup_name_list = [n.sup_name for n in sup_names]
+    # sup_name_list = [n.sup_name for n in sup_names]
 
-    return sup_name_list
+    return sup_names
 
 
 @app.get("/supplements/name")
