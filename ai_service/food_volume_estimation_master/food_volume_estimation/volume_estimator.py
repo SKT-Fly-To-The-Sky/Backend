@@ -6,6 +6,7 @@ import cv2
 import json
 import warnings # 수정 추가
 import os # 수정 추가
+import io
 from PIL import Image # 수정 추가
 from collections import OrderedDict # 수정 추가
 from scipy.spatial.distance import pdist
@@ -469,7 +470,9 @@ class VolumeEstimator():
 def qual(img): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
-    input_image = Image.fromarray(img)
+    img_bytes = np.array(Image.open(io.BytesIO(img)))
+
+    input_image = Image.fromarray(img_bytes) # 수정 추가
     # Iterate over input images to estimate volumes
     results = {'image_path': [], 'volumes': []}
     # for input_image in estimator.args.input_images:
