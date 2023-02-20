@@ -528,7 +528,7 @@ def quals(img, class_result):
             class_result['object'][i]['qual'] = qual_result
             return class_result
         except Exception as e:
-            print(masked_img)
+            # print(masked_img)
             print(e)
 
 # if __name__ == "__main__":
