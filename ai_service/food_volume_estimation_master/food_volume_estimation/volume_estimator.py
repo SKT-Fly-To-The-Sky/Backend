@@ -506,17 +506,17 @@ def qual(input_image): # if __name__ == "__main__": # 파라미터 추가
 
 def masking(img, bndbox):
     try:
-        x_min, y_min, x_max, y_max = bndbox
+        x_min, y_min, x_max, y_max = map(int, bndbox)
         masked_img = img.copy()
         print('-----------------------')
         print(bndbox)
         print('-----------------------')
 
         # Set pixels outside the mask to black
-        # masked_img[:y_min, :] = 0
-        # masked_img[y_max:, :] = 0
-        # masked_img[:, :x_min] = 0
-        # masked_img[:, x_max:] = 0
+        masked_img[:y_min, :] = 0
+        masked_img[y_max:, :] = 0
+        masked_img[:, :x_min] = 0
+        masked_img[:, x_max:] = 0
         return masked_img
     except Exception as e:
         print(e)
