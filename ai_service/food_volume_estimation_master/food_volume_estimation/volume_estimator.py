@@ -507,9 +507,13 @@ def qual(input_image): # if __name__ == "__main__": # 파라미터 추가
 def masking(img, bndbox):
     try:
         x_min, y_min, x_max, y_max = bndbox
-        mask = np.zeros_like(img)
-        new_img = cv2.rectangle(mask, (x_min, y_min), (x_max, y_max), (255, 255, 255), -1)
-        masked_img = np.bitwise_and(new_img, mask)
+        masked_img = img.copy()
+
+        # Set pixels outside the mask to black
+        masked_img[:y_min, :] = 0
+        masked_img[y_max:, :] = 0
+        masked_img[:, :x_min] = 0
+        masked_img[:, x_max:] = 0
         return masked_img
         # return img
     except Exception as e:
@@ -522,7 +526,6 @@ def quals(img, class_result):
             continue
         bound_box = obj["bndbox"]
 
-        masked_img = ""
         try:
             img = np.array(Image.open(io.BytesIO(img)))
 
