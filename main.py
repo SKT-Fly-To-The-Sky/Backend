@@ -192,12 +192,12 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
 
 @app.get("/supplements/names")
 async def read_nutrients_name(db: Session = Depends(get_db)):
-    nut_names = db.query(SupplementTable).all()
+    sup_names = db.query(SupplementTable.sup_name).all()
 
-    if not nut_names:
+    if not sup_names:
         raise HTTPException(status_code=404, detail="nut names not found")
 
-    return JSONResponse(content=nut_names)
+    return JSONResponse(content=sup_names)
 
 
 @app.get("/supplements/name")

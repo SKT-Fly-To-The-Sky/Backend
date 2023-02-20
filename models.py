@@ -43,7 +43,7 @@ class ConfigTable(Base):
 class SupplementTable(Base):
     __tablename__ = "supplement_info"
 
-    nut_name = Column(String(200), primary_key=True)
+    sup_name = Column(String(200), primary_key=True)
     intake_time_div = Column(String(50))
     buy_link = Column(String(300))
     vitA = Column(Float)
