@@ -33,3 +33,4 @@ pythreejs==2.1.1
 IPython
 Flask==1.1.1
 fuzzywuzzy==0.18.0
+h5py==2.9

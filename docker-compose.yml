@@ -3,15 +3,8 @@ services:
   ftts_back_end:
     build: .
     ports:
-      - ${CON_PORT}:8000
+      - 10017:8000
     runtime: nvidia
-    environment:
-      - DB_ROOT=${DB_ROOT}
-      - DB_PWD=${DB_PWD}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-    env_file:
-      - ./config/dev.env
     command: [
       "uvicorn",
       "main:app",
