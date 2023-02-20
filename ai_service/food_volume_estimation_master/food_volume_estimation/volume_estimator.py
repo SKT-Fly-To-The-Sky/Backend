@@ -5,8 +5,8 @@ import pandas as pd
 import cv2
 import json
 import warnings # 수정 추가
-import os
-from PIL import Image
+import os # 수정 추가
+from PIL import Image # 수정 추가
 from collections import OrderedDict # 수정 추가
 from scipy.spatial.distance import pdist
 from scipy.stats import skew
@@ -469,7 +469,7 @@ class VolumeEstimator():
 def qual(img): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
-    input_image = Image.Open(img) # 수정 추가
+    input_image = Image.fromarray(img)
     # Iterate over input images to estimate volumes
     results = {'image_path': [], 'volumes': []}
     # for input_image in estimator.args.input_images:
