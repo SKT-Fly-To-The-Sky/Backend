@@ -521,6 +521,7 @@ def quals(img, class_result):
             continue
         bound_box = obj["bndbox"]
 
+        masked_img = ""
         try:
             masked_img = masking(img, bound_box)
             qual_result = qual(masked_img)
