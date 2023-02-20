@@ -526,8 +526,8 @@ def quals(img, class_result):
 
     for i in range(class_result["object_num"]):
         obj = class_result["object"][i]
-        if obj['name'] == "unknown":
-            continue
+        # if obj['name'] == "unknown":
+        #     continue
         bound_box = obj["bndbox"]
 
         try:
