@@ -506,7 +506,8 @@ def qual(input_image): # if __name__ == "__main__": # 파라미터 추가
 
 def masking(img, bndbox):
     try:
-        x_min, y_min, x_max, y_max = map(int, bndbox)
+        x_min, y_min, x_max, y_max = map(int, [bndbox["xmin"], bndbox["ymin"], bndbox["xmax"], bndbox["ymax"]])
+
         masked_img = img.copy()
         print('-----------------------')
         print(bndbox)
