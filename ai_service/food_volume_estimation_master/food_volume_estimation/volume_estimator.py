@@ -520,6 +520,7 @@ def masking(img, bndbox):
         print(e)
 
 def quals(img, class_result):
+    img = np.array(Image.open(io.BytesIO(img)))
     for i in range(class_result["object_num"]):
         obj = class_result["object"][i]
         if obj['name'] == "unknown":
@@ -527,8 +528,6 @@ def quals(img, class_result):
         bound_box = obj["bndbox"]
 
         try:
-            img = np.array(Image.open(io.BytesIO(img)))
-
             masked_img = masking(img, bound_box)
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
