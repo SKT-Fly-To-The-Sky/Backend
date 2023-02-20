@@ -179,7 +179,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         result = classification(content)
         result['object_num'] = len(result['object'])
         try:
-            qual_result = quals(result)
+            qual_result = quals(content, result)
             return JSONResponse(content=qual_result)
         except Exception as e:
             print(e)
