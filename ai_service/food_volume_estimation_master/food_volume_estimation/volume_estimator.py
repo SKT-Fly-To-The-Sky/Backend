@@ -216,10 +216,11 @@ class VolumeEstimator():
             estimated_volume: Estimated volume.
         """
         # Load input image and resize to model input size
-        if isinstance(input_image, str):
-            img = cv2.imread(input_image, cv2.IMREAD_COLOR)
-        else:
-            img = input_image
+        # if isinstance(input_image, str): # 수정 주석 이하 4줄
+        #     img = cv2.imread(input_image, cv2.IMREAD_COLOR)
+        # else:
+        #     img = input_image
+        img = input_image
         input_image_shape = img.shape
         img = cv2.resize(img, (self.model_input_shape[1],
                                self.model_input_shape[0]))
@@ -470,9 +471,10 @@ class VolumeEstimator():
 def qual(img): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
-    img_bytes = np.array(Image.open(io.BytesIO(img)))
 
-    input_image = Image.fromarray(img_bytes) # 수정 추가
+    # img_bytes = np.array(Image.open(io.BytesIO(img)))
+
+    input_image = img # 수정 추가
     # Iterate over input images to estimate volumes
     results = {'image_path': [], 'volumes': []}
     # for input_image in estimator.args.input_images:
@@ -483,7 +485,7 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
         estimator.args.plots_directory)
 
     # Store results per input image
-    results['image_path'].append(input_image)
+    # results['image_path'].append(input_image) # 수정 주석
     if (estimator.args.plots_directory is not None): # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
         results['volumes'].append([x[0] * 1000 for x in volumes])
         plt.close('all')
