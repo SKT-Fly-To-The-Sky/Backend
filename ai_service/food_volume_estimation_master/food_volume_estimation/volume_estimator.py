@@ -521,10 +521,6 @@ def quals(img, class_result):
 
         try:
             masked_img = masking(img, bound_box)
-        except Exception as e:
-            print(e)
-
-        try:
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
             return class_result
