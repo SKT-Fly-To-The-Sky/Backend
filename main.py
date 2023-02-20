@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
+from ai_service.supplement_classification.supplement_classifier import sup_classification
 from ai_service.yolov3.detect_del import classification
 from database import engine, Base, get_db, init_db
 from PIL import Image
@@ -191,25 +192,26 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
 
 
 @app.get("/supplements/names")
-async def read_nutrients_name(db: Session = Depends(get_db)):
+async def read_supplement_names(db: Session = Depends(get_db)):
     sup_names = db.query(SupplementTable.sup_name).all()
 
     if not sup_names:
         raise HTTPException(status_code=404, detail="nut names not found")
 
-    # sup_name_list = [n.sup_name for n in sup_names]
+    sup_name_list = [n.sup_name for n in sup_names]
 
-    return sup_names
+    return sup_name_list
 
 
 @app.get("/supplements/name")
-async def read_nutrients_info(nut_name: str, db: Session = Depends(get_db)):
-    nut = db.query(SupplementTable).filter(SupplementTable.nut_name == nut_name).first()
-
-    if not nut:
-        raise HTTPException(status_code=404, detail="nut info not found")
-
-    return JSONResponse(content=nut)
+async def read_supplement_info(sup_name: str, db: Session = Depends(get_db)):
+    # nut = db.query(SupplementTable).filter(SupplementTable.sup_name == sup_name).first()
+    #
+    # if not nut:
+    #     raise HTTPException(status_code=404, detail="nut info not found")
+    #
+    # return JSONResponse(content=nut)
+    return JSONResponse(content={"kcal": 0, "protein": 0, "fat": 0, "carbo": 0, "sugar": 0, "chole": 0, "fiber": 0, "calcium": 0, "iron": 0, "magne": 0, "potass": 0, "sodium": 0, "zinc": 0, "copper": 0, "vitA": 0, "vitB1": 0, "vitB2": 0, "vitB3": 0, "vitB5": 0, "vitB6": 0, "vitB7": 0, "vitB9": 0, "vitB12": 0, "vitC": 0, "vitD": 0, "vitE": 0,"vitK": 0, "omega": 0})
 
 
 @app.get("/foods/info")
@@ -363,27 +365,20 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     return nut_sum
     # return JSONResponse(content=json.dumps(nut_sum))
 
-@app.get("/volume")
-async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
-    food_item = db.query(IntakeNutrientTable).filter(
-        and_(IntakeNutrientTable.userid == userid,
-             IntakeNutrientTable.time_div == time_div,
-             IntakeNutrientTable.date == date)
-    ).first()
-
-    if not food_item:
-        raise HTTPException(status_code=404, detail="Food item not found")
-
-    if not food_item.image:
-        raise HTTPException(status_code=404, detail="Food image not found")
-
+@app.post("/supplements/classification")
+async def get_volume(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
-        content = food_item.image
-        result = qual(content)
-        return JSONResponse(content=result)
+        image = await file.read()
+        pil_image = Image.open(BytesIO(image))
+        output = BytesIO()
+        pil_image.save(output, format='JPEG')
+        image_data = output.getvalue()
     except Exception as e:
+        logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
         print(e)
-        raise HTTPException(status_code=501, detail=f"{e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
+
+    sup_classification(image_data)
 
 
 @app.get("/error")
