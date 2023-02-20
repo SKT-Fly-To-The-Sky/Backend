@@ -510,9 +510,9 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
 def masking(img, bndbox):
     x_min, y_min, x_max, y_max = bndbox
     mask = np.zeros_like(img)
-    # cv2.rectangle(mask, (x_min, y_min), (x_max, y_max), (255, 255, 255), -1)
-    # masked_img = np.bitwise_and(img, mask)
-    return img
+    cv2.rectangle(mask, (x_min, y_min), (x_min + x_max, y_min + y_max), (255, 255, 255), -1)
+    masked_img = np.bitwise_and(img, mask)
+    return masked_img
 
 def quals(img, class_result):
     for i in range(class_result["object_num"]):
@@ -523,6 +523,8 @@ def quals(img, class_result):
 
         masked_img = ""
         try:
+            img = np.array(Image.open(io.BytesIO(img)))
+
             masked_img = masking(img, bound_box)
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
