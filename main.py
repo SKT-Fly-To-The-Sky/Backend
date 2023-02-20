@@ -203,7 +203,7 @@ async def read_supplement_names(db: Session = Depends(get_db)):
     return sup_name_list
 
 
-@app.get("/supplements/name")
+@app.get("/supplements/info")
 async def read_supplement_info(sup_name: str, db: Session = Depends(get_db)):
     # nut = db.query(SupplementTable).filter(SupplementTable.sup_name == sup_name).first()
     #
