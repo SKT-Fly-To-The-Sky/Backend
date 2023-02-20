@@ -486,7 +486,7 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
 
     # Store results per input image
     # results['image_path'].append(input_image) # 수정 주석
-    if (estimator.args.plots_directory is not None): # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
+    if estimator.args.plots_directory is not None: # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
         results['volumes'].append([x[0] * 1000 for x in volumes])
         plt.close('all')
     else:
@@ -503,19 +503,9 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
         for v in results['volumes'][-1]:
             print('[*] Food weight:', 1000 * v * density, 'g')
 
-    # res = OrderedDict() # json 파일 만들기
-    # res['total'] = np.sum(results['volumes'][0])
-    # # print(json.dumps(res, ensure_ascii=False, indent='\t'))
-    # with open('total.json', 'w', encoding='UTF-8') as make_file:
-    #     json.dump(res, make_file, ensure_ascii=False, indent='\t')
     
     return np.sum(results['volumes'][0])
 
-    # return np.sum(results['volumes'][0])
-    # if estimator.args.results_file is not None: # to csv
-    #     # Save results in CSV format
-    #     volumes_df = pd.DataFrame(data=results)
-    #     volumes_df.to_csv(estimator.args.results_file, index=False)
 
 def masking(img, bndbox):
     x_min, y_min, x_max, y_max = bndbox
@@ -528,12 +518,19 @@ def quals(img, class_result):
     for i in range(class_result["object_num"]):
         obj = class_result["object"][i]
         bound_box = obj["bndbox"]
-        masked_img = masking(img, bound_box)
 
-        qual_result = qual(masked_img)
+        try:
+            masked_img = masking(img, bound_box)
+        except Exception as e:
+            print(e)
 
-        class_result['object'][i]['qual'] = qual_result
-    return class_result
+        try:
+            qual_result = qual(masked_img)
+            class_result['object'][i]['qual'] = qual_result
+            return class_result
+        except Exception as e:
+            print(e)
+
 # if __name__ == "__main__":
 #     qual()
     # VolumeEstimator(arg~~~~)
