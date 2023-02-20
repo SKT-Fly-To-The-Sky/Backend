@@ -509,7 +509,7 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
     # with open('total.json', 'w', encoding='UTF-8') as make_file:
     #     json.dump(res, make_file, ensure_ascii=False, indent='\t')
     
-    return(np.sum(results['volumes'][0]))
+    return np.sum(results['volumes'][0])
 
     # return np.sum(results['volumes'][0])
     # if estimator.args.results_file is not None: # to csv
