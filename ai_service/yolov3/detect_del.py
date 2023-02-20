@@ -107,6 +107,8 @@ def detect(path, img0):
         # for path, img, im0s, vid_cap in dataset:
 
         img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
+        img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2RGB)
+
         for i in range(len(img0)):
             for j in range(len(img0[0])):
                 img0[i][j] = img0[i][j][::-1]
