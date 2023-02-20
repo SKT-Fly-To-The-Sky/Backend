@@ -181,7 +181,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         try:
             qual_result = quals(content, result)
             ##
-            return Response(content=qual_result, media_type="image/jpeg")
+            return Response(content=qual_result)#, media_type="image/jpeg")
             return JSONResponse(content=qual_result)
         except Exception as e:
             print(e)
