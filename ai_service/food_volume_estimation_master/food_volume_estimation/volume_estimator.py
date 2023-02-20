@@ -522,20 +522,15 @@ def masking(img, bndbox):
 def quals(img, class_result):
     print(class_result)
     img = np.array(Image.open(io.BytesIO(img)))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     for i in range(class_result["object_num"]):
         obj = class_result["object"][i]
-        # if obj['name'] == "unknown":
-        #     continue
+        if obj['name'] == "unknown":
+            continue
         bound_box = obj["bndbox"]
 
         try:
             masked_img = masking(img, bound_box)
-            #############
-            _, img_encoded = cv2.imencode('.png', masked_img)
-            return img_encoded.tobytes()
-            ###########
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
             return class_result
