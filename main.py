@@ -177,15 +177,14 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
     try:
         content = food_item.image
         result = classification(content)
-        # result['object_num'] = len(result['object'])
+        result['object_num'] = len(result['object'])
     except Exception as e:
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
 
     try:
-        # qual_result = quals(content, result)
-        ##
-        return Response(content=result, media_type="image/jpeg")
+        qual_result = quals(content, result)
+        return Response(content=qual_result, media_type="image/jpeg")
         return JSONResponse(content=qual_result)
     except Exception as e:
         print(e)
