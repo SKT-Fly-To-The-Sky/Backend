@@ -2,3 +2,4 @@
 static/
 *.log
 __pycache__/
+*.pyc
