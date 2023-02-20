@@ -5,6 +5,7 @@ from ai_service.food_volume_estimation_master.food_volume_estimation.ellipse_det
 from ai_service.food_volume_estimation_master.food_volume_estimation.ellipse_detection.ellipse_candidate import EllipseCandidate
 
 
+
 class EllipseCandidateMaker(object):
     ELLIPSE_CENTER_REJECT_DISTANCE = 25
 
