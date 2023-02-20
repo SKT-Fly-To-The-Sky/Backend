@@ -472,9 +472,9 @@ def qual(img): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
 
-    # img_bytes = np.array(Image.open(io.BytesIO(img)))
+    img_bytes = np.array(Image.open(io.BytesIO(img))) # 수정 추가
 
-    input_image = img # 수정 추가
+    input_image = img_bytes # 수정 추가
     # Iterate over input images to estimate volumes
     results = {'image_path': [], 'volumes': []}
     # for input_image in estimator.args.input_images:
