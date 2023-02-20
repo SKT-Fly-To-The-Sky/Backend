@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
-from sqlalchemy import and_
+from sqlalchemy import and_, inspect, func
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -47,6 +47,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# db_host = os.environ['POSTGRES_HOST']
+# db_port = os.environ['POSTGRES_PORT']
 
 
 @app.exception_handler(Exception)
@@ -178,7 +181,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         return JSONResponse(content=result)
     except Exception as e:
         print(e)
-        raise HTTPException(status_code=501, detail=f"{e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"{e}")
 
 
 @app.get("/supplements/names")
@@ -257,17 +260,26 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, time
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
+async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
                                  db: Session = Depends(get_db)):
-
+    intake = db.query(IntakeNutrientTable).filter(
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == nut_data.time_div,
+            IntakeNutrientTable.date == nut_data.date)
+    ).first()
+    if intake is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no image in that date, time-div.")
     try:
         if nut_data.date is None:
             nut_data.date = datetime.now().strftime("%Y-%m-%d")
         if nut_data.time is None:
             nut_data.time = datetime.now()
 
-        intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
-        db.add(intake)
+        for attr, value in vars(nut_data).items():
+            if hasattr(intake, attr):
+                setattr(intake, attr, value)
+        # intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
         db.commit()
         db.refresh(intake)
     except Exception as e:
@@ -278,9 +290,12 @@ async def create_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
     return {"message": "nutrient data saved successfully"}
 
 @app.get("/{userid}/intakes/images")
-async def read_intake_image(userid: str, time_div: str, db: Session = Depends(get_db)):
+async def read_intake_image(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     img = db.query(IntakeNutrientTable).filter(
-        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div)
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == time_div,
+            IntakeNutrientTable.date == date)
     ).first().image
 
     if not img:
@@ -289,10 +304,13 @@ async def read_intake_image(userid: str, time_div: str, db: Session = Depends(ge
     return Response(content=img, media_type="image/jpeg")
 
 
-@app.get("/{userid}/intakes/nutrients")
-async def read_intake_nutrient(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+@app.get("/{userid}/intakes/nutrients/time-div")
+async def read_intake_nutrient_time_dev(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     nutrients = db.query(IntakeNutrientTable).filter(
-        and_(IntakeNutrientTable.userid == userid, IntakeNutrientTable.time_div == time_div, IntakeNutrientTable.date == date)
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == time_div,
+            IntakeNutrientTable.date == date)
     ).first()
 
     if not nutrients:
@@ -301,6 +319,41 @@ async def read_intake_nutrient(userid: str, time_div: str, date: str, db: Sessio
     nutrients.image = None
 
     return JSONResponse(content=nutrients)
+
+@app.get("/{userid}/intakes/nutrients/day")
+async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends(get_db)):
+    nutrients = db.query(IntakeNutrientTable).filter(
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.date == date)
+    ).all()
+
+    if not nutrients:
+        raise HTTPException(status_code=404, detail="Intake nutrients not found")
+
+    nut_sum = {}
+    columns = [c.name for c in inspect(IntakeNutrientTable).c if c.name != 'id']
+    not_sum_list = ['userid', 'date']
+    not_include_list = ['time', 'time_div', 'image']
+    # Use a list comprehension to construct a list of sum functions for each column
+    # Use SQLAlchemy's query function to calculate the total for each column
+    for nutrient in nutrients:
+        for column in columns:
+            if column in not_include_list:
+                continue
+            if getattr(nutrient, column) is None:
+                nut_sum[column] = 0
+                continue
+            if column not in nut_sum or column in not_sum_list:
+                nut_sum[column] = getattr(nutrient, column)
+            else:
+                nut_sum[column] += getattr(nutrient, column)
+
+    # Create a new instance of the model with the column sums
+    # new_instance = IntakeNutrientTable(**nut_sum)
+    # print(nut_sum)
+    return nut_sum
+    # return JSONResponse(content=json.dumps(nut_sum))
 
 @app.get("/volume")
 async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
