@@ -362,7 +362,7 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     # Create a new instance of the model with the column sums
     # new_instance = IntakeNutrientTable(**nut_sum)
     # print(nut_sum)
-    return nut_sum
+    return {"result": nut_sum}
     # return JSONResponse(content=json.dumps(nut_sum))
 
 @app.post("/supplements/classification")
@@ -378,7 +378,7 @@ async def get_volume(file: UploadFile = File(...), db: Session = Depends(get_db)
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
-    sup_classification(image_data)
+    return {"result": sup_classification(image_data)}
 
 
 @app.get("/error")
