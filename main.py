@@ -4,12 +4,15 @@ from datetime import timedelta
 from json import loads
 
 import jwt
+import numpy as np
 import uvicorn
 from jwt import PyJWTError
 from fastapi import FastAPI, HTTPException, UploadFile, File, Response, Depends, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
+import io
+
 
 from sqlalchemy import and_, inspect, func
 from sqlalchemy.orm import Session
@@ -190,6 +193,27 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at qual {e}")
 
+@app.get('/volume')
+async def get_volume(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+    food_item = db.query(IntakeNutrientTable).filter(
+        and_(IntakeNutrientTable.userid == userid,
+             IntakeNutrientTable.time_div == time_div,
+             IntakeNutrientTable.date == date)
+    ).first()
+
+    if not food_item:
+        raise HTTPException(status_code=404, detail="Food item not found")
+
+    if not food_item.image:
+        raise HTTPException(status_code=404, detail="Food image not found")
+
+    try:
+        content = food_item.image
+        img = np.array(Image.open(io.BytesIO(content)))
+        return qual(img)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
 
 @app.get("/supplements/names")
 async def read_supplement_names(db: Session = Depends(get_db)):
@@ -382,6 +406,11 @@ async def read_supplements_classification(file: UploadFile = File(...), db: Sess
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
     return {"result": sup_classification(image_data)}
+
+
+@app.get("/{userid}/supplements/recommanded/list")
+async def read_recommanded_supplements(userid: str, db: Session = Depends(get_db)):
+    return {"영양제 1", "영양제 2", "영양제 3"}
 
 
 @app.get("/error")
