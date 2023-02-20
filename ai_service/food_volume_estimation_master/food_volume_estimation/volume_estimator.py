@@ -5,11 +5,11 @@ import pandas as pd
 import cv2
 import json
 import warnings # 수정 추가
+import os
+from PIL import Image
 from collections import OrderedDict # 수정 추가
 from scipy.spatial.distance import pdist
 from scipy.stats import skew
-import io
-from PIL import Image
 from keras.models import Model, model_from_json
 import keras.backend as K
 from fuzzywuzzy import fuzz, process 
@@ -468,7 +468,6 @@ class VolumeEstimator():
 
 def qual(img): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
-    img = Image.Open(img)
     estimator = VolumeEstimator()
     input_image = Image.Open(img) # 수정 추가
     # Iterate over input images to estimate volumes
