@@ -108,6 +108,7 @@ def detect(path, img0):
 
         img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
         img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2RGB)
+        return img0
 
         for i in range(len(img0)):
             for j in range(len(img0[0])):
