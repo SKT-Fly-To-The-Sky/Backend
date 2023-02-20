@@ -193,14 +193,15 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
 
 @app.get("/supplements/names")
 async def read_supplement_names(db: Session = Depends(get_db)):
-    sup_names = db.query(SupplementTable.sup_name).all()
-
-    if not sup_names:
-        raise HTTPException(status_code=404, detail="nut names not found")
-
-    sup_name_list = [n.sup_name for n in sup_names]
-
-    return sup_name_list
+    # sup_names = db.query(SupplementTable.sup_name).all()
+    #
+    # if not sup_names:
+    #     raise HTTPException(status_code=404, detail="nut names not found")
+    #
+    # sup_name_list = [n.sup_name for n in sup_names]
+    #
+    # return sup_name_list
+    return ["영양제 1", "영양제 2", "영양제 3"]
 
 
 @app.get("/supplements/info")
