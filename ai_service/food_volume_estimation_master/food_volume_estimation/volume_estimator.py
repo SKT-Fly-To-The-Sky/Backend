@@ -530,7 +530,7 @@ def quals(img, class_result):
         try:
             masked_img = masking(img, bound_box)
             #############
-            return Image.fromarray(np.uint8(masked_img))
+            return Image.fromarray(masked_img.astype('uint8'), 'RGB')
             ###########
             qual_result = qual(masked_img)
             class_result['object'][i]['qual'] = qual_result
