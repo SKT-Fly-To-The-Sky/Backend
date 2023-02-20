@@ -2,3 +2,7 @@
 static/
 *.log
 __pycache__/
+
+*.pyc
+*.h5
+*.hdf5
