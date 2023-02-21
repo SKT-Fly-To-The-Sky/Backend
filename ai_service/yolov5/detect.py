@@ -129,7 +129,19 @@ def detect_v5(img0):
     
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
-    
+    data_send = {}
+    data_send["object"] = []
+    data_send["object"].append({
+                    "name" : '0000000',
+                    "bndbox":{
+                    "xmin": '0',
+                    "ymin": '0',
+                    "xmax": '0',
+                    "ymax": '0'
+                    },
+                    "score":'0'
+                })
+    return data_send    
     
 
     # Dataloader
