@@ -198,8 +198,8 @@ def detect(path, img0):
         save_path = str(save_dir / p.name)  # im.jpg
         txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # im.txt
         s += '%gx%g ' % im.shape[2:]  # print string
-        gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
-        imc = im0.copy() if save_crop else im0  # for save_crop
+        # gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
+        # imc = im0.copy() if save_crop else im0  # for save_crop
         annotator = Annotator(im0, line_width=line_thickness, example=str(names))
         if len(det):
             # Rescale boxes from img_size to im0 size
@@ -219,18 +219,18 @@ def detect(path, img0):
 
             # Write results
             for *xyxy, conf, cls in reversed(det):
-                if save_txt:  # Write to file
-                    xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                    line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                    with open(f'{txt_path}.txt', 'a') as f:
-                        f.write(('%g ' * len(line)).rstrip() % line + '\n')
+                # if save_txt:  # Write to file
+                #     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                #     line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
+                #     with open(f'{txt_path}.txt', 'a') as f:
+                #         f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
                 if save_img or save_crop or view_img:  # Add bbox to image
                     c = int(cls)  # integer class
                     label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
                     annotator.box_label(xyxy, label, color=colors(c, True))
-                if save_crop:
-                    save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+                # if save_crop:
+                #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
                 semi=[]
                 score = round(float(conf),2)
                 for nums in range(4):  ## total??좌표 ?�??
@@ -259,45 +259,45 @@ def detect(path, img0):
         return 'Fail'
 
         # Stream results
-        im0 = annotator.result()
-        if view_img:
-            if platform.system() == 'Linux' and p not in windows:
-                windows.append(p)
-                cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
-                cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
-            cv2.imshow(str(p), im0)
-            cv2.waitKey(1)  # 1 millisecond
+    #     im0 = annotator.result()
+    #     if view_img:
+    #         if platform.system() == 'Linux' and p not in windows:
+    #             windows.append(p)
+    #             cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
+    #             cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
+    #         cv2.imshow(str(p), im0)
+    #         cv2.waitKey(1)  # 1 millisecond
 
-        # Save results (image with detections)
-        if save_img:
-            if dataset.mode == 'image':
-                cv2.imwrite(save_path, im0)
-            else:  # 'video' or 'stream'
-                if vid_path[i] != save_path:  # new video
-                    vid_path[i] = save_path
-                    if isinstance(vid_writer[i], cv2.VideoWriter):
-                        vid_writer[i].release()  # release previous video writer
-                    if vid_cap:  # video
-                        fps = vid_cap.get(cv2.CAP_PROP_FPS)
-                        w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                        h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                    else:  # stream
-                        fps, w, h = 30, im0.shape[1], im0.shape[0]
-                    save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
-                    vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-                vid_writer[i].write(im0)
+    #     # Save results (image with detections)
+    #     if save_img:
+    #         if dataset.mode == 'image':
+    #             cv2.imwrite(save_path, im0)
+    #         else:  # 'video' or 'stream'
+    #             if vid_path[i] != save_path:  # new video
+    #                 vid_path[i] = save_path
+    #                 if isinstance(vid_writer[i], cv2.VideoWriter):
+    #                     vid_writer[i].release()  # release previous video writer
+    #                 if vid_cap:  # video
+    #                     fps = vid_cap.get(cv2.CAP_PROP_FPS)
+    #                     w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    #                     h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    #                 else:  # stream
+    #                     fps, w, h = 30, im0.shape[1], im0.shape[0]
+    #                 save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
+    #                 vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+    #             vid_writer[i].write(im0)
 
-    # Print time (inference-only)
-    LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
+    # # Print time (inference-only)
+    # LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
 
-    # Print results
-    t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
-    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
-    if save_txt or save_img:
-        s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
-        LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
-    if update:
-        strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
+    # # Print results
+    # t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
+    # LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
+    # if save_txt or save_img:
+    #     s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
+    #     LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
+    # if update:
+    #     strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
 
 def classification_yolov5(img0):
@@ -322,8 +322,8 @@ def classification_yolov5(img0):
         parser.add_argument('--augment', action='store_true', help='augmented inference')
         parser.add_argument('--visualize', action='store_true', help='visualize features')
         parser.add_argument('--update', action='store_true', help='update all models')
-        parser.add_argument('--project', default='runs/detect', help='save results to project/name')
-        parser.add_argument('--name', default='exp', help='save results to project/name')
+        parser.add_argument('--project',type=str, default='runs/detect', help='save results to project/name')
+        parser.add_argument('--name',type=str, default='exp', help='save results to project/name')
         parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
         parser.add_argument('--line-thickness', default=3, type=int, help='bounding box thickness (pixels)')
         parser.add_argument('--hide-labels', default=False, action='store_true', help='hide labels')
