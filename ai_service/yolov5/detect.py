@@ -123,19 +123,7 @@ def detect_v5(img0):
 
     # Load model
     device = select_device(device)
-    data_send = {}
-    data_send["object"] = []
-    data_send["object"].append({
-                    "name" : '0000000',
-                    "bndbox":{
-                    "xmin": '0',
-                    "ymin": '0',
-                    "xmax": '0',
-                    "ymax": '0'
-                    },
-                    "score":'0'
-                })
-    return data_send
+
     model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
 
     
