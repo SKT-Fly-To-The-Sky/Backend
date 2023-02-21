@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 from datetime import timedelta
@@ -381,8 +382,9 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
             IntakeNutrientTable.time_div == 'testt',
             IntakeNutrientTable.date == '2023-02-21')
     ).first().image
-    print(type(img))
-    return {'sup_num': img, "supplements": [{"image": 123, "name": "영양제1", "link": "https//www.~~"}]}
+    encoded_image = base64.b64encode(img).decode('utf-8')
+
+    return {'sup_num': encoded_image, "supplements": [{"image": 123, "name": "영양제1", "link": "https//www.~~"}]}
 
 @app.post("/supplements/classification")
 async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
