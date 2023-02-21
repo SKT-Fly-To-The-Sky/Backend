@@ -126,7 +126,7 @@ def detect_v5(img0):
     model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
-        data_send = {}
+    data_send = {}
     data_send["object"] = []
     data_send["object"].append({
                     "name" : '0000000',
