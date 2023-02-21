@@ -99,7 +99,14 @@ def detect_v5(img0):
     agnosic_nms,augment,visualize,update = False,False,False,False
     project = opt.project
     name = opt.name
-    
+    exist_ok = False 
+    line_thickness = opt.line_thickness
+    hide_labels = opt.hide_labels
+    hide_conf = opt.hide_conf
+    dnn = False
+    half = False
+    vid_stride = opt.vid_stride
+
     data_send = {}
     data_send["object"] = []
     data_send["object"].append({
