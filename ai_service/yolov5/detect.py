@@ -94,6 +94,7 @@ def detect_v5(img0):
     iou_thres = opt.iou_thres
     max_det = opt.max_det
     device = opt.device
+    view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
     data_send = {}
     data_send["object"] = []
     data_send["object"].append({
@@ -110,8 +111,6 @@ def detect_v5(img0):
 
 
 
-# opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
-    weights,source, data,imgsz,conf_thres,iou_thres,max_det,device = opt.weights,opt.source,opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
     view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
     classes,agnosic_nms,augment,visualize,update,project,name = None,False,False,False,opt.project,opt.name
     exist_ok,line_thickness,hide_labels,hide_conf,half,dnn,vid_stride =False, opt.line_thickness,opt.hide_labels,opt.hide_conf,False,False,opt.vid_stride
