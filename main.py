@@ -2,6 +2,7 @@ import base64
 import io
 import json
 import os
+import time
 from datetime import timedelta
 from json import loads
 
@@ -196,6 +197,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
 
 @app.post('/test/classification')
 async def get_classification_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    st = time.time()
     try:
         image = await file.read()
         pil_image = Image.open(BytesIO(image))
@@ -210,6 +212,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
     try:
         result = classification(content)
         result['object_num'] = len(result['object'])
+        result['running_time'] = time.time() - st
         return JSONResponse(content=result)
     except Exception as e:
         print(e)
@@ -218,6 +221,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
 
 @app.post('/test/volume')
 async def get_volume_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    st = time.time()
     try:
         image = await file.read()
         pil_image = Image.open(BytesIO(image))
@@ -232,6 +236,7 @@ async def get_volume_test(file: UploadFile = File(...), db: Session = Depends(ge
     try:
         content = np.array(Image.open(io.BytesIO(content)))
         result = qual(content)
+        result['running_time'] = time.time() - st
         return JSONResponse(content=result)
     except Exception as e:
         print(e)
