@@ -21,9 +21,9 @@ from fastapi.responses import FileResponse, JSONResponse
 sys.path.append('/workspace')
 # sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from database import get_db
-from domain.picture import picture_schema, picture_crud
+from domain.picture import picture_crud
 from models import Picture
-from ai_service.yolov3.detect_del import classification
+from ai_service.food_classification.detect import classification
 
 # from ai_service.yolov3.classification import classification
 
@@ -48,7 +48,7 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static/')
 IMG_DIR = os.path.join(STATIC_DIR, 'images/')
 SERVER_IMG_DIR = os.path.join('filestorge/', 'static/', 'images/')
 
-from domain.picture.code_dict import foodname
+from ai_service.yolov3.code_dict import foodname
 def code2name(result):
     for d in result['object']:
         d['name'] = foodname[d['name']]
