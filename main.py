@@ -220,6 +220,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
 
     try:
         result = classification_yolov5(content)
+        print('nice')
         result['object_num'] = len(result['object'])
         result['running_time'] = time.time() - st
         return JSONResponse(content=result)
