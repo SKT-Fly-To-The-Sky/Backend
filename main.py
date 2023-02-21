@@ -277,7 +277,7 @@ async def read_food_info(food_name: str, db: Session = Depends(get_db)):
     if not food:
         raise HTTPException(status_code=404, detail="food info not found")
 
-    return JSONResponse(content=food)
+    return JSONResponse(content=food.serialize())
     # return JSONResponse(content={"food_name": "닭갈비", "serving_size": 400, "kcal": 595.61, "protein": 45.9, "fat": 25.8, "carbo": 44.9, "sugar": 21.2, "chole": 193.4, "fiber": 11.6, "calcium": 98.64, "iron": 3.38, "magne": 104.42, "potass": 1200.24, "sodium": 1535.83, "zinc": 3.55, "copper": 0.34, "vitA": 0, "vitB1": 0.24, "vitB2": 0.37, "vitB3": 1.23, "vitB5": 0, "vitB6": 0, "vitB7": 0, "vitB9": 0, "vitB12": 0, "vitC": 108.13, "vitD": 1.12, "vitE": 5.54, "vitK": 0, "omega": 0 })
 
 
