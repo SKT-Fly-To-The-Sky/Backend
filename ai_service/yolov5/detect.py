@@ -255,13 +255,22 @@ def detect(path, img0):
                     },
                     "score":score
                 })
-            print(data_send)
             # with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
             #     json.dump(data_send, outfile)
     if data_send:
         return data_send
     else:
-        return 'Fail'
+        data_send["object"].append({
+                    "name" : '0000000',
+                    "bndbox":{
+                    "xmin": '0',
+                    "ymin": '0',
+                    "xmax": '0',
+                    "ymax": '0'
+                    },
+                    "score":'0'
+                })
+        return data_send
 
         # Stream results
     #     im0 = annotator.result()
