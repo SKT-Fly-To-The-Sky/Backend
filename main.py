@@ -6,9 +6,11 @@ import time
 from datetime import timedelta
 from json import loads
 from urllib.parse import urlencode
+import xmltodict
 
 import jwt
 import numpy as np
+import requests
 import uvicorn
 from fastapi.encoders import jsonable_encoder
 from jwt import PyJWTError
@@ -438,6 +440,19 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
             IntakeNutrientTable.date == '2023-02-21')
     ).first().image
     encoded_image = base64.b64encode(img).decode('utf-8')
+
+    sup_list = ["Doctor's Best 비타민 D3 5000IU"]
+    data = []
+    for sup in sup_list:
+        url = f"http://openapi.11st.co.kr/openapi/OpenApiService.tmall?key=37d58531ff7cd34e93ba18123f509497&apiCode=ProductSearch&keyword={sup}&option=Categories"
+        response = requests.get(url)
+        xml_data = response.content
+        xml_dict = xmltodict.parse(xml_data)
+        json_output = json.dumps(xml_dict)
+
+        print(json_output)
+
+
     # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
     data = [{"image": encoded_image, "name": "영양제1", "link": "https://www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=5349815024"}]
     return JSONResponse(content=data)
