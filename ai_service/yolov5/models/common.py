@@ -501,7 +501,7 @@ class DetectMultiBackend(nn.Module):
         if names[0] == 'n01440764' and len(names) == 1000:  # ImageNet
             names = yaml_load(ROOT / 'data/ImageNet.yaml')['names']  # human-readable names
 
-        # self.__dict__.update(locals())  # assign all variables to self
+        self.__dict__.update(locals())  # assign all variables to self
 
     def forward(self, im, augment=False, visualize=False):
         # YOLOv5 MultiBackend inference
