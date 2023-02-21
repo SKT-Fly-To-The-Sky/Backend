@@ -319,8 +319,8 @@ def classification_yolov5(img0):
         parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
         parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
         opt = parser.parse_args()
-        # opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
-        # print_args(vars(opt))
+        opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
+        print_args(vars(opt))
         result = detect(img0)
         return result
     except Exception as e:
