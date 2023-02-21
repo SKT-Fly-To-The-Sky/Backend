@@ -86,18 +86,7 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
 
 @smart_inference_mode()
 def detect_v5(img0):
-    print('here')
-    data_send = []
-    data_send["object"].append({
-                    "name" : '0000000',
-                    "bndbox":{
-                    "xmin": '0',
-                    "ymin": '0',
-                    "xmax": '0',
-                    "ymax": '0'
-                    },
-                    "score":'0'
-                })
+    data_send = ['123','123213','123123']
     return data_send
     weights,source, data,imgsz,conf_thres,iou_thres,max_det,device = opt.weights,opt.source,opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
     view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
