@@ -37,8 +37,9 @@ import torch
 import torchvision
 import yaml
 
-from .downloads import curl_download, gsutil_getsize
-from .metrics import box_iou, fitness
+from ai_service.yolov5.utils import TryExcept, emojis
+from ai_service.yolov5.utils.downloads import curl_download, gsutil_getsize
+from ai_service.yolov5.utils.metrics import box_iou, fitness
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[1]  # YOLOv5 root directory
