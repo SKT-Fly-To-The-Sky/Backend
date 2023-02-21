@@ -24,7 +24,7 @@ from starlette import status
 from ai_service.yolov5.detect import classification_yolov5
 from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
 from ai_service.supplement_classification.supplement_classifier import sup_classification
-from ai_service.yolov3.detect_del import classification
+
 from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
