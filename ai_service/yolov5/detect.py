@@ -332,8 +332,9 @@ def classification_yolov5(img0):
         parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
         opt = parser.parse_args()
         opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
+        print("---------------------------------------------------------------------------------------")
         result = detect_v5(img0)
-        print(result)
+        print("---------------------------------------------------------------------------------------")
         return result
     except Exception as e:
         torch.cuda.empty_cache()
