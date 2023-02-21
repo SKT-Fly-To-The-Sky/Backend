@@ -107,22 +107,6 @@ def detect_v5(img0):
     half = False
     vid_stride = opt.vid_stride
 
-    data_send = {}
-    data_send["object"] = []
-    data_send["object"].append({
-                    "name" : '0000000',
-                    "bndbox":{
-                    "xmin": '0',
-                    "ymin": '0',
-                    "xmax": '0',
-                    "ymax": '0'
-                    },
-                    "score":'0'
-                })
-    return data_send
-
-    exist_ok,line_thickness,hide_labels,hide_conf,half,dnn,vid_stride =False, opt.line_thickness,opt.hide_labels,opt.hide_conf,False,False,opt.vid_stride
-
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
