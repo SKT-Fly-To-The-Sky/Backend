@@ -452,7 +452,7 @@ def xml_to_dict(element):
     return data
 
 def xml_to_json(xml_string):
-    root = ET.fromstring(xml_string.decode('utf-8'))
+    root = ET.fromstring(xml_string.decode('utf-16'))
     return json.dumps(xml_to_dict(root), indent=4)
 
 @app.get("/{userid}/supplements/recommand")
