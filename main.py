@@ -447,7 +447,7 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         url = f"http://openapi.11st.co.kr/openapi/OpenApiService.tmall?key=37d58531ff7cd34e93ba18123f509497&apiCode=ProductSearch&keyword={sup}&option=Categories"
         response = requests.get(url)
         xml_data = response.content
-        xml_dict = xmltodict.parse(xml_data)
+        xml_dict = xmltodict.parse(xml_data, process_namespaces=True, encoding='utf-8')
         json_output = json.dumps(xml_dict)
 
         print(json_output)
