@@ -338,7 +338,7 @@ def classification_yolov5(img0):
         return result
     except Exception as e:
         torch.cuda.empty_cache()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f'error at classification model\n{e}')
+
 
 
 # def main(opt):
