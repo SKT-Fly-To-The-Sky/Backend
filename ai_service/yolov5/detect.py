@@ -113,7 +113,10 @@ def detect(path, img0):
     # half=False,  # use FP16 half-precision inference
     # dnn=False,  # use OpenCV DNN for ONNX inference
     # vid_stride=1,  # video frame-rate stride
-    
+    weights,source, data,imgsz,conf_thres,iou_thres,max_det,device = opt.weights,opt.source,opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
+    view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
+    classes,agnosic_nms,augment,visualize,update,project,name = None,False,False,False,opt.project,opt.name
+    exist_ok,line_thickness,hide_labels,hide_conf,half,dnn,vid_stride =False, opt.line_thickness,opt.hide_labels,opt.hide_conf,False,False,opt.vid_stride
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
