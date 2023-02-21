@@ -7,6 +7,8 @@ from datetime import timedelta
 from json import loads
 from urllib.parse import urlencode
 import xmltodict
+import xml.etree.ElementTree as ET
+
 
 import jwt
 import numpy as np
@@ -18,6 +20,7 @@ from fastapi import FastAPI, HTTPException, UploadFile, File, Response, Depends,
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
+
 
 from sqlalchemy import and_, inspect, func
 from sqlalchemy.orm import Session
@@ -431,6 +434,27 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     return {"result": nut_sum}
     # return JSONResponse(content=json.dumps(nut_sum))
 
+
+def xml_to_dict(element):
+    data = {}
+    if element.attrib:
+        data['@attributes'] = element.attrib
+    if element.text and element.text.strip():
+        data['#text'] = element.text.strip()
+    for child in element:
+        tag = child.tag
+        if tag in data:
+            if not isinstance(data[tag], list):
+                data[tag] = [data[tag]]
+            data[tag].append(xml_to_dict(child))
+        else:
+            data[tag] = xml_to_dict(child)
+    return data
+
+def xml_to_json(xml_string):
+    root = ET.fromstring(xml_string)
+    return json.dumps(xml_to_dict(root), indent=4)
+
 @app.get("/{userid}/supplements/recommand")
 async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)):
     img = db.query(IntakeNutrientTable).filter(
@@ -447,10 +471,10 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         url = f"http://openapi.11st.co.kr/openapi/OpenApiService.tmall?key=37d58531ff7cd34e93ba18123f509497&apiCode=ProductSearch&keyword={sup}&option=Categories"
         response = requests.get(url)
         xml_data = response.content
-        xml_dict = xmltodict.parse(xml_data, process_namespaces=True, encoding='utf-16')
-        json_output = json.dumps(xml_dict)
 
-        print(json_output)
+        json_string = xml_to_json(xml_data)
+
+        print(json_string)
 
 
     # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
