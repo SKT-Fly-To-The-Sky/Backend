@@ -33,8 +33,6 @@ from models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
     RecommendedNutrientTable, IntakeNutrientTable
 from schema import User, Token, IntakeNutrientRequest
 
-from utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
-    ALGORITHM, oauth2_scheme, is_token_expired
 from utils.log import logger
 from datetime import datetime
 
@@ -66,68 +64,68 @@ async def handle_exception(request: Request, exc: Exception):
     raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@app.post("/users")
-async def create_user(user: User, db: Session = Depends(get_db)):
-    hashed_password = bcrypt.hash(user.password)
-    try:
-        new_user = UserTable(userid=user.userid, hashed_password=hashed_password)
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        logger.info(f'create_user success:\n\tusername: {user.userid}, password: {user.password}\n')
-        return JSONResponse(content={"message": "creating user success"}, status_code=status.HTTP_200_OK)
-    except Exception as e:
-        exp_msg = "Fail to Insert user to db"
-        db.rollback()
-        logger.exception(f"create_user fail({exp_msg}):\n{e}\n\tusername: {user.userid}, password: {user.password}\n")
+# @app.post("/users")
+# async def create_user(user: User, db: Session = Depends(get_db)):
+#     hashed_password = bcrypt.hash(user.password)
+#     try:
+#         new_user = UserTable(userid=user.userid, hashed_password=hashed_password)
+#         db.add(new_user)
+#         db.commit()
+#         db.refresh(new_user)
+#         logger.info(f'create_user success:\n\tusername: {user.userid}, password: {user.password}\n')
+#         return JSONResponse(content={"message": "creating user success"}, status_code=status.HTTP_200_OK)
+#     except Exception as e:
+#         exp_msg = "Fail to Insert user to db"
+#         db.rollback()
+#         logger.exception(f"create_user fail({exp_msg}):\n{e}\n\tusername: {user.userid}, password: {user.password}\n")
 
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{exp_msg}")
-
-
-@app.post("/login", response_model=Token)
-async def login(user: User, db: Session = Depends(get_db)):
-    authenticated_user = authenticate_user(db, user.userid, user.password)
-
-    if not authenticated_user:
-        logger.exception(f"login fail:\n\tusername: {user.userid}, password: {user.password}\n")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
-
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
-    access_token = create_access_token(
-        data={"sub": authenticated_user.userid}, expires_delta=access_token_expires
-    )
-
-    logger.info(f'login success:\n\tusername: {user.userid}, password: {user.password}, token: {access_token}\n')
-
-    return {"access_token": access_token, "token_type": "bearer"}
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{exp_msg}")
 
 
-@app.get("/users", response_model=User)
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        if is_token_expired(token):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Expired token"
-            )
+# @app.post("/login", response_model=Token)
+# async def login(user: User, db: Session = Depends(get_db)):
+#     authenticated_user = authenticate_user(db, user.userid, user.password)
 
-        username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Wrong token format"
-            )
-    except PyJWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Wrong token"
-        )
-    user = db.query(UserTable).filter(UserTable.username == username).first()
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    return user
+#     if not authenticated_user:
+#         logger.exception(f"login fail:\n\tusername: {user.userid}, password: {user.password}\n")
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect username or password")
+
+#     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+#     access_token = create_access_token(
+#         data={"sub": authenticated_user.userid}, expires_delta=access_token_expires
+#     )
+
+#     logger.info(f'login success:\n\tusername: {user.userid}, password: {user.password}, token: {access_token}\n')
+
+#     return {"access_token": access_token, "token_type": "bearer"}
+
+
+# @app.get("/users", response_model=User)
+# async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         if is_token_expired(token):
+#             raise HTTPException(
+#                 status_code=status.HTTP_401_UNAUTHORIZED,
+#                 detail="Expired token"
+#             )
+
+#         username: str = payload.get("sub")
+#         if username is None:
+#             raise HTTPException(
+#                 status_code=status.HTTP_401_UNAUTHORIZED,
+#                 detail="Wrong token format"
+#             )
+#     except PyJWTError:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="Wrong token"
+#         )
+#     user = db.query(UserTable).filter(UserTable.username == username).first()
+#     if user is None:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+#     return user
 
 
 # app.include_router(member_router.router)
