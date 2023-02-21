@@ -381,7 +381,7 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
             IntakeNutrientTable.time_div == 'testt',
             IntakeNutrientTable.date == '2023-02-21')
     ).first().image
-
+    print(type(img))
     return {'sup_num': img, "supplements": [{"image": 123, "name": "영양제1", "link": "https//www.~~"}]}
 
 @app.post("/supplements/classification")
