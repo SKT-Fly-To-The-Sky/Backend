@@ -219,29 +219,29 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
 
 
-@app.post('/test/volume')
-async def get_volume_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    st = time.time()
-    try:
-        image = await file.read()
-        # pil_image = Image.open(BytesIO(image))
-        # output = BytesIO()
-        # pil_image.save(output, format='JPEG')
-        # content = output.getvalue()
-    except Exception as e:
-        logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
-        print(e)
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
-
-    try:
-        print(type(image))
-        content = np.array(Image.open(io.BytesIO(image)))
-        result = qual(content)
-        result['running_time'] = time.time() - st
-        return JSONResponse(content=result)
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
+# @app.post('/test/volume')
+# async def get_volume_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
+#     st = time.time()
+#     try:
+#         image = await file.read()
+#         # pil_image = Image.open(BytesIO(image))
+#         # output = BytesIO()
+#         # pil_image.save(output, format='JPEG')
+#         # content = output.getvalue()
+#     except Exception as e:
+#         logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
+#         print(e)
+#         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
+#
+#     try:
+#         print(type(image))
+#         content = np.array(Image.open(io.BytesIO(image)))
+#         result = qual(content)
+#         result['running_time'] = time.time() - st
+#         return JSONResponse(content=result)
+#     except Exception as e:
+#         print(e)
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
 
 @app.get("/supplements/names")
 async def read_supplement_names(db: Session = Depends(get_db)):
