@@ -85,34 +85,7 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
     return img, ratio, (dw, dh)
 
 @smart_inference_mode()
-def detect(path, img0):
-    # weights=ROOT / 'yolov5s.pt',  # model path or triton URL
-    # source=ROOT / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
-    # data=ROOT / 'data/coco128.yaml',  # dataset.yaml path
-    # imgsz=(640, 640),  # inference size (height, width)
-    # conf_thres=0.25,  # confidence threshold
-    # iou_thres=0.45,  # NMS IOU threshold
-    # max_det=1000,  # maximum detections per image
-    # device='',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
-    # view_img=False,  # show results
-    # save_txt=False,  # save results to *.txt
-    # save_conf=False,  # save confidences in --save-txt labels
-    # save_crop=False,  # save cropped prediction boxes
-    # nosave=False,  # do not save images/videos
-    # classes=None,  # filter by class: --class 0, or --class 0 2 3
-    # agnostic_nms=False,  # class-agnostic NMS
-    # augment=False,  # augmented inference
-    # visualize=False,  # visualize features
-    # update=False,  # update all models
-    # project=ROOT / 'runs/detect',  # save results to project/name
-    # # name='exp',  # save results to project/name
-    # exist_ok=False,  # existing project/name ok, do not increment
-    # line_thickness=3,  # bounding box thickness (pixels)
-    # hide_labels=False,  # hide labels
-    # hide_conf=False,  # hide confidences
-    # half=False,  # use FP16 half-precision inference
-    # dnn=False,  # use OpenCV DNN for ONNX inference
-    # vid_stride=1,  # video frame-rate stride
+def detect(img0):
     weights,source, data,imgsz,conf_thres,iou_thres,max_det,device = opt.weights,opt.source,opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
     view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
     classes,agnosic_nms,augment,visualize,update,project,name = None,False,False,False,opt.project,opt.name
@@ -258,7 +231,7 @@ def detect(path, img0):
             # with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
             #     json.dump(data_send, outfile)
     if data_send:
-        return data_send
+        return "0000"
     else:
         data_send["object"].append({
                     "name" : '0000000',
@@ -348,7 +321,7 @@ def classification_yolov5(img0):
         opt = parser.parse_args()
         # opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
         # print_args(vars(opt))
-        result = detect("asdf", img0)
+        result = detect(img0)
         return result
     except Exception as e:
         torch.cuda.empty_cache()
