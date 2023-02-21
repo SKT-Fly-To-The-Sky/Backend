@@ -384,7 +384,7 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
     ).first().image
     encoded_image = base64.b64encode(img).decode('utf-8')
 
-    return {'sup_num': encoded_image, "supplements": [{"image": 123, "name": "영양제1", "link": "https//www.~~"}]}
+    return {'sup_num': 1, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.~~"}]}
 
 @app.post("/supplements/classification")
 async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
