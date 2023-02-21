@@ -37,7 +37,6 @@ import torch
 import torchvision
 import yaml
 
-import TryExcept, emojis
 from utils.downloads import curl_download, gsutil_getsize
 from utils.metrics import box_iou, fitness
 
