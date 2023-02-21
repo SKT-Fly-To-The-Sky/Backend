@@ -475,7 +475,7 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         xml_dict = xmltodict.parse(xml_data)
         # json_output = json.dumps(xml_dict)
         # json_string = xml_to_json(xml_data)
-        return xml_dict.keys()
+        return JSONResponse(content=xml_dict)
         # print(json_output)
 
 
