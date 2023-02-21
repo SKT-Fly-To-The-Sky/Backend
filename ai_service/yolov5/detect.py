@@ -90,15 +90,6 @@ def detect_v5(img0):
     view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
     classes,agnosic_nms,augment,visualize,update,project,name = None,False,False,False,opt.project,opt.name
     exist_ok,line_thickness,hide_labels,hide_conf,half,dnn,vid_stride =False, opt.line_thickness,opt.hide_labels,opt.hide_conf,False,False,opt.vid_stride
-
-    source = str(source)
-    save_img = not nosave and not source.endswith('.txt')  # save inference images
-    is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
-    is_url = source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
-    webcam = source.isnumeric() or source.endswith('.streams') or (is_url and not is_file)
-    screenshot = source.lower().startswith('screen')
-    if is_url and is_file:
-        source = check_file(source)  # download
     data_send = []
     data_send["object"].append({
                     "name" : '0000000',
@@ -111,6 +102,16 @@ def detect_v5(img0):
                     "score":'0'
                 })
     return data_send
+
+    source = str(source)
+    save_img = not nosave and not source.endswith('.txt')  # save inference images
+    is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
+    is_url = source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
+    webcam = source.isnumeric() or source.endswith('.streams') or (is_url and not is_file)
+    screenshot = source.lower().startswith('screen')
+    if is_url and is_file:
+        source = check_file(source)  # download
+
 
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
