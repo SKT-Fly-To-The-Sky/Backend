@@ -99,7 +99,18 @@ def detect_v5(img0):
     screenshot = source.lower().startswith('screen')
     if is_url and is_file:
         source = check_file(source)  # download
-    return "0000"
+    data_send = []
+    data_send["object"].append({
+                    "name" : '0000000',
+                    "bndbox":{
+                    "xmin": '0',
+                    "ymin": '0',
+                    "xmax": '0',
+                    "ymax": '0'
+                    },
+                    "score":'0'
+                })
+    return data_send
 
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
