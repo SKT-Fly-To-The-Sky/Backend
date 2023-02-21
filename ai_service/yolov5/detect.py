@@ -120,7 +120,19 @@ def detect_v5(img0):
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
-
+    data_send = {}
+    data_send["object"] = []
+    data_send["object"].append({
+                    "name" : '0000000',
+                    "bndbox":{
+                    "xmin": '0',
+                    "ymin": '0',
+                    "xmax": '0',
+                    "ymax": '0'
+                    },
+                    "score":'0'
+                })
+    return data_send
     # Load model
     device = select_device(device)
     model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
@@ -144,19 +156,7 @@ def detect_v5(img0):
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(), Profile(), Profile())
     # for path, im, im0s, vid_cap, s in dataset:
-    data_send = {}
-    data_send["object"] = []
-    data_send["object"].append({
-                    "name" : '0000000',
-                    "bndbox":{
-                    "xmin": '0',
-                    "ymin": '0',
-                    "xmax": '0',
-                    "ymax": '0'
-                    },
-                    "score":'0'
-                })
-    return data_send
+
     img0 = np.array(PIL.Image.open(io.BytesIO(img0)))
     for i in range(len(img0)):
         for j in range(len(img0[0])):
