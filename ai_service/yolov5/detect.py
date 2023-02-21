@@ -321,6 +321,7 @@ def classification_yolov5(img0):
         opt = parser.parse_args()
         opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
         print_args(vars(opt))
+        print(img0)
         result = detect(img0)
         return result
     except Exception as e:
