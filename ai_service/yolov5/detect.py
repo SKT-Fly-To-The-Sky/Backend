@@ -346,5 +346,5 @@ def classification_yolov5(img0):
 
 
 if __name__ == '__main__':
-    opt = classification_yolov5()
+    classification_yolov5()
     # main(opt)
