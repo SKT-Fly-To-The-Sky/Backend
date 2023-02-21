@@ -331,7 +331,7 @@ class DetectMultiBackend(nn.Module):
         #   PaddlePaddle:                   *_paddle_model
         from ai_service.yolov5.models.experimental import attempt_download, attempt_load  # scoped to avoid circular import
 
-        super().__init__()
+        # super().__init__()
         # w = str(weights[0] if isinstance(weights, list) else weights)
         # pt, jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle, triton = self._model_type(w)
         # fp16 &= pt or jit or onnx or engine  # FP16
