@@ -438,9 +438,9 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
     ).first().image
     encoded_image = base64.b64encode(img).decode('utf-8')
     # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
-    return_json = [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]
-    return_json = [urlencode(j).encode('utf-8') for j in return_json]
-    return JSONResponse(content=return_json)
+    data = [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]
+    encoded_data = json.dumps(data, ensure_ascii=False).encode('utf-8')
+    return JSONResponse(content=encoded_data, media_type="application/json; charset=utf-8")
 
 @app.post("/supplements/classification")
 async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
