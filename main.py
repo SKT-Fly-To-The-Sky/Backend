@@ -474,12 +474,12 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         xml_data = response.content.decode('EUC-KR')
 
         xml_dict = xmltodict.parse(xml_data)
-        # data_dict['name'] = xml_dict['Products']['Product']['ProductName']
-        # data_dict['image'] = xml_dict['Products']['Product']['ProductImage']
-        # data_dict['link'] = xml_dict['Products']['Product']['DetailPageUrl']
-        # data.append(data_dict)
+        data_dict['name'] = xml_dict['ProductSearchResponse']['Products']['Product']['ProductName']
+        data_dict['image'] = xml_dict['ProductSearchResponse']['Products']['Product']['ProductImage']
+        data_dict['link'] = xml_dict['ProductSearchResponse']['Products']['Product']['DetailPageUrl']
+        data.append(data_dict)
 
-        return JSONResponse(content=xml_dict)
+        return JSONResponse(content=data)
 
     # # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
     # data = [{"image": encoded_image, "name": "영양제1", "link": "https://www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=5349815024"}]
