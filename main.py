@@ -368,6 +368,10 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     return {"result": nut_sum}
     # return JSONResponse(content=json.dumps(nut_sum))
 
+@app.get("/{userid}/supplements/recommand")
+async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)):
+    return {'sup_num': 3, "supplements": [{"image": 123, "name": "영양제1", "link": "https//www.~~"}]}
+
 @app.post("/supplements/classification")
 async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
