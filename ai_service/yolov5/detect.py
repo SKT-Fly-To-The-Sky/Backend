@@ -86,6 +86,7 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
 
 @smart_inference_mode()
 def detect_v5(img0):
+    print('here')
     data_send = []
     data_send["object"].append({
                     "name" : '0000000',
