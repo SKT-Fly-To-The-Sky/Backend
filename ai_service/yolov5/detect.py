@@ -255,6 +255,7 @@ def detect(path, img0):
                     },
                     "score":score
                 })
+            print(data_send)
             # with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
             #     json.dump(data_send, outfile)
     if data_send:
