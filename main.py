@@ -25,21 +25,21 @@ from sqlalchemy import and_, inspect, func
 from sqlalchemy.orm import Session
 from starlette import status
 
-from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
-from ai_service.supplement_classification.supplement_classifier import sup_classification
-from ai_service.yolov3.detect_del import classification
-from ai_service.yolov5.detect import classification_yolov5
+from .ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
+from .ai_service.supplement_classification.supplement_classifier import sup_classification
+from .ai_service.yolov3.detect_del import classification
+from .ai_service.yolov5.detect import classification_yolov5
 from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
-from models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
+from .models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
     RecommendedNutrientTable, IntakeNutrientTable
-from schema import User, Token, IntakeNutrientRequest
+from .schema import User, Token, IntakeNutrientRequest
 
-from utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
+from .utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
     ALGORITHM, oauth2_scheme, is_token_expired
-from utils.log import logger
+from .utils.log import logger
 from datetime import datetime
 
 Base.metadata.create_all(bind=engine)
