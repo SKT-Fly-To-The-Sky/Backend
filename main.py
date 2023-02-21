@@ -439,7 +439,7 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
     encoded_image = base64.b64encode(img).decode('utf-8')
     # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
     data = [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]
-    data = json.dumps(data)
+    data = json.dumps(data).encode('utf-8')
     return JSONResponse(content=data, media_type="application/json", headers={"charset": "utf-8"})
 
 @app.post("/supplements/classification")
