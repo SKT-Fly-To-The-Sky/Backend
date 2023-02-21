@@ -111,40 +111,6 @@ class FoodNutrientTable(Base):
     vitK = Column(Float)
     omega = Column(Float)
 
-    # def serialize(self):
-    #     return {
-    #         'food_name': self.food_name,
-    #         'serving_size': self.serving_size,
-    #         'kcal': self.kcal,
-    #         'protein': self.protein,
-    #         'fat': self.fat,
-    #         'carbo': self.carbo,
-    #         'sugar': self.sugar,
-    #         'chole': self.chole,
-    #         'fiber': self.fiber,
-    #         'calcium': self.calcium,
-    #         'iron': self.iron,
-    #         'magne': self.magne,
-    #         'potass': self.potass,
-    #         'sodium': self.sodium,
-    #         'zinc': self.zinc,
-    #         'copper': self.copper,
-    #         'vitA': self.vitA,
-    #         'vitB1': self.vitB1,
-    #         'vitB2': self.vitB2,
-    #         'vitB3': self.vitB3,
-    #         'vitB5': self.vitB5,
-    #         'vitB6': self.vitB6,
-    #         'vitB7': self.vitB7,
-    #         'vitB9': self.vitB9,
-    #         'vitB12': self.vitB12,
-    #         'vitC': self.vitC,
-    #         'vitD': self.vitD,
-    #         'vitE': self.vitE,
-    #         'vitK': self.vitK,
-    #         'omega': self.omega,
-    #     }
-
 
 class RecommendedNutrientTable(Base):
     __tablename__ = "recommended_nut"
