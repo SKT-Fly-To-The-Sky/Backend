@@ -475,8 +475,8 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         xml_dict = xmltodict.parse(xml_data)
         json_output = json.dumps(xml_dict)
         # json_string = xml_to_json(xml_data)
-
-        print(json_output)
+        return json_output
+        # print(json_output)
 
 
     # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
