@@ -1,10 +1,12 @@
 import base64
+import io
 import json
 import os
 from datetime import timedelta
 from json import loads
 
 import jwt
+import numpy as np
 import uvicorn
 from jwt import PyJWTError
 from fastapi import FastAPI, HTTPException, UploadFile, File, Response, Depends, Request
@@ -191,6 +193,49 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at qual {e}")
 
+
+@app.post('/test/classification')
+async def get_classification_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    try:
+        image = await file.read()
+        pil_image = Image.open(BytesIO(image))
+        output = BytesIO()
+        pil_image.save(output, format='JPEG')
+        content = output.getvalue()
+    except Exception as e:
+        logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
+        print(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
+
+    try:
+        result = classification(content)
+        result['object_num'] = len(result['object'])
+        return JSONResponse(content=result)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
+
+
+@app.post('/test/volume')
+async def get_classification_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    try:
+        image = await file.read()
+        pil_image = Image.open(BytesIO(image))
+        output = BytesIO()
+        pil_image.save(output, format='JPEG')
+        content = output.getvalue()
+    except Exception as e:
+        logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
+        print(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
+
+    try:
+        content = np.array(Image.open(io.BytesIO(content)))
+        result = qual(content)
+        return JSONResponse(content=result)
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
 
 @app.get("/supplements/names")
 async def read_supplement_names(db: Session = Depends(get_db)):
