@@ -304,12 +304,17 @@ async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
 
 @app.get("/{userid}/intakes/images")
 async def read_intake_image(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
-    img = db.query(IntakeNutrientTable).filter(
+    query_result = db.query(IntakeNutrientTable).filter(
         and_(
             IntakeNutrientTable.userid == userid,
             IntakeNutrientTable.time_div == time_div,
             IntakeNutrientTable.date == date)
-    ).first().image
+    ).first()
+
+    if not query_result:
+        raise HTTPException(status_code=404, detail="Intake not found")
+
+    img = query_result.image
 
     if not img:
         raise HTTPException(status_code=404, detail="Intake img not found")
@@ -370,7 +375,14 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
 
 @app.get("/{userid}/supplements/recommand")
 async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)):
-    return {'sup_num': 3, "supplements": [{"image": 123, "name": "영양제1", "link": "https//www.~~"}]}
+    img = db.query(IntakeNutrientTable).filter(
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == 'testt',
+            IntakeNutrientTable.date == '2023-02-21')
+    ).first().image
+
+    return {'sup_num': img, "supplements": [{"image": 123, "name": "영양제1", "link": "https//www.~~"}]}
 
 @app.post("/supplements/classification")
 async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
