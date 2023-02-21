@@ -234,7 +234,7 @@ async def get_volume_test(file: UploadFile = File(...), db: Session = Depends(ge
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
     try:
-        content = np.array(Image.open(io.BytesIO(content)))
+        content = np.array(content)
         result = qual(content)
         result['running_time'] = time.time() - st
         return JSONResponse(content=result)
