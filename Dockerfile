@@ -9,15 +9,5 @@ RUN apt-get -y install libglib2.0-0
 RUN apt-get -y install curl
 RUN pip install -r /workspace/requirements.txt
 
-<<<<<<< HEAD
-#RUN alembic revision --autogenerate
-#RUN alembic upgrade head
-#CMD ["uvicorn", "main:app", "--host 0.0.0.0", "--port 8000", "--reload"]
-=======
-#RUN alembic upgrade head
-#RUN alembic revision --autogenerate
-#RUN alembic upgrade head
-CMD ["uvicorn", "main:app", "--host 0.0.0.0", "--port 8000", "--reload"]
->>>>>>> 575658de065981953e5a5ad93667d1190e90118e
 
 #VOLUME .
