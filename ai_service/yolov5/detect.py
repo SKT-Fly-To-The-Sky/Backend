@@ -86,12 +86,14 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
 
 @smart_inference_mode()
 def detect_v5(img0):
-
-    weights,source, data,imgsz,conf_thres,iou_thres,max_det,device = opt.weights,opt.source,opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
-    view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
-    classes,agnosic_nms,augment,visualize,update,project,name = None,False,False,False,opt.project,opt.name
-    exist_ok,line_thickness,hide_labels,hide_conf,half,dnn,vid_stride =False, opt.line_thickness,opt.hide_labels,opt.hide_conf,False,False,opt.vid_stride
-
+    weights = opt.weights
+    source = opt.source
+    data = opt.data
+    imgsz = opt.imgsz
+    conf_thres = opt.conf_thres
+    iou_thres = opt.iou_thres
+    max_det = opt.max_det
+    device = opt.device
     data_send = {}
     data_send["object"] = []
     data_send["object"].append({
@@ -105,6 +107,15 @@ def detect_v5(img0):
                     "score":'0'
                 })
     return data_send
+
+
+
+# opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
+    weights,source, data,imgsz,conf_thres,iou_thres,max_det,device = opt.weights,opt.source,opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
+    view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
+    classes,agnosic_nms,augment,visualize,update,project,name = None,False,False,False,opt.project,opt.name
+    exist_ok,line_thickness,hide_labels,hide_conf,half,dnn,vid_stride =False, opt.line_thickness,opt.hide_labels,opt.hide_conf,False,False,opt.vid_stride
+
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
