@@ -479,7 +479,7 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         data_dict['link'] = xml_dict['ProductSearchResponse']['Products']['Product']['DetailPageUrl']
         data.append(data_dict)
 
-        return JSONResponse(content=data)
+    return JSONResponse(content=data)
 
     # # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
     # data = [{"image": encoded_image, "name": "영양제1", "link": "https://www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=5349815024"}]
