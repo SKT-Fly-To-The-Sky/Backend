@@ -217,7 +217,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
 
 
 @app.post('/test/volume')
-async def get_classification_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def get_volume_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         image = await file.read()
         pil_image = Image.open(BytesIO(image))
