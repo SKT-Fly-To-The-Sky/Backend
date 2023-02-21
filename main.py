@@ -33,7 +33,7 @@ from models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
     RecommendedNutrientTable, IntakeNutrientTable
 from schema import User, Token, IntakeNutrientRequest
 
-from utils.log import logger
+from .utils.log import logger
 from datetime import datetime
 
 Base.metadata.create_all(bind=engine)
