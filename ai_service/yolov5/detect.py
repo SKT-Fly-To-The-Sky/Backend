@@ -85,7 +85,7 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
     return img, ratio, (dw, dh)
 
 @smart_inference_mode()
-def detect(img0):
+def detect_v5(img0):
     weights,source, data,imgsz,conf_thres,iou_thres,max_det,device = opt.weights,opt.source,opt.data,opt.imgsz,opt.conf_thres,opt.iou_thres,opt.max_det,opt.device
     view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
     classes,agnosic_nms,augment,visualize,update,project,name = None,False,False,False,opt.project,opt.name
