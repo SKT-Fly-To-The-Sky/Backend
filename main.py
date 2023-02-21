@@ -7,7 +7,6 @@ from datetime import timedelta
 from json import loads
 from urllib.parse import urlencode
 import xmltodict
-import xml.etree.ElementTree as ET
 
 
 import jwt
@@ -29,6 +28,7 @@ from starlette import status
 from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
 from ai_service.supplement_classification.supplement_classifier import sup_classification
 from ai_service.yolov3.detect_del import classification
+from ai_service.yolov5.detect import classification_yolov5
 from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
@@ -219,7 +219,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
     try:
-        result = classification(content)
+        result = classification_yolov5(content)
         result['object_num'] = len(result['object'])
         result['running_time'] = time.time() - st
         return JSONResponse(content=result)
@@ -434,26 +434,6 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     return {"result": nut_sum}
     # return JSONResponse(content=json.dumps(nut_sum))
 
-
-def xml_to_dict(element):
-    data = {}
-    if element.attrib:
-        data['@attributes'] = element.attrib
-    if element.text and element.text.strip():
-        data['#text'] = element.text.strip()
-    for child in element:
-        tag = child.tag
-        if tag in data:
-            if not isinstance(data[tag], list):
-                data[tag] = [data[tag]]
-            data[tag].append(xml_to_dict(child))
-        else:
-            data[tag] = xml_to_dict(child)
-    return data
-
-def xml_to_json(xml_string):
-    root = ET.fromstring(xml_string.decode('EUC-KR'))
-    return json.dumps(xml_to_dict(root), indent=4)
 
 @app.get("/{userid}/supplements/recommand")
 async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)):
