@@ -167,6 +167,7 @@ async def read_json_data(name: str, db: Session = Depends(get_db)):
 
 @app.get('/classification')
 async def get_classification(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+    st = time.time()
     food_item = db.query(IntakeNutrientTable).filter(
         and_(IntakeNutrientTable.userid == userid,
              IntakeNutrientTable.time_div == time_div,
@@ -183,6 +184,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         content = food_item.image
         result = classification(content)
         result['object_num'] = len(result['object'])
+        result['running_time'] = time.time() - st
     except Exception as e:
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
