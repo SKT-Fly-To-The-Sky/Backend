@@ -447,10 +447,10 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         url = f"http://openapi.11st.co.kr/openapi/OpenApiService.tmall?key=37d58531ff7cd34e93ba18123f509497&apiCode=ProductSearch&keyword={sup}&option=Categories"
         response = requests.get(url)
         xml_data = response.content
-        # xml_dict = xmltodict.parse(xml_data, process_namespaces=True, encoding='utf-8')
-        # json_output = json.dumps(xml_dict)
+        xml_dict = xmltodict.parse(xml_data, process_namespaces=True, encoding='utf-16')
+        json_output = json.dumps(xml_dict)
 
-        print(xml_data)
+        print(json_output)
 
 
     # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
