@@ -468,20 +468,22 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
     sup_list = ["Doctor's Best 비타민 D3 5000IU"]
     data = []
     for sup in sup_list:
+        data_dict = {}
         url = f"http://openapi.11st.co.kr/openapi/OpenApiService.tmall?key=37d58531ff7cd34e93ba18123f509497&apiCode=ProductSearch&keyword={sup}&option=Categories"
         response = requests.get(url)
         xml_data = response.content.decode('EUC-KR')
 
         xml_dict = xmltodict.parse(xml_data)
-        # json_output = json.dumps(xml_dict)
-        # json_string = xml_to_json(xml_data)
-        return JSONResponse(content=xml_dict)
-        # print(json_output)
+        data_dict['name'] = xml_dict['Products']['Product']['ProductName']
+        data_dict['image'] = xml_dict['Products']['Product']['ProductImage']
+        data_dict['link'] = xml_dict['Products']['Product']['DetailPageUrl']
+        data.append(data_dict)
 
-
-    # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
-    data = [{"image": encoded_image, "name": "영양제1", "link": "https://www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=5349815024"}]
     return JSONResponse(content=data)
+
+    # # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
+    # data = [{"image": encoded_image, "name": "영양제1", "link": "https://www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=5349815024"}]
+    # return JSONResponse(content=data)
 
 @app.post("/supplements/classification")
 async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
