@@ -501,7 +501,7 @@ def qual(input_image): # if __name__ == "__main__": # 파라미터 추가
             print('[*] Food weight:', 1000 * v * density, 'g')
 
     print("------------------------------------")
-    print(results['volumes'])
+    print(results['volumes'].shape)
     print("------------------------------------")
     return np.sum(results['volumes'][0])
 
