@@ -99,6 +99,7 @@ def detect_v5(img0):
     screenshot = source.lower().startswith('screen')
     if is_url and is_file:
         source = check_file(source)  # download
+    return "0000"
 
     # Directories
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
@@ -320,7 +321,7 @@ def classification_yolov5(img0):
         parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
         opt = parser.parse_args()
         opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
-        result = detect(img0)
+        result = detect_v5(img0)
         print(result)
         return result
     except Exception as e:
