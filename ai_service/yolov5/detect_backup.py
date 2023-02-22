@@ -42,12 +42,12 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-from ai_service.yolov5.models.common import DetectMultiBackend
-from ai_service.yolov5.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
-from ai_service.yolov5.utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
+from models.common import DetectMultiBackend
+from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
+from utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
-from ai_service.yolov5.utils.plots import Annotator, colors, save_one_box
-from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
+from utils.plots import Annotator, colors, save_one_box
+from utils.torch_utils import select_device, smart_inference_mode
 
 
 @smart_inference_mode()
@@ -202,63 +202,47 @@ def run(
                     })
                 with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
                     json.dump(data_send, outfile)
-    if data_send:
-        return data_send
-    else:
-        data_send = {}
-        data_send["object"] = []
-        data_send["object"].append({
-                    "name" : '0000000',
-                    "bndbox":{
-                    "xmin": '0',
-                    "ymin": '0',
-                    "xmax": '0',
-                    "ymax": '0'
-                    },
-                    "score":'0'
-                })
-    return data_send
 
             # Stream results
-    #         im0 = annotator.result()
-    #         if view_img:
-    #             if platform.system() == 'Linux' and p not in windows:
-    #                 windows.append(p)
-    #                 cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
-    #                 cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
-    #             cv2.imshow(str(p), im0)
-    #             cv2.waitKey(1)  # 1 millisecond
+            im0 = annotator.result()
+            if view_img:
+                if platform.system() == 'Linux' and p not in windows:
+                    windows.append(p)
+                    cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
+                    cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
+                cv2.imshow(str(p), im0)
+                cv2.waitKey(1)  # 1 millisecond
 
-    #         # Save results (image with detections)
-    #         if save_img:
-    #             if dataset.mode == 'image':
-    #                 cv2.imwrite(save_path, im0)
-    #             else:  # 'video' or 'stream'
-    #                 if vid_path[i] != save_path:  # new video
-    #                     vid_path[i] = save_path
-    #                     if isinstance(vid_writer[i], cv2.VideoWriter):
-    #                         vid_writer[i].release()  # release previous video writer
-    #                     if vid_cap:  # video
-    #                         fps = vid_cap.get(cv2.CAP_PROP_FPS)
-    #                         w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    #                         h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    #                     else:  # stream
-    #                         fps, w, h = 30, im0.shape[1], im0.shape[0]
-    #                     save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
-    #                     vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-    #                 vid_writer[i].write(im0)
+            # Save results (image with detections)
+            if save_img:
+                if dataset.mode == 'image':
+                    cv2.imwrite(save_path, im0)
+                else:  # 'video' or 'stream'
+                    if vid_path[i] != save_path:  # new video
+                        vid_path[i] = save_path
+                        if isinstance(vid_writer[i], cv2.VideoWriter):
+                            vid_writer[i].release()  # release previous video writer
+                        if vid_cap:  # video
+                            fps = vid_cap.get(cv2.CAP_PROP_FPS)
+                            w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                            h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                        else:  # stream
+                            fps, w, h = 30, im0.shape[1], im0.shape[0]
+                        save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
+                        vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+                    vid_writer[i].write(im0)
 
-    #     # Print time (inference-only)
-    #     LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
+        # Print time (inference-only)
+        LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
 
-    # # Print results
-    # t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
-    # LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
-    # if save_txt or save_img:
-    #     s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
-    #     LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
-    # if update:
-    #     strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
+    # Print results
+    t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
+    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
+    if save_txt or save_img:
+        s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
+        LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
+    if update:
+        strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
 
 def parse_opt():
