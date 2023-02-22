@@ -43,7 +43,7 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=None):
 def detect_ljs(image_path):
     weights = './ai_service/yolov5/yolov5s.pt'  # path to the weights file
     device = select_device('')  # set device to default
-    model = attempt_load(weights, map_location=device)  # load model
+    model = attempt_load(weights, device)  # load model
     imgsz = check_img_size(640, s=model.stride.max())  # check image size
     half = device.type != 'cpu'  # set half precision
     classes = model.names
