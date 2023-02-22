@@ -347,16 +347,16 @@ class DetectMultiBackend(nn.Module):
         #     names = model.module.names if hasattr(model, 'module') else model.names  # get class names
         #     model.half() if fp16 else model.float()
         #     self.model = model  # explicitly assign for to(), cpu(), cuda(), half()
-        # elif jit:  # TorchScript
-        #     LOGGER.info(f'Loading {w} for TorchScript inference...')
-        #     extra_files = {'config.txt': ''}  # model metadata
-        #     model = torch.jit.load(w, _extra_files=extra_files, map_location=device)
-        #     model.half() if fp16 else model.float()
-        #     if extra_files['config.txt']:  # load metadata dict
-        #         d = json.loads(extra_files['config.txt'],
-        #                        object_hook=lambda d: {int(k) if k.isdigit() else k: v
-        #                                               for k, v in d.items()})
-        #         stride, names = int(d['stride']), d['names']
+        if jit:  # TorchScript
+            LOGGER.info(f'Loading {w} for TorchScript inference...')
+            extra_files = {'config.txt': ''}  # model metadata
+            model = torch.jit.load(w, _extra_files=extra_files, map_location=device)
+            model.half() if fp16 else model.float()
+            if extra_files['config.txt']:  # load metadata dict
+                d = json.loads(extra_files['config.txt'],
+                               object_hook=lambda d: {int(k) if k.isdigit() else k: v
+                                                      for k, v in d.items()})
+                stride, names = int(d['stride']), d['names']
         # elif dnn:  # ONNX OpenCV DNN
         #     LOGGER.info(f'Loading {w} for ONNX OpenCV DNN inference...')
         #     check_requirements('opencv-python>=4.5.4')
