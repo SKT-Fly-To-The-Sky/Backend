@@ -80,7 +80,11 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
         print("=============================------=======================")
         print(w)
         print("=============================------=======================")
-        ckpt = torch.load(w, map_location=device)  # load
+        try:
+            ckpt = torch.load(w, map_location=device)  # load
+        except Exception as e:
+            print("shibal")
+            print(e)
         
         print("=============================================================")
         print(ckpt)
