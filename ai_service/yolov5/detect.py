@@ -55,54 +55,6 @@ from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_m
 from ai_service.yolov5.models.experimental import attempt_load
 from ai_service.yolov5.utils.augmentations import letterbox
 
-def scale_coords(img_shape, coords, org_shape):
-    # Rescale coordinates from img_shape to org_shape
-    gain = max(img_shape) / max(org_shape)
-    pad = (img_shape - org_shape * gain) / 2
-    coords[:, [0, 2]] -= pad[1]
-    coords[:, [1, 3]] -= pad[0]
-    coords[:, :4] /= gain
-    coords[:, :4] = np.clip(coords[:, :4], 0, max(org_shape))
-    return coords
-
-
-def good(image_path, weights_path, conf_thres=0.25, iou_thres=0.45):
-    # Load model
-    device = select_device('')
-    model = attempt_load(weights_path, device)
-
-    # Load image
-    img0 = Image.open(image_path)
-    img = letterbox(img0, new_shape=640)[0]
-
-    # Convert image to RGB and normalize
-    img = np.array(img[:, :, ::-1]).transpose(2, 0, 1)
-    img = np.ascontiguousarray(img)
-    img = torch.from_numpy(img).to(device)
-    img = img.float() / 255.0
-    if img.ndimension() == 3:
-        img = img.unsqueeze(0)
-
-    # Perform inference
-    pred = model(img)[0]
-    pred = non_max_suppression(pred, conf_thres, iou_thres)
-
-    # Scale coordinates to original image size
-    img_shape = img0.size
-    pred = [scale_coords(img.shape[2:], p[:, :4], img_shape).round() for p in pred]
-
-    # Convert result to list of dicts
-    result = []
-    for i, det in enumerate(pred):
-        if len(det):
-            det[:, :4] = det[:, :4].clamp(min=0)
-            result.append({
-                'class': int(det[0, -1]),
-                'confidence': float(det[0, 4]),
-                'bbox': [float(x) for x in det[0, :4]]
-            })
-
-    return result
 
 @smart_inference_mode()
 def detect_v5(img0):
