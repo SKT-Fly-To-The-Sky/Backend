@@ -77,11 +77,8 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
         # ckpt = torch.load(attempt_download(w), map_location=device)  # load
-        print("=============================------=======================")
-        print(w)
-        print("=============================------=======================")
         try:
-            ckpt = torch.load(w, map_location=device)  # load
+            ckpt = torch.load("./ai_service/yolov5/best_hoon.pt", map_location=device)  # load
         except Exception as e:
             print("shibal")
             print(e)
