@@ -67,5 +67,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image_path', type=str, required=True, help='path to image file')
     args = parser.parse_args()
-    detect(args.image_path)
+    detect_ljs(args.image_path)
 
