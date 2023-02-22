@@ -36,7 +36,7 @@ from pathlib import Path
 import json
 import torch
 import numpy as np
-import PIL
+from PIL import Image
 import io
 
 # FILE = Path(__file__).resolve()
