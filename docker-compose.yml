@@ -3,7 +3,7 @@ services:
   ftts_back_end:
     build: .
     ports:
-      - 10019:8000
+      - 10016:8000
     # runtime: nvidia
     command: [
       "uvicorn",
