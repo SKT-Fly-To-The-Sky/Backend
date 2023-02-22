@@ -51,7 +51,7 @@ from ai_service.yolov5.utils.general import (LOGGER, Profile, check_file, check_
                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh,non_max_suppression, scale_segments)
 from ai_service.yolov5.utils.plots import Annotator, colors, save_one_box
 from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
-from ai_service.yolov5.models.experimental import attempt_load
+
 
 def good(image_path, weights_path, conf_thres=0.25, iou_thres=0.45, device=''):
     # Initialize
