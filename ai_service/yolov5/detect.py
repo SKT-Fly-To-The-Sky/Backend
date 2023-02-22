@@ -48,10 +48,10 @@ import io
 from ai_service.yolov5.models.common import DetectMultiBackend
 from ai_service.yolov5.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 from ai_service.yolov5.utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
+                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh,non_max_suppression, scale_coords)
 from ai_service.yolov5.utils.plots import Annotator, colors, save_one_box
 from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
-
+from ai_service.yolov5.models.experimental import attempt_load
 def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scaleFill=False, scaleup=True):
     # Resize image to a 32-pixel-multiple rectangle https://github.com/ultralytics/yolov3/issues/232
     shape = img.shape[:2]  # current shape [height, width]
@@ -83,6 +83,44 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
     left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
     img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return img, ratio, (dw, dh)
+
+def detect(image_path, weights_path, conf_thres=0.25, iou_thres=0.45, device=''):
+    # Initialize
+    device = select_device(device)
+    model = attempt_load(weights_path, map_location=device)  # load FP32 model
+    stride = int(model.stride.max())  # model stride
+    imgsz = model.img_size  # inference image size (pixels)
+    half = device.type != 'cpu'  # half precision only supported on CUDA
+
+    # Load image
+    img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
+    img_path = str(Path(image_path))  # convert to path
+    img = torch.from_numpy(np.array(Image.open(img_path)))  # BGR to RGB
+    if img.ndimension() == 3:
+        img = img.unsqueeze(0)
+
+    # Scale and pad image
+    img = img.float()  # uint8 to fp16/32
+    img /= 255.0  # 0 - 255 to 0.0 - 1.0
+    if imgsz != img.shape[2]:
+        img = torch.nn.functional.interpolate(img, size=imgsz, mode='bilinear', align_corners=False)
+    pad = 0.5 * imgsz
+    img = torch.nn.functional.pad(img, [pad, pad, pad, pad], mode='constant', value=0)
+
+    # Inference
+
+    pred = model(img, augment=False)[0]
+    # Apply NMS
+    pred = non_max_suppression(pred, conf_thres, iou_thres, classes=None, agnostic=False)
+
+    # Process detections
+    for i, det in enumerate(pred):
+        if det is not None and len(det):
+            # Rescale boxes from img_size to original image size
+            det[:, :4] = scale_coords(img.shape[2:], det[:, :4], img.shape[2:]).round()
+            
+    # Return the detections
+    return pred
 
 @smart_inference_mode()
 def detect_v5(img0):
