@@ -44,21 +44,21 @@ TensorFlow.js:
     $ npm start
 """
 
-# import argparse
-# import contextlib
-# import json
+import argparse
+import contextlib
+import json
 import os
 import platform
-# import re
-# import subprocess
-# import sys
-# import time
-# import warnings
+import re
+import subprocess
+import sys
+import time
+import warnings
 from pathlib import Path
 
-# import pandas as pd
-# import torch
-# from torch.utils.mobile_optimizer import optimize_for_mobile
+import pandas as pd
+import torch
+from torch.utils.mobile_optimizer import optimize_for_mobile
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -70,8 +70,8 @@ if platform.system() != 'Windows':
 # from ai_service.yolov5.models.experimental import attempt_load
 # from ai_service.yolov5.models.yolo import ClassificationModel, Detect, DetectionModel, SegmentationModel
 # from ai_service.yolov5.utils.dataloaders import LoadImages
-# from ai_service.yolov5.utils.general import (LOGGER, Profile, check_dataset, check_img_size, check_requirements, check_version,
-#                             check_yaml, colorstr, file_size, get_default_args, print_args, url2file, yaml_save)
+from ai_service.yolov5.utils.general import (LOGGER, Profile, check_dataset, check_img_size, check_requirements, check_version,
+                             check_yaml, colorstr, file_size, get_default_args, print_args, url2file, yaml_save)
 # from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
 
 MACOS = platform.system() == 'Darwin'  # macOS environment
