@@ -86,11 +86,12 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
 
 def good(image_path, weights_path, conf_thres=0.25, iou_thres=0.45, device=''):
     # Initialize
-    device = select_device(device)
-    model = attempt_load(weights_path, map_location=device)  # load FP32 model
+    device = select_device(device)  # load FP32 model
+    model = torch.load(weights_path, map_location=device)['model'].to(device).float()
     stride = int(model.stride.max())  # model stride
     imgsz = model.img_size  # inference image size (pixels)
     half = device.type != 'cpu'  # half precision only supported on CUDA
+    
 
     # Load image
     img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
