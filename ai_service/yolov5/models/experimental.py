@@ -76,13 +76,13 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
 
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
+        print("good")
         ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
         ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
     
 
         # Model compatibility updates
         if not hasattr(ckpt, 'stride'):
-            print("good")
             ckpt.stride = torch.tensor([32.])
         if hasattr(ckpt, 'names') and isinstance(ckpt.names, (list, tuple)):
             ckpt.names = dict(enumerate(ckpt.names))  # convert to dict
