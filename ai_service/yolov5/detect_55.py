@@ -7,10 +7,10 @@ import torch.backends.cudnn as cudnn
 from numpy import random
 from PIL import Image
 
-from models.experimental import attempt_load
-from utils.general import check_img_size, non_max_suppression, scale_coords
-from utils.plots import plot_one_box
-from utils.torch_utils import select_device
+from ai_service.yolov5.models.experimental import attempt_load
+from ai_service.yolov5.utils.general import check_img_size, non_max_suppression, scale_coords
+from ai_service.yolov5.utils.plots import plot_one_box
+from ai_service.yolov5.utils.torch_utils import select_device
 
 
 def detect_ljs(image_path):
