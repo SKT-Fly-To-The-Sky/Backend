@@ -66,7 +66,7 @@ def scale_coords(img_shape, coords, org_shape):
     return coords
 
 
-def detect(image_path, weights_path, conf_thres=0.25, iou_thres=0.45):
+def good(image_path, weights_path, conf_thres=0.25, iou_thres=0.45):
     # Load model
     device = select_device('')
     model = attempt_load(weights_path)
