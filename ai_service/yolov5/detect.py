@@ -123,6 +123,7 @@ def detect_v5(img0):
 
     # Load model
     device = select_device(device)
+    print(weights)
 
 
     model = DetectMultiBackend(weights=weights, device=device, dnn=dnn, data=data, fp16=half)
