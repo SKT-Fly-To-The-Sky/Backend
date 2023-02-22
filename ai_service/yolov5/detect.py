@@ -68,7 +68,7 @@ def detect_v5(img0):
     device = opt.device
     view_img,save_txt,save_conf,save_crop,nosave = False,False,False,False,False
     classes = None
-    agnosic_nms,augment,visualize,update = False,False,False,False
+    agnostic_nms,augment,visualize,update = False,False,False,False
     project = opt.project
     name = opt.name
     exist_ok = False 
@@ -120,14 +120,8 @@ def detect_v5(img0):
 
     # Dataloader
     bs = 1  # batch_size
-    if webcam:
-        view_img = check_imshow(warn=True)
-        dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
-        bs = len(dataset)
-    elif screenshot:
-        dataset = LoadScreenshots(source, img_size=imgsz, stride=stride, auto=pt)
-    else:
-        dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
+    
+    dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
     vid_path, vid_writer = [None] * bs, [None] * bs
 
     # Run inference
