@@ -44,21 +44,21 @@ TensorFlow.js:
     $ npm start
 """
 
-import argparse
-import contextlib
-import json
-import os
-import platform
-import re
-import subprocess
-import sys
-import time
-import warnings
-from pathlib import Path
+# import argparse
+# import contextlib
+# import json
+# import os
+# import platform
+# import re
+# import subprocess
+# import sys
+# import time
+# import warnings
+# from pathlib import Path
 
-import pandas as pd
-import torch
-from torch.utils.mobile_optimizer import optimize_for_mobile
+# import pandas as pd
+# import torch
+# from torch.utils.mobile_optimizer import optimize_for_mobile
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
