@@ -60,12 +60,12 @@ import pandas as pd
 import torch
 from torch.utils.mobile_optimizer import optimize_for_mobile
 
-# FILE = Path(__file__).resolve()
-# ROOT = FILE.parents[0]  # YOLOv5 root directory
-# if str(ROOT) not in sys.path:
-#     sys.path.append(str(ROOT))  # add ROOT to PATH
-# if platform.system() != 'Windows':
-#     ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
+FILE = Path(__file__).resolve()
+ROOT = FILE.parents[0]  # YOLOv5 root directory
+if str(ROOT) not in sys.path:
+    sys.path.append(str(ROOT))  # add ROOT to PATH
+if platform.system() != 'Windows':
+    ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 from ai_service.yolov5.models.experimental import attempt_load
 from ai_service.yolov5.models.yolo import ClassificationModel, Detect, DetectionModel, SegmentationModel
