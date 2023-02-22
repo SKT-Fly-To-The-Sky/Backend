@@ -10,6 +10,9 @@ import cv2
 from ai_service.yolov5.models.experimental import attempt_load
 from ai_service.yolov5.utils.general import check_img_size, non_max_suppression
 from ai_service.yolov5.utils.torch_utils import select_device
+from ai_service.yolov5.models.yolo import yolo_head
+from ai_service.yolov5.utils.general import non_max_suppression
+from ai_service.yolov5.utils.torch_utils import select_device
 
 def scale_coords(img_shape, coords, im_shape):
     # Rescale x, y, w, h from [0, 1] to image dimensions
@@ -37,32 +40,51 @@ def plot_one_box(x, img, color=None, label=None, line_thickness=None):
         cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
 
 
-
 def detect_ljs(image_path):
-    weights = './ai_service/yolov5/best_hoon.pt'  # path to the weights file
+    weights = 'yolov5s.pt'  # path to the weights file
     device = select_device('')  # set device to default
-    model = attempt_load(weights, device)  # load model
+    model = torch.load(weights, map_location=device)['model'].float()  # load model
+    model.to(device).eval()  # set device and model to evaluation mode
     imgsz = check_img_size(640, s=model.stride.max())  # check image size
-    half = device.type != 'cpu'  # set half precision to True if using GPU
+    half = device.type != 'cpu'  # set half precision
+
     if half:
-        model.half()  # convert to half precision
-    img = Image.open(image_path)  # load image
-    img_tensor = torch.from_numpy(img).to(device)  # convert image to tensor
-    img_tensor = img_tensor.half() if half else img_tensor.float()  # convert to half precision if necessary
-    img_tensor /= 255.0  # normalize pixel values
-    if img_tensor.ndimension() == 3:
-        img_tensor = img_tensor.unsqueeze(0)  # add batch dimension if necessary
-    pred = model(img_tensor)[0]  # make prediction
-    pred = non_max_suppression(pred, 0.4, 0.5)  # apply non-max suppression
-    result = []
-    for det in pred:
-        if det is not None and len(det):
-            det[:, :4] = scale_coords(img_tensor.shape[2:], det[:, :4], img.size).round()
-            for *xyxy, conf, cls in reversed(det):
-                result.append((int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3]), conf, cls))
-                label = f'{model.names[int(cls)]} {conf:.2f}'
-                plot_one_box(xyxy, img, label=label, color=random.choice(colors), line_thickness=3)
-    return result
+        model.half()  # convert model to half-precision floating point for faster inference
+
+    # Define detect function
+    def run_inference(img):
+        img = torch.from_numpy(img).to(device)  # convert to tensor
+        img = img.half() if half else img.float()  # convert to half-precision floating point if needed
+        img /= 255.0  # normalize pixel values to [0, 1]
+        if img.ndimension() == 3:
+            img = img.unsqueeze(0)
+
+        # Inference
+        with torch.no_grad():
+            pred = model(img)
+            det = yolo_head(pred, anchors, 80, imgsz)  # YOLO head operation
+            det = non_max_suppression(det, conf_thres=0.25, iou_thres=0.45)
+
+        # Process detections
+        results = []
+        for i, det in enumerate(det):  # detections per image
+            if det is not None and len(det):
+                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], img.shape[2:]).round()  # rescale boxes
+                for *xyxy, conf, cls in reversed(det):
+                    label = f'{classes[int(cls)]} {conf:.2f}'
+                    results.append({'bbox': xyxy, 'class': classes[int(cls)], 'conf': conf})
+
+        return results
+
+    # Load image
+    img0 = cv2.imread(image_path)  # BGR format
+
+    # Inference
+    img = img0[:, :, ::-1]  # RGB format
+    results = run_inference(img)
+
+    return results
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image_path', type=str, required=True, help='path to image file')
