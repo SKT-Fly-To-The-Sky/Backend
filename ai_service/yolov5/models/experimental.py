@@ -81,6 +81,8 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
         except Exception as e:
             print(e)
 
+        print(ckpt)
+
 
         ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
