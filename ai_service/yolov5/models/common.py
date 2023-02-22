@@ -601,10 +601,9 @@ class DetectMultiBackend(nn.Module):
     def _model_type(p='path/to/model.pt'):
         # Return model type from model path, i.e. path='path/to/model.onnx' -> type=onnx
         # types = [pt, jit, onnx, xml, engine, coreml, saved_model, pb, tflite, edgetpu, tfjs, paddle]
-        from ai_service.yolov5.export import export_formats
-        # from ai_service.yolov5.utils.downloads import is_url
+        # from ai_service.yolov5.export import export_formats
+        from ai_service.yolov5.utils.downloads import is_url
         sf = list(export_formats().Suffix)  # export suffixes
-        print(sf)
         # if not is_url(p, check=False):
         #     check_suffix(p, sf)  # checks
         # url = urlparse(p)  # if url may be Triton inference server
