@@ -185,6 +185,8 @@ def detect(path, img0):
                     data["object"].append({
                         "name": object_names[i],
                         "bndbox": {
+                            "img1": img,
+                            "img2": img0,
                             "xmin": str(total[i][0]),
                             "ymin": str(total[i][1]),
                             "xmax": str(total[i][2]),
@@ -202,6 +204,8 @@ def detect(path, img0):
             data["object"].append({
                 "name": 'unknown',
                 "bndbox": {
+                    "img1": img,
+                    "img2": img0,
                     "xmin": '0',
                     "ymin": '0',
                     "xmax": '0',
