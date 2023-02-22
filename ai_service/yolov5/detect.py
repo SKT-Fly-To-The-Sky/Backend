@@ -48,49 +48,61 @@ import io
 from ai_service.yolov5.models.common import DetectMultiBackend
 from ai_service.yolov5.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 from ai_service.yolov5.utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh,non_max_suppression, scale_segments)
+                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
 from ai_service.yolov5.utils.plots import Annotator, colors, save_one_box
 from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
 
+from ai_service.yolov5.models.experimental import attempt_load
+from yolov5.utils.augmentations import letterbox
 
-def good(image_path, weights_path, conf_thres=0.25, iou_thres=0.45, device=''):
-    # Initialize
-    device = select_device(device)  # load FP32 model
-    model = torch.load(weights_path, map_location=device)['model'].to(device).float()
-    stride = int(model.stride.max())  # model stride
-    imgsz = model.img_size  # inference image size (pixels)
-    half = device.type != 'cpu'  # half precision only supported on CUDA
-    
+def scale_coords(img_shape, coords, org_shape):
+    # Rescale coordinates from img_shape to org_shape
+    gain = max(img_shape) / max(org_shape)
+    pad = (img_shape - org_shape * gain) / 2
+    coords[:, [0, 2]] -= pad[1]
+    coords[:, [1, 3]] -= pad[0]
+    coords[:, :4] /= gain
+    coords[:, :4] = np.clip(coords[:, :4], 0, max(org_shape))
+    return coords
+
+
+def good(image_path, weights_path, conf_thres=0.25, iou_thres=0.45):
+    # Load model
+    device = select_device('')
+    model = attempt_load(weights_path, map_location=device)
 
     # Load image
-    img = torch.zeros((1, 3, imgsz, imgsz), device=device)  # init img
-    img_path = str(Path(image_path))  # convert to path
-    img = torch.from_numpy(np.array(Image.open(img_path)))  # BGR to RGB
+    img0 = Image.open(image_path)
+    img = letterbox(img0, new_shape=640)[0]
+
+    # Convert image to RGB and normalize
+    img = np.array(img[:, :, ::-1]).transpose(2, 0, 1)
+    img = np.ascontiguousarray(img)
+    img = torch.from_numpy(img).to(device)
+    img = img.float() / 255.0
     if img.ndimension() == 3:
         img = img.unsqueeze(0)
 
-    # Scale and pad image
-    img = img.float()  # uint8 to fp16/32
-    img /= 255.0  # 0 - 255 to 0.0 - 1.0
-    if imgsz != img.shape[2]:
-        img = torch.nn.functional.interpolate(img, size=imgsz, mode='bilinear', align_corners=False)
-    pad = 0.5 * imgsz
-    img = torch.nn.functional.pad(img, [pad, pad, pad, pad], mode='constant', value=0)
+    # Perform inference
+    pred = model(img)[0]
+    pred = non_max_suppression(pred, conf_thres, iou_thres)
 
-    # Inference
+    # Scale coordinates to original image size
+    img_shape = img0.size
+    pred = [scale_coords(img.shape[2:], p[:, :4], img_shape).round() for p in pred]
 
-    pred = model(img, augment=False)[0]
-    # Apply NMS
-    pred = non_max_suppression(pred, conf_thres, iou_thres, classes=None, agnostic=False)
-
-    # Process detections
+    # Convert result to list of dicts
+    result = []
     for i, det in enumerate(pred):
-        if det is not None and len(det):
-            # Rescale boxes from img_size to original image size
-            det[:, :4] = scale_segments(img.shape[2:], det[:, :4], img.shape[2:]).round()
-    print(det)
-    # Return the detections
-    return pred
+        if len(det):
+            det[:, :4] = det[:, :4].clamp(min=0)
+            result.append({
+                'class': int(det[0, -1]),
+                'confidence': float(det[0, 4]),
+                'bbox': [float(x) for x in det[0, :4]]
+            })
+
+    return result
 
 @smart_inference_mode()
 def detect_v5(img0):
