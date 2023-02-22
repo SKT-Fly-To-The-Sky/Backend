@@ -607,10 +607,10 @@ class DetectMultiBackend(nn.Module):
         if not is_url(p, check=False):
              check_suffix(p, sf)  # checks
         url = urlparse(p)  # if url may be Triton inference server
-        # types = [s in Path(p).name for s in sf]
-        # types[8] &= not types[9]  # tflite &= not edgetpu
-        # triton = not any(types) and all([any(s in url.scheme for s in ['http', 'grpc']), url.netloc])
-        # return types + [triton]
+        types = [s in Path(p).name for s in sf]
+        types[8] &= not types[9]  # tflite &= not edgetpu
+        triton = not any(types) and all([any(s in url.scheme for s in ['http', 'grpc']), url.netloc])
+        return types + [triton]
 
     @staticmethod
     def _load_metadata(f=Path('path/to/meta.yaml')):
