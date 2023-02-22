@@ -93,7 +93,6 @@ def attempt_download(file, repo='ultralytics/yolov5', release='v7.0'):
         return response['tag_name'], [x['name'] for x in response['assets']]  # tag, assets
 
     file = Path(str(file).strip().replace("'", ''))
-    print(file)
     if not file.exists():
         # URL specified
         name = Path(urllib.parse.unquote(str(file))).name  # decode '%2F' to '/' etc.
