@@ -99,7 +99,7 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
         elif t is nn.Upsample and not hasattr(m, 'recompute_scale_factor'):
             m.recompute_scale_factor = None  # torch 1.11.0 compatibility
 
-    Return model
+    # Return model
     if len(model) == 1:
         return model[-1]
 
