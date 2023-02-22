@@ -125,7 +125,7 @@ def detect_v5(img0):
     device = select_device(device)
 
 
-    model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
+    model = DetectMultiBackend(weights=weights, device=device, dnn=dnn, data=data, fp16=half)
 
     data_send = {}
     data_send["object"] = []
