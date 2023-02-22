@@ -183,8 +183,6 @@ def detect(path, img0):
 
                 for i in range(count):  ##리스트 두 개 xml파일에 저장
                     data["object"].append({
-                        # "img1": img,
-                        # "img2": img0,
                         "name": object_names[i],
                         "bndbox": {
                             "xmin": str(total[i][0]),
@@ -202,8 +200,6 @@ def detect(path, img0):
             return data
         else:
             data["object"].append({
-                # "img1": img,
-                # "img2": img0,
                 "name": 'unknown',
                 "bndbox": {
                     "xmin": '0',
