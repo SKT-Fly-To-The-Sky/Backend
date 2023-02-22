@@ -82,7 +82,7 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
             print("-=-=-=--=-=-=-=-=-=-=--=-=-=-=--=-=")
             pp = "./ai_service/yolov5/best_hoon.pt"
             print(os.path.exists(pp))
-            ckpt = torch.load(pp, map_location=device)  # load
+            ckpt = torch.load(pp)  # load
         except Exception as e:
             print("shibal")
             print(e)
