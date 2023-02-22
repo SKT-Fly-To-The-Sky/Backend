@@ -48,7 +48,7 @@ import io
 from ai_service.yolov5.models.common import DetectMultiBackend
 from ai_service.yolov5.utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadScreenshots, LoadStreams
 from ai_service.yolov5.utils.general import (LOGGER, Profile, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh,non_max_suppression, scale_coords)
+                           increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh,non_max_suppression, scale_segments)
 from ai_service.yolov5.utils.plots import Annotator, colors, save_one_box
 from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
 from ai_service.yolov5.models.experimental import attempt_load
@@ -84,7 +84,7 @@ def letterbox(img, new_shape=(416, 416), color=(114, 114, 114), auto=True, scale
     img = cv2.copyMakeBorder(img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return img, ratio, (dw, dh)
 
-def detect(image_path, weights_path, conf_thres=0.25, iou_thres=0.45, device=''):
+def good(image_path, weights_path, conf_thres=0.25, iou_thres=0.45, device=''):
     # Initialize
     device = select_device(device)
     model = attempt_load(weights_path, map_location=device)  # load FP32 model
@@ -117,7 +117,7 @@ def detect(image_path, weights_path, conf_thres=0.25, iou_thres=0.45, device='')
     for i, det in enumerate(pred):
         if det is not None and len(det):
             # Rescale boxes from img_size to original image size
-            det[:, :4] = scale_coords(img.shape[2:], det[:, :4], img.shape[2:]).round()
+            det[:, :4] = scale_segments(img.shape[2:], det[:, :4], img.shape[2:]).round()
             
     # Return the detections
     return pred
