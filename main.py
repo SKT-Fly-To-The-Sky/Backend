@@ -189,7 +189,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
 
     try:
         content = food_item.image
-        result = classification(content)
+        # result = classification(content)
         result['object_num'] = len(result['object'])
         result['running_time'] = time.time() - st
     except Exception as e:
