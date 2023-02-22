@@ -53,7 +53,7 @@ from ai_service.yolov5.utils.plots import Annotator, colors, save_one_box
 from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
 
 from ai_service.yolov5.models.experimental import attempt_load
-from yolov5.utils.augmentations import letterbox
+from ai_service.yolov5.utils.augmentations import letterbox
 
 def scale_coords(img_shape, coords, org_shape):
     # Rescale coordinates from img_shape to org_shape
