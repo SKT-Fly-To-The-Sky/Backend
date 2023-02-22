@@ -7,6 +7,7 @@ import math
 import numpy as np
 import torch
 import torch.nn as nn
+import os
 
 from ai_service.yolov5.utils.downloads import attempt_download
 
@@ -78,7 +79,10 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
     for w in weights if isinstance(weights, list) else [weights]:
         # ckpt = torch.load(attempt_download(w), map_location=device)  # load
         try:
-            ckpt = torch.load("./ai_service/yolov5/best_hoon.pt", map_location=device)  # load
+            print("-=-=-=--=-=-=-=-=-=-=--=-=-=-=--=-=")
+            pp = "./ai_service/yolov5/best_hoon.pt"
+            print(os.path.exists(pp))
+            ckpt = torch.load(pp, map_location=device)  # load
         except Exception as e:
             print("shibal")
             print(e)
