@@ -83,7 +83,7 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
             print(e)
 
 
-    #     ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
+        ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
     #     # Model compatibility updates
     #     if not hasattr(ckpt, 'stride'):
