@@ -72,7 +72,7 @@ from ai_service.yolov5.models.yolo import ClassificationModel, Detect, Detection
 from ai_service.yolov5.utils.dataloaders import LoadImages
 from ai_service.yolov5.utils.general import (LOGGER, Profile, check_dataset, check_img_size, check_requirements, check_version,
                             check_yaml, colorstr, file_size, get_default_args, print_args, url2file, yaml_save)
-# from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
+from ai_service.yolov5.utils.torch_utils import select_device, smart_inference_mode
 
 MACOS = platform.system() == 'Darwin'  # macOS environment
 
