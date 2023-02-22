@@ -78,10 +78,11 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
     for w in weights if isinstance(weights, list) else [weights]:
         # ckpt = torch.load(attempt_download(w), map_location=device)  # load
         ckpt = torch.load(w, map_location=device)  # load
-        ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
+        
         print("=============================================================")
         print(ckpt)
         print("=============================================================")
+        ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
         
         # Model compatibility updates
         if not hasattr(ckpt, 'stride'):
