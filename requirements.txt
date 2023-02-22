@@ -22,7 +22,7 @@ xmltodict
 
 # numpy==1.16.3
 # pandas==0.24.2
-# opencv-python==4.3.0.38
+opencv-python
 # scipy==1.2.1
 # tensorflow==1.13.1
 # keras==2.2.4
