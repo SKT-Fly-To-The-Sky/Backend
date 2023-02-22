@@ -663,11 +663,11 @@ def parse_opt(known=False):
     return opt
 
 
-# def main(opt):
-#     for opt.weights in (opt.weights if isinstance(opt.weights, list) else [opt.weights]):
-#         run(**vars(opt))
+def main(opt):
+    for opt.weights in (opt.weights if isinstance(opt.weights, list) else [opt.weights]):
+        run(**vars(opt))
 
 
-# if __name__ == '__main__':
-#     opt = parse_opt()
-#     main(opt)
+if __name__ == '__main__':
+    opt = parse_opt()
+    main(opt)
