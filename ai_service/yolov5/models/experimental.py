@@ -72,17 +72,15 @@ class Ensemble(nn.ModuleList):
 
 def attempt_load(weights, device=None, inplace=True, fuse=True):
     # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
-    # from ai_service.yolov5.models.yolo import Detect, Model
+    from ai_service.yolov5.models.yolo import Detect, Model
     
-    # model = Ensemble()
-    # for w in weights if isinstance(weights, list) else [weights]:
+    model = Ensemble()
+    for w in weights if isinstance(weights, list) else [weights]:
         
-    #     try:
-    #         ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
-    #     except Exception as e:
-    #         print(e)
-
-    #     print(ckpt)
+        try:
+            ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
+        except Exception as e:
+            print(e)
 
 
     #     ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
