@@ -523,9 +523,10 @@ def masking(img, bndbox):
 
 def quals(img, class_result):
     print(class_result)
-    img = np.array(Image.open(io.BytesIO(img)))
+    # img = np.array(Image.open(io.BytesIO(img)))
 
     for i in range(class_result["object_num"]):
+        img = class_result["img1"]
         obj = class_result["object"][i]
         # if obj['name'] == "unknown":
         #     continue
