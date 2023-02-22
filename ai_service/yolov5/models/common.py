@@ -347,7 +347,7 @@ class DetectMultiBackend(nn.Module):
             names = model.module.names if hasattr(model, 'module') else model.names  # get class names
             model.half() if fp16 else model.float()
             self.model = model  # explicitly assign for to(), cpu(), cuda(), half()
-        if jit:  # TorchScript
+        elif jit:  # TorchScript
             LOGGER.info(f'Loading {w} for TorchScript inference...')
             extra_files = {'config.txt': ''}  # model metadata
             model = torch.jit.load(w, _extra_files=extra_files, map_location=device)
@@ -492,8 +492,8 @@ class DetectMultiBackend(nn.Module):
             from utils.triton import TritonRemoteModel
             model = TritonRemoteModel(url=w)
             nhwc = model.runtime.startswith('tensorflow')
-        # else:
-        #     raise NotImplementedError(f'ERROR: {w} is not a supported format')
+        else:
+            raise NotImplementedError(f'ERROR: {w} is not a supported format')
 
         # # class names
         # if 'names' not in locals():
