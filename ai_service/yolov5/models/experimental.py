@@ -75,8 +75,8 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
     from ai_service.yolov5.models.yolo import Detect, Model
     
     model = Ensemble()
-    print(model)
     for w in weights if isinstance(weights, list) else [weights]:
+        print(w)
         ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
         ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
