@@ -344,7 +344,6 @@ class DetectMultiBackend(nn.Module):
         if pt:  # PyTorch
             try:
                 model = attempt_load(weights if isinstance(weights, list) else w, device=device, inplace=True, fuse=fuse)
-
                 stride = max(int(model.stride.max()), 32)  # model stride
                 names = model.module.names if hasattr(model, 'module') else model.names  # get class names
                 model.half() if fp16 else model.float()
@@ -499,13 +498,13 @@ class DetectMultiBackend(nn.Module):
         else:
             raise NotImplementedError(f'ERROR: {w} is not a supported format')
 
-        # # class names
-        # if 'names' not in locals():
-        #     names = yaml_load(data)['names'] if data else {i: f'class{i}' for i in range(999)}
-        # if names[0] == 'n01440764' and len(names) == 1000:  # ImageNet
-        #     names = yaml_load(ROOT / 'data/ImageNet.yaml')['names']  # human-readable names
+        # class names
+        if 'names' not in locals():
+            names = yaml_load(data)['names'] if data else {i: f'class{i}' for i in range(999)}
+        if names[0] == 'n01440764' and len(names) == 1000:  # ImageNet
+            names = yaml_load(ROOT / 'data/ImageNet.yaml')['names']  # human-readable names
 
-        # self.__dict__.update(locals())  # assign all variables to self
+        self.__dict__.update(locals())  # assign all variables to self
 
     def forward(self, im, augment=False, visualize=False):
         # YOLOv5 MultiBackend inference
