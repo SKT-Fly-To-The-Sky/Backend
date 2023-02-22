@@ -76,11 +76,8 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
 
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
-        print(w)
         ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
-        print("good")
         ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
-    
 
         # Model compatibility updates
         if not hasattr(ckpt, 'stride'):
@@ -89,7 +86,6 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
             ckpt.names = dict(enumerate(ckpt.names))  # convert to dict
 
         model.append(ckpt.fuse().eval() if fuse and hasattr(ckpt, 'fuse') else ckpt.eval())  # model in eval mode
-    return "good"
 
     # Module compatibility updates
     for m in model.modules():
