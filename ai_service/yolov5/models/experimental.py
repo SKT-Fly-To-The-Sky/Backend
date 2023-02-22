@@ -74,29 +74,26 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
     # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
     # from ai_service.yolov5.models.yolo import Detect, Model
     
-    model = Ensemble()
-    for w in weights if isinstance(weights, list) else [weights]:
-        print(attempt_download(w))
-        print(attempt_download(w))
-        print(attempt_download(w))
-        print(attempt_download(w))
-        try:
-            ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
-        except Exception as e:
-            print(e)
+    # model = Ensemble()
+    # for w in weights if isinstance(weights, list) else [weights]:
+        
+    #     try:
+    #         ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
+    #     except Exception as e:
+    #         print(e)
 
-        print(ckpt)
+    #     print(ckpt)
 
 
-        ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
+    #     ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
-        # Model compatibility updates
-        if not hasattr(ckpt, 'stride'):
-            ckpt.stride = torch.tensor([32.])
-        if hasattr(ckpt, 'names') and isinstance(ckpt.names, (list, tuple)):
-            ckpt.names = dict(enumerate(ckpt.names))  # convert to dict
+    #     # Model compatibility updates
+    #     if not hasattr(ckpt, 'stride'):
+    #         ckpt.stride = torch.tensor([32.])
+    #     if hasattr(ckpt, 'names') and isinstance(ckpt.names, (list, tuple)):
+    #         ckpt.names = dict(enumerate(ckpt.names))  # convert to dict
 
-        model.append(ckpt.fuse().eval() if fuse and hasattr(ckpt, 'fuse') else ckpt.eval())  # model in eval mode
+    #     model.append(ckpt.fuse().eval() if fuse and hasattr(ckpt, 'fuse') else ckpt.eval())  # model in eval mode
 
     # # Module compatibility updates
     # for m in model.modules():
@@ -110,13 +107,14 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
     #         m.recompute_scale_factor = None  # torch 1.11.0 compatibility
 
     # Return model
-    if len(model) == 1:
-        return model[-1]
+    # if len(model) == 1:
+    #     return model[-1]
 
-    # Return detection ensemble
-    print(f'Ensemble created with {weights}\n')
-    for k in 'names', 'nc', 'yaml':
-        setattr(model, k, getattr(model[0], k))
-    model.stride = model[torch.argmax(torch.tensor([m.stride.max() for m in model])).int()].stride  # max stride
-    assert all(model[0].nc == m.nc for m in model), f'Models have different class counts: {[m.nc for m in model]}'
-    return model
+    # # Return detection ensemble
+    # print(f'Ensemble created with {weights}\n')
+    # for k in 'names', 'nc', 'yaml':
+    #     setattr(model, k, getattr(model[0], k))
+    # model.stride = model[torch.argmax(torch.tensor([m.stride.max() for m in model])).int()].stride  # max stride
+    # assert all(model[0].nc == m.nc for m in model), f'Models have different class counts: {[m.nc for m in model]}'
+    # return model
+    return 'fuck'
