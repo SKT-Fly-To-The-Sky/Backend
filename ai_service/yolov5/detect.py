@@ -261,13 +261,11 @@ def parse_opt(img0=None):
     if img0:
         img0 = np.array(Image.open(io.BytesIO(img0)))
 
-    parser = argparse.ArgumentParser()
-
     # if supp:
     # parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best.pt', help='model path or triton URL')
     # else:
+    parser = argparse.ArgumentParser()
     parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best_hoon.pt', help='model path or triton URL')
-
     parser.add_argument('--source', type=str, default=ROOT / 'data/images', help='file/dir/URL/glob/screen/0(webcam)')
     parser.add_argument('--data', type=str, default=ROOT / 'data/coco128.yaml', help='(optional) dataset.yaml path')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
