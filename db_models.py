@@ -4,21 +4,6 @@ from database import Base
 from sqlalchemy.orm import relationship
 
 
-# class FoodItemTable(Base):
-#     __tablename__ = "food_items"
-#
-#     img_name = Column(String(300), primary_key=True)
-#     userid = Column(String(50), ForeignKey('users.userid'))
-#     date = Column(String(50))
-#     time_div = Column(String(50))
-#     image = Column(LargeBinary)
-#
-#     user = relationship("UserTable", backref="food_items")
-#
-#     def to_dict(self):
-#         return {"id": self.id, "userid": self.userid, "name": self.name, "date": self.date}
-
-
 class UserTable(Base):
     __tablename__ = "users"
 
@@ -45,8 +30,8 @@ class SupplementTable(Base):
 
     sup_name = Column(String(200), primary_key=True)
     intake_time_div = Column(String(50))
-    buy_link = Column(String(300))
-    sup_img = Column(LargeBinary(length=(2**24)-1))
+    # buy_link = Column(String(300))
+    # sup_img = Column(LargeBinary(length=(2**24)-1))
     vitA = Column(Float)
     vitB1 = Column(Float)
     vitB2 = Column(Float)

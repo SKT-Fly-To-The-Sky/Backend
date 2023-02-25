@@ -269,14 +269,13 @@ async def read_supplement_names(db: Session = Depends(get_db)):
 
 @app.get("/supplements/info")
 async def read_supplement_info(sup_name: str, db: Session = Depends(get_db)):
-    # nut = db.query(SupplementTable).filter(SupplementTable.sup_name == sup_name).first()
-    #
-    # if not nut:
-    #     raise HTTPException(status_code=404, detail="nut info not found")
-    #
-    # return JSONResponse(content=nut)
-    return JSONResponse(contt={"kcal": 0, "protein": 0, "fat": 0, "carbo": 0, "sugar": 0, "chole": 0, "fiber": 0, "calcium": 0, "iron": 0, "magne": 0, "potass": 0, "sodium": 0, "zinc": 0, "copper": 0, "vitA": 0, "vitB1": 0, "vitB2": 0, "vitB3": 0, "vitB5": 0, "vitB6": 0, "vitB7": 0, "vitB9": 0, "vitB12": 0, "vitC": 0, "vitD": 0, "vitE": 0,"vitK": 0, "omega": 0})
+    nut = db.query(SupplementTable).filter(SupplementTable.sup_name == sup_name).first()
 
+    if not nut:
+        raise HTTPException(status_code=404, detail="nut info not found")
+
+    return JSONResponse(content=nut)
+    # return JSONResponse(contt={"kcal": 0, "protein": 0, "fat": 0, "carbo": 0, "sugar": 0, "chole": 0, "fiber": 0, "calcium": 0, "iron": 0, "magne": 0, "potass": 0, "sodium": 0, "zinc": 0, "copper": 0, "vitA": 0, "vitB1": 0, "vitB2": 0, "vitB3": 0, "vitB5": 0, "vitB6": 0, "vitB7": 0, "vitB9": 0, "vitB12": 0, "vitC": 0, "vitD": 0, "vitE": 0,"vitK": 0, "omega": 0})
 
 @app.get("/foods/info")
 async def read_food_info(food_name: str, db: Session = Depends(get_db)):
@@ -500,8 +499,7 @@ async def read_supplements_classification(file: UploadFile = File(...), db: Sess
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
-    return {"result": classification_supplement(image_data)}
-    # result = classification_supplement(image_data)
+    return JSONResponse(content=classification_supplement(image_data))
     # return Response(content=, media_type="image/jpeg")
 
 
