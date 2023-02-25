@@ -38,9 +38,9 @@ from db_models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable
     RecommendedNutrientTable, IntakeNutrientTable
 from schema import User, Token, IntakeNutrientRequest
 
-from utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
+from server_utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
     ALGORITHM, oauth2_scheme, is_token_expired
-from utils.log import logger
+from server_utils.log import logger
 from datetime import datetime
 
 Base.metadata.create_all(bind=engine)
