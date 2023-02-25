@@ -1,0 +1,1 @@
+{"object": [{"name": "person", "bndbox": {"xmin": "122", "ymin": "198", "xmax": "852", "ymax": "719"}, "score": 0.86}, {"name": "person", "bndbox": {"xmin": "743", "ymin": "44", "xmax": "1147", "ymax": "720"}, "score": 0.86}]}
