@@ -257,7 +257,7 @@ def run(
     #     strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
 
-def parse_opt(img0=None, supp=None):
+def parse_opt(img0=None):
     if img0:
         img0 = np.array(Image.open(io.BytesIO(img0)))
 
@@ -313,9 +313,9 @@ def classification_yolov5(img0):
     return main(opt)
 
 
-def classification_supplement(img0):
-    opt = parse_opt(img0=img0, supp=True)
-    return main(opt)
+# def classification_supplement(img0):
+#     opt = parse_opt(img0=img0, supp=True)
+#     return main(opt)
 
 
 if __name__ == '__main__':
