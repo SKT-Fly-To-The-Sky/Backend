@@ -19,7 +19,7 @@ xmltodict
 
 opencv-python==4.3.0.38
 scipy==1.2.1
-tensorflow==1.13.1
+tensorflow
 keras==2.2.4
 scikit-learn==0.21.1
 scikit-image==0.16.2
