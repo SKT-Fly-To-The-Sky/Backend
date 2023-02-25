@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # Create a log file handler
-handler = logging.FileHandler('./utils/logs/app.log')
+handler = logging.FileHandler('./server_utils/logs/app.log')
 handler.setLevel(logging.INFO)
 
 # Define the log file format
