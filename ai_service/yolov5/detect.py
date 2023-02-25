@@ -303,7 +303,7 @@ def main(opt):
     return run(**vars(opt))
 
 
-def detect(img0):
+def classification_yolov5(img0):
     opt = parse_opt(img0)
     return main(opt)
 
