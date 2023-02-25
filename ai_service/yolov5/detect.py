@@ -264,10 +264,9 @@ def parse_opt(img0=None, supp=None):
     parser = argparse.ArgumentParser()
 
     # if supp:
-    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best.pt', help='model path or triton URL')
+    # parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best.pt', help='model path or triton URL')
     # else:
-    #     parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best_hoon.pt',
-    #                         help='model path or triton URL')
+    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best_hoon.pt', help='model path or triton URL')
 
     parser.add_argument('--source', type=str, default=ROOT / 'data/images', help='file/dir/URL/glob/screen/0(webcam)')
     parser.add_argument('--data', type=str, default=ROOT / 'data/coco128.yaml', help='(optional) dataset.yaml path')
