@@ -313,7 +313,8 @@ def classification_yolov5(img0):
     return main(opt)
 
 
-# def classification_supplement(img0):
+def classification_supplement(img0):
+    return ""
 #     opt = parse_opt(img0=img0, supp=True)
 #     return main(opt)
 
