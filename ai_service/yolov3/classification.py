@@ -19,7 +19,7 @@ import psutil
 import torch
 import seaborn as sns
 
-from ai_service.yolov3.models import ONNX_EXPORT, Darknet, attempt_download, load_darknet_weights
+from ai_service.yolov3.models222 import ONNX_EXPORT, Darknet, attempt_download, load_darknet_weights
 from ai_service.yolov3.utils import torch_utils
 from ai_service.yolov3.utils.datasets import LoadStreams, LoadImages
 from ai_service.yolov3.utils.utils import load_classes, non_max_suppression, apply_classifier, scale_coords, xyxy2xywh, \

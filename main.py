@@ -29,17 +29,18 @@ from starlette import status
 from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
 from ai_service.supplement_classification.supplement_classifier import sup_classification
 from ai_service.yolov3.detect_del import classification
+from ai_service.yolov5.detect import classification_yolov5
 from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
-from models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
+from db_models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
     RecommendedNutrientTable, IntakeNutrientTable
 from schema import User, Token, IntakeNutrientRequest
 
-from utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
+from server_utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
     ALGORITHM, oauth2_scheme, is_token_expired
-from utils.log import logger
+from server_utils.log import logger
 from datetime import datetime
 
 Base.metadata.create_all(bind=engine)
@@ -219,7 +220,8 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
     try:
-        result = classification(content)
+        result = classification_yolov5(content)
+        # result = classification(content)
         result['object_num'] = len(result['object'])
         result['running_time'] = time.time() - st
         return JSONResponse(content=result)
@@ -273,7 +275,7 @@ async def read_supplement_info(sup_name: str, db: Session = Depends(get_db)):
     #     raise HTTPException(status_code=404, detail="nut info not found")
     #
     # return JSONResponse(content=nut)
-    return JSONResponse(content={"kcal": 0, "protein": 0, "fat": 0, "carbo": 0, "sugar": 0, "chole": 0, "fiber": 0, "calcium": 0, "iron": 0, "magne": 0, "potass": 0, "sodium": 0, "zinc": 0, "copper": 0, "vitA": 0, "vitB1": 0, "vitB2": 0, "vitB3": 0, "vitB5": 0, "vitB6": 0, "vitB7": 0, "vitB9": 0, "vitB12": 0, "vitC": 0, "vitD": 0, "vitE": 0,"vitK": 0, "omega": 0})
+    return JSONResponse(contt={"kcal": 0, "protein": 0, "fat": 0, "carbo": 0, "sugar": 0, "chole": 0, "fiber": 0, "calcium": 0, "iron": 0, "magne": 0, "potass": 0, "sodium": 0, "zinc": 0, "copper": 0, "vitA": 0, "vitB1": 0, "vitB2": 0, "vitB3": 0, "vitB5": 0, "vitB6": 0, "vitB7": 0, "vitB9": 0, "vitB12": 0, "vitC": 0, "vitD": 0, "vitE": 0,"vitK": 0, "omega": 0})
 
 
 @app.get("/foods/info")
