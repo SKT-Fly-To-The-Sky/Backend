@@ -5,7 +5,7 @@ import sys
 import argparse
 
 
-from ai_service.yolov3.utils.models import *  # set ONNX_EXPORT in models.py
+from ai_service.yolov3.utils.models import *  # set ONNX_EXPORT in models222.py
 from ai_service.yolov3.utils.datasets import *
 from ai_service.yolov3.utils.utils import *
 
