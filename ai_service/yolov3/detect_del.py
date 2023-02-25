@@ -152,7 +152,7 @@ def detect(path, img0):
 
             if det is not None and len(det):
                 # Rescale boxes from imgsz to im0 size
-                det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
+                # det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round() # 수정 주석
                 count = 0
 
                 # Print results
@@ -166,6 +166,7 @@ def detect(path, img0):
                 score = []
                 data = {}
                 data["object"] = []
+                data["img"] = Image.open(io.BytesIO(img))
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
@@ -185,8 +186,6 @@ def detect(path, img0):
                     data["object"].append({
                         "name": object_names[i],
                         "bndbox": {
-                            "img1": img,
-                            "img2": img0,
                             "xmin": str(total[i][0]),
                             "ymin": str(total[i][1]),
                             "xmax": str(total[i][2]),
@@ -204,8 +203,6 @@ def detect(path, img0):
             data["object"].append({
                 "name": 'unknown',
                 "bndbox": {
-                    "img1": img,
-                    "img2": img0,
                     "xmin": '0',
                     "ymin": '0',
                     "xmax": '0',
