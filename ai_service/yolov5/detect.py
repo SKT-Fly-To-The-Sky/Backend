@@ -262,9 +262,9 @@ def parse_opt(img0=None, weight_path='best_hoon.pt'):
     if img0:
         img0 = np.array(Image.open(io.BytesIO(img0)))
 
-    opt = {'weights': str(ROOT / {weight_path}),
-                'source': str(ROOT / 'data/images'),
-                'data': str(ROOT / 'data/coco128.yaml'),
+    opt = {'weights': ROOT / weight_path,
+                'source': ROOT / 'data/images',
+                'data': ROOT / 'data/coco128.yaml',
                 'imgsz': [640],
                 'conf_thres': 0.25,
                 'iou_thres': 0.45,
@@ -280,7 +280,7 @@ def parse_opt(img0=None, weight_path='best_hoon.pt'):
                 'augment': False,
                 'visualize': False,
                 'update': False,
-                'project': str(ROOT / 'runs/detect'),
+                'project': ROOT / 'runs/detect',
                 'name': 'exp',
                 'exist_ok': False,
                 'line_thickness': 3,
