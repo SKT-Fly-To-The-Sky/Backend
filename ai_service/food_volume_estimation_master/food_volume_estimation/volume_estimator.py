@@ -79,11 +79,12 @@ class VolumeEstimator():
             arg_init: Flag to initialize volume estimator with 
                 command-line arguments.
         """
+        base_path = r'./ai_service/food_volume_estimation_master/food_volume_estimation'
         if not arg_init:
             # For usage in jupyter notebook 
             print('[*] VolumeEstimator not initialized.')
         else:    
-            self.args = self.__parse_args()
+            # self.args = self.__parse_args()
 
             # Load depth estimation model
             custom_losses = Losses()
@@ -92,12 +93,12 @@ class VolumeEstimator():
                     'InverseDepthNormalization': InverseDepthNormalization,
                     'AugmentationLayer': AugmentationLayer,
                     'compute_source_loss': custom_losses.compute_source_loss}
-            with open(self.args.depth_model_architecture, 'r') as read_file:
+            with open(f'{base_path}/monovideo_fine_tune_food_videos.json', 'r') as read_file:
                 model_architecture_json = json.load(read_file)
                 self.monovideo = model_from_json(model_architecture_json,
                                                  custom_objects=objs)
             self.__set_weights_trainable(self.monovideo, False)
-            self.monovideo.load_weights(self.args.depth_model_weights)
+            self.monovideo.load_weights(f'{base_path}/monovideo_fine_tune_food_videos.h5')
             self.model_input_shape = (
                 self.monovideo.inputs[0].shape.as_list()[1:])
             depth_net = self.monovideo.get_layer('depth_net')
@@ -106,100 +107,100 @@ class VolumeEstimator():
                                      name='depth_model')
             # 수정 print('[*] Loaded depth estimation model.')
             # Depth model configuration
-            self.min_disp = 1 / self.args.max_depth
-            self.max_disp = 1 / self.args.min_depth
-            self.gt_depth_scale = self.args.gt_depth_scale
+            self.min_disp = 1 / 10
+            self.max_disp = 1 / 0.01
+            self.gt_depth_scale = 0.35
 
             # Create segmentator object
-            self.segmentator = FoodSegmentator(self.args.segmentation_weights)
+            self.segmentator = FoodSegmentator(f'{base_path}/mask_rcnn_food_segmentation.h5')
 
             # Plate adjustment relaxation parameter
-            self.relax_param = self.args.relaxation_param
+            self.relax_param = 0.01
 
             # If given initialize food density database 
-            if self.args.density_db is not None:
-                self.density_db = DensityDatabase(self.args.density_db)
+            # if self.args.density_db is not None:
+            #     self.density_db = DensityDatabase(self.args.density_db)
 
 
-    def __parse_args(self):
-        base_path = r'./ai_service/food_volume_estimation_master/food_volume_estimation'
-        """Parse command-line input arguments.
+    # def __parse_args(self):
+    #     base_path = r'./ai_service/food_volume_estimation_master/food_volume_estimation'
+    #     """Parse command-line input arguments.
 
-        Returns:
-            args: The arguments object.
-        """
-        # Parse command line arguments
-        parser = argparse.ArgumentParser(
-            description='Estimate food volume in input images.')
+    #     Returns:
+    #         args: The arguments object.
+    #     """
+    #     # Parse command line arguments
+    #     parser = argparse.ArgumentParser(
+    #         description='Estimate food volume in input images.')
         # parser.add_argument('--input_images', type=str, nargs='+', # 모듈화를 위한 주석처리
         #                     help='Paths to input images.',
         #                     metavar='/path/to/image1 /path/to/image2 ...',
         #                     required=True)
-        parser.add_argument('--depth_model_architecture', type=str,
-                            help=('Depth estimation model '
-                                  'architecture (.json).'),
-                            metavar='/path/to/architecture.json',
-                            default=f'{base_path}/monovideo_fine_tune_food_videos.json',)
-                            #required=True)
-        parser.add_argument('--depth_model_weights', type=str,
-                            help='Depth estimation model weights (.h5).',
-                            metavar='/path/to/weights.h5',
-                            default=f'{base_path}/monovideo_fine_tune_food_videos.h5',)
-                            #required=True)
-        parser.add_argument('--segmentation_weights', type=str,
-                            help='Food segmentation model weights (.h5).',
-                            metavar='/path/to/weights.h5',
-                            default=f'{base_path}/mask_rcnn_food_segmentation.h5',)
-                            #required=True)
-        parser.add_argument('--fov', type=float,
-                            help='Camera Field of View (in deg).',
-                            metavar='<fov>',
-                            default=70)
-        parser.add_argument('--plate_diameter_prior', type=float,
-                            help=('Expected plate diameter (in m) '
-                                  + 'or 0 to ignore plate scaling'),
-                            metavar='<plate_diameter_prior>',
-                            default=0.0)
-        parser.add_argument('--gt_depth_scale', type=float,
-                            help='Ground truth depth rescaling factor.',
-                            metavar='<gt_depth_scale>',
-                            default=0.35)
-        parser.add_argument('--min_depth', type=float,
-                            help='Minimum depth value.',
-                            metavar='<min_depth>',
-                            default=0.01)
-        parser.add_argument('--max_depth', type=float,
-                            help='Maximum depth value.',
-                            metavar='<max_depth>',
-                            default=10)
-        parser.add_argument('--relaxation_param', type=float,
-                            help='Plate adjustment relaxation parameter.',
-                            metavar='<relaxation_param>',
-                            default=0.01)
+        # parser.add_argument('--depth_model_architecture', type=str,
+        #                     help=('Depth estimation model '
+        #                           'architecture (.json).'),
+        #                     metavar='/path/to/architecture.json',
+        #                     default=f'{base_path}/monovideo_fine_tune_food_videos.json',)
+        #                     #required=True)
+        # parser.add_argument('--depth_model_weights', type=str,
+        #                     help='Depth estimation model weights (.h5).',
+        #                     metavar='/path/to/weights.h5',
+        #                     default=f'{base_path}/monovideo_fine_tune_food_videos.h5',)
+        #                     #required=True)
+        # parser.add_argument('--segmentation_weights', type=str,
+        #                     help='Food segmentation model weights (.h5).',
+        #                     metavar='/path/to/weights.h5',
+        #                     default=f'{base_path}/mask_rcnn_food_segmentation.h5',)
+        #                     #required=True)
+        # parser.add_argument('--fov', type=float,
+        #                     help='Camera Field of View (in deg).',
+        #                     metavar='<fov>',
+        #                     default=70)
+        # parser.add_argument('--plate_diameter_prior', type=float,
+        #                     help=('Expected plate diameter (in m) '
+        #                           + 'or 0 to ignore plate scaling'),
+        #                     metavar='<plate_diameter_prior>',
+        #                     default=0.0)
+        # parser.add_argument('--gt_depth_scale', type=float,
+        #                     help='Ground truth depth rescaling factor.',
+        #                     metavar='<gt_depth_scale>',
+        #                     default=0.35)
+        # parser.add_argument('--min_depth', type=float,
+        #                     help='Minimum depth value.',
+        #                     metavar='<min_depth>',
+        #                     default=0.01)
+        # parser.add_argument('--max_depth', type=float,
+        #                     help='Maximum depth value.',
+        #                     metavar='<max_depth>',
+        #                     default=10)
+        # parser.add_argument('--relaxation_param', type=float,
+        #                     help='Plate adjustment relaxation parameter.',
+        #                     metavar='<relaxation_param>',
+        #                     default=0.01)
         # parser.add_argument('--plot_results', action='store_true',
         #                     help='Plot volume estimation results.',
         #                     default=False)
-        parser.add_argument('--results_file', type=str,
-                            help='File to save results at (.csv).',
-                            metavar='/path/to/results.csv',
-                            default=None)
-        parser.add_argument('--plots_directory', type=str,
-                            help='Directory to save plots at (.png).',
-                            metavar='/path/to/plot/directory/',
-                            default=None)
-        parser.add_argument('--density_db', type=str,
-                            help=('Path to food density database (.xlsx) ' +
-                                  'or Google Sheets ID.'),
-                            metavar='/path/to/plot/database.xlsx or <ID>',
-                            default=None)
-        parser.add_argument('--food_type', type=str,
-                            help='Food type to calculate weight for.',
-                            metavar='<food_type>',
-                            default=None)
-        args = parser.parse_args()
+        # parser.add_argument('--results_file', type=str,
+        #                     help='File to save results at (.csv).',
+        #                     metavar='/path/to/results.csv',
+        #                     default=None)
+        # parser.add_argument('--plots_directory', type=str,
+        #                     help='Directory to save plots at (.png).',
+        #                     metavar='/path/to/plot/directory/',
+        #                     default=None)
+        # parser.add_argument('--density_db', type=str,
+        #                     help=('Path to food density database (.xlsx) ' +
+        #                           'or Google Sheets ID.'),
+        #                     metavar='/path/to/plot/database.xlsx or <ID>',
+        #                     default=None)
+        # parser.add_argument('--food_type', type=str,
+        #                     help='Food type to calculate weight for.',
+        #                     metavar='<food_type>',
+        #                     default=None)
+        # args = parser.parse_args()
         
 
-        return args
+        # return args
 
     def estimate_volume(self, input_image, fov=70,  plate_diameter_prior=0.3,
             plot_results=False, plots_directory=None): # 수정 (self, input_image, fov=70,  plate_diameter_prior=0.3,
@@ -471,34 +472,34 @@ class VolumeEstimator():
 def qual(input_image): # if __name__ == "__main__": # 파라미터 추가
     warnings.filterwarnings(action='ignore') # 수정 추가
     estimator = VolumeEstimator()
-
+    plots_directory = None
     # Iterate over input images to estimate volumes
     results = {'image_path': [], 'volumes': []}
     # for input_image in estimator.args.input_images:
         # 수정 print('[*] Input:', input_image)
     volumes = estimator.estimate_volume(
-        input_image, estimator.args.fov, 
-        estimator.args.plate_diameter_prior,# 수정 estimator.args.plot_results,
-        estimator.args.plots_directory)
+        input_image, 70, 
+        0,# 수정 estimator.args.plot_results,
+        plots_directory)
 
     # Store results per input image
     # results['image_path'].append(input_image) # 수정 주석
-    if estimator.args.plots_directory is not None: # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
+    if plots_directory is not None: # 수정 estimator.args.plot_results or estimator.args.plots_directory is not None
         results['volumes'].append([x[0] * 1000 for x in volumes])
         plt.close('all')
     else:
         results['volumes'].append(volumes * 1000)
 
     # Print weight if density database is given
-    if estimator.args.density_db is not None:
-        db_entry = estimator.density_db.query(
-            estimator.args.food_type)
-        density = db_entry[1]
-        print('[*] Density database match:', db_entry)
-        # All foods found in the input image are considered to be
-        # of the same type
-        for v in results['volumes'][-1]:
-            print('[*] Food weight:', 1000 * v * density, 'g')
+    # if estimator.args.density_db is not None:
+    #     db_entry = estimator.density_db.query(
+    #         estimator.args.food_type)
+    #     density = db_entry[1]
+    #     print('[*] Density database match:', db_entry)
+    #     # All foods found in the input image are considered to be
+    #     # of the same type
+    #     for v in results['volumes'][-1]:
+    #         print('[*] Food weight:', 1000 * v * density, 'g')
 
     # print("------------------------------------")
     # print(results['volumes'])
