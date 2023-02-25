@@ -215,7 +215,7 @@ def run(
                 # with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
                 #     json.dump(data_send, outfile)
     return data_send
-            # Stream results
+    # Stream results
     #         im0 = annotator.result()
     #         if view_img:
     #             if platform.system() == 'Linux' and p not in windows:
@@ -257,12 +257,18 @@ def run(
     #     strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
 
-def parse_opt(img0=None):
+def parse_opt(img0=None, supp=None):
     if img0:
         img0 = np.array(Image.open(io.BytesIO(img0)))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best_hoon.pt', help='model path or triton URL')
+
+    if supp:
+        parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best.pt',
+                            help='model path or triton URL')
+    else:
+        parser.add_argument('--weights', nargs='+', type=str, default=ROOT / 'best_hoon.pt',
+                            help='model path or triton URL')
     parser.add_argument('--source', type=str, default=ROOT / 'data/images', help='file/dir/URL/glob/screen/0(webcam)')
     parser.add_argument('--data', type=str, default=ROOT / 'data/coco128.yaml', help='(optional) dataset.yaml path')
     parser.add_argument('--imgsz', '--img', '--img-size', nargs='+', type=int, default=[640], help='inference size h,w')
@@ -289,7 +295,7 @@ def parse_opt(img0=None):
     parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
     parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
     parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
-    parser.add_argument('--img0',  default=img0, type=np.ndarray, help='numpy image')
+    parser.add_argument('--img0', default=img0, type=np.ndarray, help='numpy image')
 
     opt = parser.parse_args()
 
@@ -304,7 +310,12 @@ def main(opt):
 
 
 def classification_yolov5(img0):
-    opt = parse_opt(img0)
+    opt = parse_opt(img0=img0)
+    return main(opt)
+
+
+def classification_supplement(img0):
+    opt = parse_opt(img0=img0, supp=True)
     return main(opt)
 
 

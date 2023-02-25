@@ -28,8 +28,8 @@ from starlette import status
 
 from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
 from ai_service.supplement_classification.supplement_classifier import sup_classification
-from ai_service.yolov3.detect_del import classification
-from ai_service.yolov5.detect import classification_yolov5
+# from ai_service.yolov3.detect_del import classification
+from ai_service.yolov5.detect import classification_yolov5, classification_supplement
 from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
@@ -190,7 +190,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
 
     try:
         content = food_item.image
-        result = classification(content)
+        result = classification_yolov5(content)
         result['object_num'] = len(result['object'])
         result['running_time'] = time.time() - st
     except Exception as e:
@@ -500,7 +500,7 @@ async def read_supplements_classification(file: UploadFile = File(...), db: Sess
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
-    return {"result": sup_classification(image_data)}
+    return {"result": classification_supplement(image_data)}
 
 
 @app.get("/error")
