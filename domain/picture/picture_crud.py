@@ -1,4 +1,4 @@
-from db_models import Picture
+from models import Picture
 from sqlalchemy.orm import Session
 
 

@@ -1,4 +1,4 @@
-from db_models import Member
+from models import Member
 from sqlalchemy.orm import Session
 
 

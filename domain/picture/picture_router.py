@@ -22,7 +22,7 @@ sys.path.append('/workspace')
 # sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from database import get_db
 from domain.picture import picture_crud
-from db_models import Picture
+from models import Picture
 from ai_service.food_classification.detect import classification
 
 # from ai_service.yolov3.classification import classification

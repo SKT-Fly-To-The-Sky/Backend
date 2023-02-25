@@ -8,7 +8,7 @@ import seaborn as sns
 
 from torch.utils.data import DataLoader
 
-from db_models import *
+from models import *
 from utils.datasets import *
 from utils.utils import *
 

@@ -34,7 +34,7 @@ from database import engine, Base, get_db, init_db
 from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
-from db_models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
+from models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
     RecommendedNutrientTable, IntakeNutrientTable
 from schema import User, Token, IntakeNutrientRequest
 
