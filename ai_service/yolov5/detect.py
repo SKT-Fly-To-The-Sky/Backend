@@ -214,7 +214,7 @@ def run(
                     })
                 # with open(save_path[:save_path.rfind('.')] + '.json', 'w') as outfile:
                 #     json.dump(data_send, outfile)
-    return data_send
+    return annotator.result(), data_send
     # Stream results
     #         im0 = annotator.result()
     #         if view_img:
@@ -303,12 +303,14 @@ def main(opt):
 
 def classification_yolov5(img0):
     opt = parse_opt(img0=img0)
-    return main(opt)
+    img, result = main(opt)
+    return result
 
 
 def classification_supplement(img0):
     opt = parse_opt(img0=img0, weight_path='best.pt')
-    return main(opt)
+    img, result = main(opt)
+    return img
 
 
 if __name__ == '__main__':

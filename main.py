@@ -500,7 +500,9 @@ async def read_supplements_classification(file: UploadFile = File(...), db: Sess
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
-    return {"result": classification_supplement(image_data)}
+    # return {"result": classification_supplement(image_data)}
+
+    return Response(content=classification_supplement(image_data), media_type="image/jpeg")
 
 
 @app.get("/error")
