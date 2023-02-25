@@ -33,13 +33,3 @@ ipython  # interactive notebook
 PyYAML>=5.3.1
 requests>=2.23.0
 thop>=0.1.1  # FLOPs computation
-# Logging ---------------------------------------------------------------------
-tensorboard
-
-gitpython
-matplotlib>=3.2.2
-numpy>=1.18.5
-tqdm>=4.64.0
-pandas>=1.1.4
-setuptools>=65.5.1
-wheel>=0.38.0

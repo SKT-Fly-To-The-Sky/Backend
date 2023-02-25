@@ -298,7 +298,7 @@ def parse_opt(img0=None, weight_path='best_hoon.pt'):
 
 def main(opt):
     check_requirements(exclude=('tensorboard', 'thop'))
-    return run(**vars(opt))
+    return run(**opt)
 
 
 def classification_yolov5(img0):
