@@ -5,7 +5,9 @@ FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 COPY . /workspace
 RUN apt-get update
 RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN apt-get update
 RUN apt-get -y install curl
+RUN pip install --upgrade pip
 RUN pip install -r /workspace/requirements.txt
 
 #RUN alembic upgrade head
