@@ -398,7 +398,7 @@ async def read_intake_nutrient_time_dev(userid: str, time_div: str, date: str, d
 
     nutrients.image = None
 
-    return JSONResponse(content=nutrients)
+    return JSONResponse(content=jsonable_encoder(nutrients))
 
 @app.get("/{userid}/intakes/nutrients/day")
 async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends(get_db)):
