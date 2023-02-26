@@ -514,10 +514,10 @@ def masking(img, bndbox):
         masked_img = img.copy()
 
         # Set pixels outside the mask to black
-        masked_img[:y_min, :] = 0
-        masked_img[y_max:, :] = 0
-        masked_img[:, :x_min] = 0
-        masked_img[:, x_max:] = 0
+        masked_img[:y_min, :] = 255
+        masked_img[y_max:, :] = 255
+        masked_img[:, :x_min] = 255
+        masked_img[:, x_max:] = 255
         return masked_img
     except Exception as e:
         print(e)
