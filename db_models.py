@@ -30,8 +30,6 @@ class SupplementTable(Base):
 
     sup_name = Column(String(200), primary_key=True)
     intake_time_div = Column(String(50))
-    # buy_link = Column(String(300))
-    # sup_img = Column(LargeBinary(length=(2**24)-1))
     vitA = Column(Float)
     vitB1 = Column(Float)
     vitB2 = Column(Float)
