@@ -5,8 +5,8 @@ SQLAlchemy
 alembic
 cryptography
 pymysql
-torchvision
 psutil
+tqdm
 seaborn
 pydantic
 uvicorn
@@ -16,6 +16,9 @@ PyJWT
 passlib
 bcrypt
 xmltodict
+
+# YOLOv5 requirements
+# Usage: pip install -r requirements.txt
 
 # Base ------------------------------------------------------------------------
 gitpython
@@ -43,5 +46,6 @@ IPython
 Flask==1.1.1
 fuzzywuzzy==0.18.0
 h5py==2.9
+
 
 tensorboard
