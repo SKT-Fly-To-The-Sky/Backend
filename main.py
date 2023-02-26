@@ -26,8 +26,7 @@ from sqlalchemy import and_, inspect, func
 from sqlalchemy.orm import Session
 from starlette import status
 
-from ai_service.food_volume_estimation_master.food_volume_estimation.volume_estimator import qual, quals
-from ai_service.supplement_classification.supplement_classifier import sup_classification
+from ai_service.food_volume_estimation.food_volume_estimation.volume_estimator import qual
 # from ai_service.yolov3.detect_del import classification
 from ai_service.yolov5.detect import classification_yolov5, classification_supplement
 from database import engine, Base, get_db, init_db
@@ -192,13 +191,13 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         content = food_item.image
         result = classification_yolov5(content)
         result['object_num'] = len(result['object'])
-        result['running_time'] = time.time() - st
     except Exception as e:
         print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
 
     try:
-        qual_result = quals(content, result)
+        qual_result = qual(content, result)
+        qual_result['running_time'] = time.time() - st
         return JSONResponse(content=qual_result)
     except Exception as e:
         print(e)
