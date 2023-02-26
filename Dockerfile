@@ -4,7 +4,7 @@ FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 #RUN apt-get update && apt-get install -y build-essential python3-pip
 COPY . /workspace
 RUN apt-get update
-RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN apt-get install -y libsm6 libxext6 libxrender-dev, libglib2.0-0
 RUN apt-get update
 RUN apt-get -y install curl
 RUN pip install --upgrade pip
