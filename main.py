@@ -444,17 +444,19 @@ async def read_intake_nutrient_time_dev(userid: str, time_div: str, date: str, d
 
 @app.get("/{userid}/intakes/foods/names")
 async def read_intake_food_name(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
-    food_names = db.query(IntakeFoodNameTable).filter(
+    food_names_obj = db.query(IntakeFoodNameTable).filter(
         and_(
             IntakeFoodNameTable.userid == userid,
             IntakeFoodNameTable.time_div == time_div,
             IntakeFoodNameTable.date == date)
     ).all()
 
-    if not food_names:
+    if not food_names_obj:
         raise HTTPException(status_code=404, detail="Intake nutrients not found")
 
-    result = {"object_num": len(jsonable_encoder(food_names)), "obejct": jsonable_encoder(food_names)}
+    food_names = [obj.food_name for obj in food_names_obj]
+
+    result = {"object_num": len(food_names), "obejct": food_names}
     return JSONResponse(content=result)
 
 
