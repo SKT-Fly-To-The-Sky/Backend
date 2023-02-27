@@ -197,7 +197,9 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
     print(result)
     try:
-        qual_result = qual(content, result)
+        qual_result = result.copy()
+        qual_result["volumes"]: 0.790214897124221
+        # qual_result = qual(content, result)
         qual_result['running_time'] = time.time() - st
         return JSONResponse(content=qual_result)
     except Exception as e:
@@ -222,6 +224,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
     try:
         result = classification_yolov5(content)
         # result = classification(content)
+        # result["volumes"]: 0.790214897124221
         result['object_num'] = len(result['object'])
         result['running_time'] = time.time() - st
         return JSONResponse(content=result)
