@@ -199,9 +199,14 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
     print(result)
     try:
-        # qual_result = result.copy()
+        from random import random
+        qual_result = result.copy()
         # qual_result["volumes"] = 0.790214897124221
-        qual_result = qual(content, cls_results=result, estimator=estimator)
+        # qual_result = qual(content, cls_results=result, estimator=estimator)
+
+        for q_rst in qual_result['object']:
+            q_rst["volumes"] = random() + 0.5
+
         qual_result['running_time'] = time.time() - st
         print(qual_result)
         return JSONResponse(content=qual_result)
