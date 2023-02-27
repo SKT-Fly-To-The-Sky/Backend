@@ -269,7 +269,7 @@ def parse_opt(img0=None, weight_path='best_hoon.pt'):
                 'conf_thres': 0.25,
                 'iou_thres': 0.45,
                 'max_det': 1000,
-                'device': 'cpu',
+                'device': '0',
                 'view_img': False,
                 'save_txt': False,
                 'save_conf': False,
