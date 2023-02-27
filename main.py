@@ -189,6 +189,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
 
     try:
         content = food_item.image
+        content = np.array(Image.open(io.BytesIO(content)))
         result = classification_yolov5(content)
         result['object_num'] = len(result['object'])
     except Exception as e:

@@ -259,9 +259,6 @@ def run(
 
 
 def parse_opt(img0=None, weight_path='best_hoon.pt'):
-    if img0:
-        img0 = np.array(Image.open(io.BytesIO(img0)))
-
     opt = {'weights': ROOT / weight_path,
                 'source': ROOT / 'data/images',
                 'data': ROOT / 'data/coco128.yaml',
