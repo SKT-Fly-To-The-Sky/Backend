@@ -409,13 +409,11 @@ async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
     try:
         if nut_data.date is None:
             nut_data.date = datetime.now().strftime("%Y-%m-%d")
-        if nut_data.time is None:
-            nut_data.time = datetime.now()
 
         for attr, value in vars(nut_data).items():
             if hasattr(intake, attr):
                 setattr(intake, attr, value)
-        # intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data))
+        intake = IntakeNutrientTable(userid=userid, **IntakeNutrientRequest.to_dict(nut_data), time=datetime.now())
         db.commit()
         db.refresh(intake)
     except Exception as e:
