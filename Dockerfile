@@ -7,10 +7,10 @@ RUN apt-get update
 RUN apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
 RUN apt-get update
 RUN apt-get -y install curl
-RUN apt-get update
-RUN apt-get -y install openssh-server
-RUN apt-get update
-RUN apt-get -y install vim
+RUN #apt-get update
+#RUN apt-get -y install openssh-server
+#RUN apt-get update
+RUN #apt-get -y install vim
 RUN pip install --upgrade pip
 RUN pip install -r /workspace/requirements.txt
 
