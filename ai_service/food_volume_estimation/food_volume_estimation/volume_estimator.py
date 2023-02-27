@@ -481,7 +481,7 @@ class VolumeEstimator():
                 self.__set_weights_trainable(layer, trainable)
 
 
-def qual(img0, cls_results=None):
+def qual(img0, cls_results=None, estimator=None):
     # {'object': [{'name': '가츠동', 'bndbox': {'xmin': '42', 'ymin': '33', 'xmax': '245', 'ymax': '174'}, 'score': 0.54}]}
     def masking(img, bndbox):
         if bndbox:
@@ -501,7 +501,8 @@ def qual(img0, cls_results=None):
         else:
             return img
 
-    estimator = VolumeEstimator()
+    if estimator is None:
+        estimator = VolumeEstimator()
 
     # Iterate over input images to estimate volumes
     try:
