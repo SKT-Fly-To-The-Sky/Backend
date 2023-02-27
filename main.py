@@ -34,7 +34,7 @@ from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
 from db_models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
-    RecommendedNutrientTable, IntakeNutrientTable, UserSupplementTable, FoodImageTable, IntakeFoodNameTable
+    RecommendedNutrientTable, IntakeNutrientTable, UserSupplementTable, IntakeFoodNameTable
 from schema import User, Token, IntakeNutrientRequest
 
 from server_utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
