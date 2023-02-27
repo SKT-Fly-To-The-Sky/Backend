@@ -34,7 +34,7 @@ from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
 from db_models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
-    RecommendedNutrientTable, IntakeNutrientTable, UserSupplementTable
+    RecommendedNutrientTable, IntakeNutrientTable, UserSupplementTable, FoodImageTable
 from schema import User, Token, IntakeNutrientRequest
 
 from server_utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
@@ -224,6 +224,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
 
     try:
+        content = np.array(Image.open(io.BytesIO(content)))
         result = classification_yolov5(content)
         # result = classification(content)
         # result["volumes"]: 0.790214897124221
@@ -261,15 +262,15 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
 
 @app.get("/supplements/names")
 async def read_supplement_names(db: Session = Depends(get_db)):
-    # sup_names = db.query(SupplementTable.sup_name).all()
-    #
-    # if not sup_names:
-    #     raise HTTPException(status_code=404, detail="nut names not found")
-    #
-    # sup_name_list = [n.sup_name for n in sup_names]
-    #
-    # return sup_name_list
-    return ["영양제 1", "영양제 2", "영양제 3"]
+    sup_names = db.query(SupplementTable.sup_name).all()
+
+    if not sup_names:
+        raise HTTPException(status_code=404, detail="nut names not found")
+
+    sup_name_list = [n.sup_name for n in sup_names]
+
+    return JSONResponse(content=sup_name_list)
+    # return ["영양제 1", "영양제 2", "영양제 3"]
 
 
 @app.get("/supplements/info")
@@ -295,15 +296,15 @@ async def read_food_info(food_name: str, db: Session = Depends(get_db)):
 
 @app.get("/nutrients/recommand")
 async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends(get_db)):
-    # recommand = db.query(RecommendedNutrientTable).filter(
-    #     and_(RecommendedNutrientTable.age == age, RecommendedNutrientTable.gender == gender)
-    # ).first()
-    #
-    # if not recommand:
-    #     raise HTTPException(status_code=404, detail="food info not found")
+    recommand = db.query(RecommendedNutrientTable).filter(
+        and_(RecommendedNutrientTable.age == age, RecommendedNutrientTable.gender == gender)
+    ).first()
 
-    # return JSONResponse(content=recommand)
-    return JSONResponse(content={"age": "19~29", "gender": "M", "vitA": 3000, "vitB1": 1.2, "vitB2": 1.5, "vitB3": 16, "vitB5": 5, "vitB6": 100, "vitB7": 30, "vitB9": 1000, "vitB12": 2.4, "vitC": 2000, "vitD": 100, "vitE": 540, "vitK": 75, "omega": 210, "kcal": 2600, "protein": 65, "fat": 65, "carbo": 130, "sugar": 100, "chole": 300, "fiber": 30, "calcium": 2500, "iron": 45, "magne": 360, "potass": 3500, "sodium": 2300, "zinc": 35, "copper": 10000 })
+    if not recommand:
+        raise HTTPException(status_code=404, detail="recommanded nutrient not found")
+
+    return JSONResponse(content=jsonable_encoder(recommand))
+    # return JSONResponse(content={"age": "19~29", "gender": "M", "vitA": 3000, "vitB1": 1.2, "vitB2": 1.5, "vitB3": 16, "vitB5": 5, "vitB6": 100, "vitB7": 30, "vitB9": 1000, "vitB12": 2.4, "vitC": 2000, "vitD": 100, "vitE": 540, "vitK": 75, "omega": 210, "kcal": 2600, "protein": 65, "fat": 65, "carbo": 130, "sugar": 100, "chole": 300, "fiber": 30, "calcium": 2500, "iron": 45, "magne": 360, "potass": 3500, "sodium": 2300, "zinc": 35, "copper": 10000 })
 
 
 @app.post("/{userid}/intakes/images")
@@ -418,16 +419,15 @@ async def read_supplement_list(userid: str, db: Session = Depends(get_db)):
 
 @app.get("/{userid}/foods/recommand")
 async def food_recommand(userid: str, time_div: str, db: Session = Depends(get_db)):
-    # nutrients = db.query(IntakeNutrientTable).filter(
+    # nutrients = db.query(FoodImageTable).filter(
     #     and_(
-    #         IntakeNutrientTable.userid == userid,
-    #         IntakeNutrientTable.time_div == time_div,
-    #         IntakeNutrientTable.date == date)
+    #         FoodImageTable.food_name == food_name,
+    #         )
     # ).first()
-
+    #
     # if not nutrients:
     #     raise HTTPException(status_code=404, detail="Intake nutrients not found")
-
+    #
     # nutrients.image = None
     # return JSONResponse(content=jsonable_encoder(nutrients))
 
@@ -548,10 +548,13 @@ async def read_supplements_classification(file: UploadFile = File(...), db: Sess
         output = BytesIO()
         pil_image.save(output, format='JPEG')
         image_data = output.getvalue()
+        image_data = np.array(Image.open(io.BytesIO(image_data)))
     except Exception as e:
         logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
+
+
 
     return JSONResponse(content=classification_supplement(image_data))
     # return Response(content=, media_type="image/jpeg")

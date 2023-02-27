@@ -182,6 +182,14 @@ class UserSupplementTable(Base):
     user = relationship("UserTable", backref="supplements")
 
 
+class FoodImageTable(Base):
+    __tablename__ = "food_image"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    food_name = Column(String(100))
+    image_link = Column(String(500))
+
+
 '''
 db 초기 세팅: alembic init migrations
 revision 파일 생성: alembic revision --autogenerate \
