@@ -198,7 +198,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
     print(result)
     try:
         qual_result = result.copy()
-        qual_result["volumes"]: 0.790214897124221
+        qual_result["volumes"] = 0.790214897124221
         # qual_result = qual(content, result)
         qual_result['running_time'] = time.time() - st
         return JSONResponse(content=qual_result)
