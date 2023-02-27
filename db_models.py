@@ -140,7 +140,6 @@ class IntakeNutrientTable(Base):
     time = Column(DateTime)
     time_div = Column(String(10))
     image = Column(LargeBinary(length=(2**24)-1))
-    food_name = Column(String(100))
     kcal = Column(Float)
     protein = Column(Float)
     fat = Column(Float)
