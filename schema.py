@@ -21,7 +21,6 @@ class Token(BaseModel):
 class IntakeNutrientRequest(BaseModel):
     time_div: str
     date: Optional[str]
-    time: Optional[str]
     protein: float
     fat: float
     carbo: float

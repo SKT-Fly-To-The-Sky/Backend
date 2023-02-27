@@ -397,6 +397,7 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, time
 @app.post("/{userid}/intakes/nutrients")
 async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
                                  db: Session = Depends(get_db)):
+
     intake = db.query(IntakeNutrientTable).filter(
         and_(
             IntakeNutrientTable.userid == userid,
