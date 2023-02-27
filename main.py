@@ -465,7 +465,7 @@ async def read_intake_food_name(userid: str, time_div: str, date: str, db: Sessi
 
     food_names = [obj.food_name for obj in food_names_obj]
 
-    result = {"object_num": len(food_names), "obejct": food_names}
+    result = {"object_num": len(food_names), "object": food_names}
     return JSONResponse(content=result)
 
 
