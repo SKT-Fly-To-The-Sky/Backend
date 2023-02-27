@@ -449,7 +449,7 @@ async def read_intake_food_name(userid: str, time_div: str, date: str, db: Sessi
             IntakeFoodNameTable.userid == userid,
             IntakeFoodNameTable.time_div == time_div,
             IntakeFoodNameTable.date == date)
-    ).first()
+    ).all()
 
     if not food_names:
         raise HTTPException(status_code=404, detail="Intake nutrients not found")
