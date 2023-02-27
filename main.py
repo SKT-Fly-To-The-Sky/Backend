@@ -410,9 +410,6 @@ async def update_intake_nutrient(userid: str, time_div: str, date: str, nut_data
     if intake is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no image in that date, time-div.")
     try:
-        if nut_data.date is None:
-            nut_data.date = datetime.now().strftime("%Y-%m-%d")
-
         for attr, value in vars(nut_data).items():
             if hasattr(intake, attr):
                 setattr(intake, attr, value)
