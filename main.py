@@ -199,7 +199,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
     print(result)
     try:
-        qual_result = result.copy()
+        # qual_result = result.copy()
         # qual_result["volumes"] = 0.790214897124221
         qual_result = qual(content, cls_results=result, estimator=estimator)
         qual_result['running_time'] = time.time() - st
@@ -466,8 +466,9 @@ async def food_recommand(userid: str, time_div: str, db: Session = Depends(get_d
     elif time_div == "저녁" or time_div == "dinner":
         recommand_list += ["족발", "돈까스", "삼계탕"]
 
-    for r in recommand_list:
-        result += [getattr(i, "name") == r for i in data]
+    for d in data:
+        if d.get("name") in recommand_list:
+            result.append(d)
 
     return JSONResponse(content=result)
 
