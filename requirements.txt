@@ -49,3 +49,12 @@ h5py==2.9
 
 
 tensorboard
+
+matplotlib>=3.2.2
+numpy>=1.18.5
+opencv-python>=4.1.1
+scipy>=1.4.1
+tqdm>=4.64.0
+pandas>=1.1.4
+setuptools>=65.5.1
+wheel>=0.38.0
