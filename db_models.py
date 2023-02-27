@@ -186,6 +186,7 @@ class UserSupplementTable(Base):
 class IntakeFoodNameTable(Base):
     __tablename__ = "intake_food_name"
 
+    id = Column(Integer, primary_key=True, autoincrement=True)
     userid = Column(String(50), ForeignKey('users.userid'))
     time_div = Column(String(10))
     date = Column(String(50))
