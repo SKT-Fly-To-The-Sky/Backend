@@ -361,7 +361,7 @@ async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends
     # return JSONResponse(content={"age": "19~29", "gender": "M", "vitA": 3000, "vitB1": 1.2, "vitB2": 1.5, "vitB3": 16, "vitB5": 5, "vitB6": 100, "vitB7": 30, "vitB9": 1000, "vitB12": 2.4, "vitC": 2000, "vitD": 100, "vitE": 540, "vitK": 75, "omega": 210, "kcal": 2600, "protein": 65, "fat": 65, "carbo": 130, "sugar": 100, "chole": 300, "fiber": 30, "calcium": 2500, "iron": 45, "magne": 360, "potass": 3500, "sodium": 2300, "zinc": 35, "copper": 10000 })
 
 @app.post("/{userid}/intakes/images")
-async def create_intake_image(userid: str, time_div: str, food_name: str = None, date: str = None, time: datetime.datetime = None, file: UploadFile = File(...),
+async def create_intake_image(userid: str, time_div: str, food_name: str = None, date: str = None, time: datetime = None, file: UploadFile = File(...),
                                  db: Session = Depends(get_db)):
     try:
         image = await file.read()
