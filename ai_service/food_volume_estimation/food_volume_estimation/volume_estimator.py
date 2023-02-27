@@ -193,13 +193,12 @@ class VolumeEstimator():
             self.base_path = "./ai_service/food_volume_estimation/food_volume_estimation"
 
             def __init__(self, input_images=[self.base_path + "/gadong.png"],
-                         # depth_model_architecture="model_name.json",
                          depth_model_architecture=self.base_path + "/monovideo_fine_tune_food_videos.json",
                          depth_model_weights=self.base_path + "/monovideo_fine_tune_food_videos.h5",
                          segmentation_weights=self.base_path + "/mask_rcnn_food_segmentation.h5",
                          fov=70, gt_depth_scale=0.35, plate_diameter_prior=0.0,
                          min_depth=0.01, max_depth=10, relaxation_param=0.01,
-                         plot_results=True, results_file=self.base_path+"/results.csv", plots_directory=self.base_path+"/plots/",
+                         plot_results=False, results_file=self.base_path+"/results.csv", plots_directory=self.base_path+"/plots/",
                          density_db=None, food_type=None):
                 self.input_images = input_images
                 self.depth_model_architecture = depth_model_architecture
@@ -505,21 +504,24 @@ def qual(img0, cls_results=None):
     estimator = VolumeEstimator()
 
     # Iterate over input images to estimate volumes
-    for cls_rst in cls_results['object']:
-        input_image = masking(img0, cls_rst['bndbox'])
+    try:
+        for cls_rst in cls_results['object']:
+            input_image = masking(img0, cls_rst['bndbox'])
 
-        volumes = estimator.estimate_volume(
-            input_image, estimator.args.fov,
-            estimator.args.plate_diameter_prior, estimator.args.plot_results,
-            estimator.args.plots_directory)
+            volumes = estimator.estimate_volume(
+                input_image, estimator.args.fov,
+                estimator.args.plate_diameter_prior, estimator.args.plot_results,
+                estimator.args.plots_directory)
 
-        # Store results per input image
-        # results['image_path'].append(input_image)
-        if (estimator.args.plot_results
-                or estimator.args.plots_directory is not None):
-            cls_rst['volumes'] = sum([x[0] * 1000 for x in volumes])
-            plt.close('all')
-        else:
-            cls_rst['volumes'] = volumes * 1000
+            # Store results per input image
+            # results['image_path'].append(input_image)
+            if (estimator.args.plot_results
+                    or estimator.args.plots_directory is not None):
+                cls_rst['volumes'] = sum([x[0] * 1000 for x in volumes])
+                plt.close('all')
+            else:
+                cls_rst['volumes'] = volumes * 1000
+    except Exception as e:
+        print(e)
 
     return cls_results
