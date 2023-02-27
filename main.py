@@ -239,7 +239,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
 @app.post('/test/classification2')
 async def get_classification_test(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     from random import random
-    qual_result = {"object_num": 0, "object": [
+    qual_result = {"object_num": 4, "object": [
         {
             "name": "배추김치",
             "bndbox": {
@@ -248,7 +248,7 @@ async def get_classification_test(userid: str, time_div: str, date: str, db: Ses
                 "xmax": "976",
                 "ymax": "720"
             },
-            "score": (random() + 0.4)/1.4 * 100,
+            "score": (random() + 0.4)/1.4,
             "volumes": random() + 0.1
         },
         {
@@ -259,7 +259,7 @@ async def get_classification_test(userid: str, time_div: str, date: str, db: Ses
                 "xmax": "976",
                 "ymax": "720"
             },
-            "score": (random() + 0.4) / 1.4 * 100,
+            "score": (random() + 0.4) / 1.4,
             "volumes": random() + 0.5
         },
         {
@@ -270,7 +270,7 @@ async def get_classification_test(userid: str, time_div: str, date: str, db: Ses
                 "xmax": "976",
                 "ymax": "720"
             },
-            "score": (random() + 0.4) / 1.4 * 100,
+            "score": (random() + 0.4) / 1.4,
             "volumes": random() + 0.5
         },
         {
@@ -281,7 +281,7 @@ async def get_classification_test(userid: str, time_div: str, date: str, db: Ses
                 "xmax": "976",
                 "ymax": "720"
             },
-            "score": (random() + 0.4) / 1.4 * 100,
+            "score": (random() + 0.4) / 1.4,
             "volumes": random() + 0.4
         },
     ], 'running_time': 40.09215124}
