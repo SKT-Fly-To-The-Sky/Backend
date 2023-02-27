@@ -34,7 +34,7 @@ from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
 from db_models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
-    RecommendedNutrientTable, IntakeNutrientTable, UserSupplementTable, FoodImageTable
+    RecommendedNutrientTable, IntakeNutrientTable, UserSupplementTable, FoodImageTable, IntakeFoodNameTable
 from schema import User, Token, IntakeNutrientRequest
 
 from server_utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
@@ -360,9 +360,8 @@ async def read_recommanded_nutrient(age: str, gender: str, db: Session = Depends
     return JSONResponse(content=jsonable_encoder(recommand))
     # return JSONResponse(content={"age": "19~29", "gender": "M", "vitA": 3000, "vitB1": 1.2, "vitB2": 1.5, "vitB3": 16, "vitB5": 5, "vitB6": 100, "vitB7": 30, "vitB9": 1000, "vitB12": 2.4, "vitC": 2000, "vitD": 100, "vitE": 540, "vitK": 75, "omega": 210, "kcal": 2600, "protein": 65, "fat": 65, "carbo": 130, "sugar": 100, "chole": 300, "fiber": 30, "calcium": 2500, "iron": 45, "magne": 360, "potass": 3500, "sodium": 2300, "zinc": 35, "copper": 10000 })
 
-
 @app.post("/{userid}/intakes/images")
-async def create_intake_image(userid: str, time_div: str, date: str = None, time: str = None, file: UploadFile = File(...),
+async def create_intake_image(userid: str, time_div: str, food_name: str = None, date: str = None, time: datetime.datetime = None, file: UploadFile = File(...),
                                  db: Session = Depends(get_db)):
     try:
         image = await file.read()
@@ -381,8 +380,12 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, time
         if time is None:
             time = datetime.now()
 
-        intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, time=time,
-                                     image=image_data)
+        if food_name is None:
+            intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, time=time,
+                                        image=image_data, food_name=food_name)
+        else:
+            intake = IntakeNutrientTable(userid=userid, time_div=time_div, date=date, time=time,
+                                         image=image_data)
         db.add(intake)
         db.commit()
         db.refresh(intake)
@@ -424,6 +427,58 @@ async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
 
     return {"message": "nutrient data saved successfully"}
 
+
+@app.get("/{userid}/intakes/nutrients/time-div")
+async def read_intake_nutrient_time_dev(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+    nutrients = db.query(IntakeNutrientTable).filter(
+        and_(
+            IntakeNutrientTable.userid == userid,
+            IntakeNutrientTable.time_div == time_div,
+            IntakeNutrientTable.date == date)
+    ).first()
+
+    if not nutrients:
+        raise HTTPException(status_code=404, detail="Intake nutrients not found")
+
+    nutrients.image = None
+
+    return JSONResponse(content=jsonable_encoder(nutrients))
+
+
+@app.get("/{userid}/intakes/foods/names")
+async def read_intake_food_name(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+    food_names = db.query(IntakeFoodNameTable).filter(
+        and_(
+            IntakeFoodNameTable.userid == userid,
+            IntakeFoodNameTable.time_div == time_div,
+            IntakeFoodNameTable.date == date)
+    ).first()
+
+    if not food_names:
+        raise HTTPException(status_code=404, detail="Intake nutrients not found")
+
+    result = {"object_num": len(jsonable_encoder(food_names)), "obejct": jsonable_encoder(food_names)}
+    return JSONResponse(content=result)
+
+
+@app.post("/{userid}/intakes/foods/names")
+async def update_intake_food_name(userid: str, time_div: str, date: str, food_names: List[str],
+                                 db: Session = Depends(get_db)):
+
+    for food_name in food_names:
+        try:
+            intakeFoodName = IntakeFoodNameTable(userid=userid, time_div=time_div, date=date, food_name=food_name)
+            db.add(intakeFoodName)
+            db.commit()
+            db.refresh(intakeFoodName)
+        except Exception as e:
+            logger.exception(f"create_food_item fail:\n\t{e}\nfail to save image to database")
+            print(e)
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fail to save image to database")
+
+    return {"message": "intake food name saved successfully"}
+
+
 @app.get("/{userid}/intakes/images")
 async def read_intake_image(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
     query_result = db.query(IntakeNutrientTable).filter(
@@ -442,23 +497,6 @@ async def read_intake_image(userid: str, time_div: str, date: str, db: Session =
         raise HTTPException(status_code=404, detail="Intake img not found")
 
     return Response(content=img, media_type="image/jpeg")
-
-
-@app.get("/{userid}/intakes/nutrients/time-div")
-async def read_intake_nutrient_time_dev(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
-    nutrients = db.query(IntakeNutrientTable).filter(
-        and_(
-            IntakeNutrientTable.userid == userid,
-            IntakeNutrientTable.time_div == time_div,
-            IntakeNutrientTable.date == date)
-    ).first()
-
-    if not nutrients:
-        raise HTTPException(status_code=404, detail="Intake nutrients not found")
-
-    nutrients.image = None
-
-    return JSONResponse(content=jsonable_encoder(nutrients))
 
 @app.get("/{userid}/supplements/list")
 async def read_supplement_list(userid: str, db: Session = Depends(get_db)):

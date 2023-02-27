@@ -140,6 +140,7 @@ class IntakeNutrientTable(Base):
     time = Column(DateTime)
     time_div = Column(String(10))
     image = Column(LargeBinary(length=(2**24)-1))
+    food_name = Column(String(100))
     kcal = Column(Float)
     protein = Column(Float)
     fat = Column(Float)
@@ -182,12 +183,13 @@ class UserSupplementTable(Base):
     user = relationship("UserTable", backref="supplements")
 
 
-class FoodImageTable(Base):
-    __tablename__ = "food_image"
+class IntakeFoodNameTable(Base):
+    __tablename__ = "intake_food_name"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    userid = Column(String(50), ForeignKey('users.userid'))
+    time_div = Column(String(10))
+    date = Column(String(50))
     food_name = Column(String(100))
-    image_link = Column(String(500))
 
 
 '''
