@@ -428,16 +428,44 @@ async def food_recommand(userid: str, time_div: str, db: Session = Depends(get_d
 
     # nutrients.image = None
     # return JSONResponse(content=jsonable_encoder(nutrients))
+
+    data = [
+        {"name": "김밥", "image": "https://dl.dropbox.com/s/f2e96zkk9abela8/%EA%B9%80%EB%B0%A5.jpeg?dl=0"},
+        {"name": "김치찌개", "image": "https://dl.dropbox.com/s/cwxyldl5buwg834/%EA%B9%80%EC%B9%98%EC%B0%8C%EA%B0%9C.jpeg?dl=0"},
+        {"name": "닭발", "image": "https://dl.dropbox.com/s/wltnsii4rk29aho/%EB%8B%AD%EB%B0%9C.jpeg?dl=0"},
+        {"name": "돈까스", "image": "https://dl.dropbox.com/s/3gh0r4syqy8snew/%EB%8F%88%EA%B9%8C%EC%8A%A4.jpeg?dl=0"},
+        {"name": "떡볶이", "image": "https://dl.dropbox.com/s/5gz3anhtd7ewzjb/%EB%96%A1%EB%B3%B6%EC%9D%B4.jpeg?dl=0"},
+        {"name": "사과", "image": "https://dl.dropbox.com/s/pyyn6ix529ihesh/%EC%82%AC%EA%B3%BC.jpeg?dl=0"},
+        {"name": "삼겹살", "image": "https://dl.dropbox.com/s/hp9mgokkfhoz6w3/%EC%82%BC%EA%B2%B9%EC%82%B4.jpeg?dl=0"},
+        {"name": "삼계탕", "image": "https://dl.dropbox.com/s/72o11r0fp1fy38d/%EC%82%BC%EA%B3%84%ED%83%95.jpeg?dl=0"},
+        {"name": "샐러드", "image": "https://dl.dropbox.com/s/w8c35mfyo545sxt/%EC%83%90%EB%9F%AC%EB%93%9C.jpeg?dl=0"},
+        {"name": "순대국", "image": "https://dl.dropbox.com/s/qc02fmlasrwzvm6/%EC%88%9C%EB%8C%80%EA%B5%AD.jpeg?dl=0"},
+        {"name": "제육덮밥", "image": "https://dl.dropbox.com/s/z39bmy08ll7an62/%EC%A0%9C%EC%9C%A1%EB%8D%AE%EB%B0%A5.jpeg?dl=0"},
+        {"name": "짜장면", "image": "https://dl.dropbox.com/s/1so11apa7uvqs3p/%EC%A7%9C%EC%9E%A5%EB%A9%B4.jpeg?dl=0"},
+        {"name": "치킨", "image": "https://dl.dropbox.com/s/6t8qsilk9jjguc1/%EC%B9%98%ED%82%A8.jpeg?dl=0"},
+        {"name": "카레", "image": "https://dl.dropbox.com/s/h1gwprs985vv5ko/%EC%B9%B4%EB%A0%88.jpeg?dl=0"},
+        {"name": "피자", "image": "https://dl.dropbox.com/s/c8eh34g4elnqpdq/%ED%94%BC%EC%9E%90.jpeg?dl=0"},
+        {"name": "햄버거", "image": "https://dl.dropbox.com/s/rcmwvkl8sjdwfnb/%ED%96%84%EB%B2%84%EA%B1%B0.jpeg?dl=0"},
+        {"name": "샌드위치", "image": "https://dl.dropbox.com/s/n8elmgqne4m5vbi/%EC%83%8C%EB%93%9C%EC%9C%84%EC%B9%98.jpeg?dl=0"},
+        {"name": "라면", "image": "https://dl.dropbox.com/s/kdbdhuo47cdfhi7/%EB%9D%BC%EB%A9%B4.jpeg?dl=0"},
+        {"name": "된장찌개", "image": "https://dl.dropbox.com/s/pl7kcss1101ujmx/%EB%90%9C%EC%9E%A5%EC%B0%8C%EA%B0%9C.jpeg?dl=0"},
+        {"name": "토스트", "image": "https://dl.dropbox.com/s/17q0vm86y4njnjc/%ED%86%A0%EC%8A%A4%ED%8A%B8.jpeg?dl=0"},
+        {"name": "족발", "image": "https://dl.dropbox.com/s/fou6vgvsmt2uff5/%EC%A1%B1%EB%B0%9C.jpeg?dl=0"},
+        {"name": "가츠동", "image": "https://dl.dropbox.com/s/t7mymx9lo5sn01e/%EA%B0%80%EC%B8%A0%EB%8F%99.jpeg?dl=0"}
+    ]
+
+    recommand_list = []
     result = []
 
     if time_div == '아침' or time_div == 'morning':
-        result += [{"name": "라면", "image": "https://dl.dropbox.com/s/kdbdhuo47cdfhi7/%EB%9D%BC%EB%A9%B4.jpeg?dl=0"},
-                   {"name": "된장찌개", "image": "https://dl.dropbox.com/s/pl7kcss1101ujmx/%EB%90%9C%EC%9E%A5%EC%B0%8C%EA%B0%9C.jpeg?dl=0"},
-                   {"name": "토스트", "image": "https://dl.dropbox.com/s/17q0vm86y4njnjc/%ED%86%A0%EC%8A%A4%ED%8A%B8.jpeg?dl=0"}]
+        recommand_list += ["라면", "된장찌개", "토스트"]
     elif time_div == "점심" or time_div == "lunch":
-        result += [{"name": "김치찌개"}, {"name": "짜장면"}, {"name": "가츠동"}]
+        recommand_list += ["김치찌개", "가츠동", "짜장면"]
     elif time_div == "저녁" or time_div == "dinner":
-        result += [{"name": "족발"}, {"name": "가츠동"}, {"name": "돈까스"}]
+        recommand_list += ["족발", "돈까스", "삼계탕"]
+
+    for r in recommand_list:
+        result += [getattr(i, "name") == r for i in data]
 
     return JSONResponse(content=result)
 
