@@ -1,1 +1,0 @@
-{"object": [{"name": "tie", "bndbox": {"xmin": "443", "ymin": "437", "xmax": "497", "ymax": "710"}, "score": 0.88}, {"name": "person", "bndbox": {"xmin": "125", "ymin": "193", "xmax": "711", "ymax": "720"}, "score": 0.88}, {"name": "person", "bndbox": {"xmin": "744", "ymin": "48", "xmax": "1141", "ymax": "720"}, "score": 0.88}]}

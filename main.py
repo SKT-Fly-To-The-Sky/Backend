@@ -34,7 +34,7 @@ from PIL import Image
 from io import BytesIO
 from passlib.hash import bcrypt
 from db_models import UserTable, ConfigTable, SupplementTable, FoodNutrientTable, \
-    RecommendedNutrientTable, IntakeNutrientTable
+    RecommendedNutrientTable, IntakeNutrientTable, UserSupplementTable
 from schema import User, Token, IntakeNutrientRequest
 
 from server_utils.authenticate import authenticate_user, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, SECRET_KEY, \
@@ -107,7 +107,7 @@ async def login(user: User, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/users", response_model=User)
+@app.get("/users1", response_model=User)
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -399,6 +399,44 @@ async def read_intake_nutrient_time_dev(userid: str, time_div: str, date: str, d
 
     return JSONResponse(content=jsonable_encoder(nutrients))
 
+@app.get("/{userid}/supplements/list")
+async def read_supplement_list(userid: str, db: Session = Depends(get_db)):
+    supplement_models = db.query(UserTable).filter(UserTable.userid == userid).first().supplements
+
+    if not supplement_models:
+        raise HTTPException(status_code=404, detail="supplements not found")
+
+    supplements = [getattr(row, "sup_name") for row in supplement_models]
+
+    return JSONResponse(content=jsonable_encoder(supplements))
+
+@app.get("/{userid}/foods/recommand")
+async def food_recommand(userid: str, time_div: str, db: Session = Depends(get_db)):
+    # nutrients = db.query(IntakeNutrientTable).filter(
+    #     and_(
+    #         IntakeNutrientTable.userid == userid,
+    #         IntakeNutrientTable.time_div == time_div,
+    #         IntakeNutrientTable.date == date)
+    # ).first()
+
+    # if not nutrients:
+    #     raise HTTPException(status_code=404, detail="Intake nutrients not found")
+
+    # nutrients.image = None
+    # return JSONResponse(content=jsonable_encoder(nutrients))
+    result = []
+
+    if time_div == '아침' or time_div == 'morning':
+        result += [{"name": "라면", "image": "https://dl.dropbox.com/s/kdbdhuo47cdfhi7/%EB%9D%BC%EB%A9%B4.jpeg?dl=0"},
+                   {"name": "된장찌개", "image": "https://dl.dropbox.com/s/pl7kcss1101ujmx/%EB%90%9C%EC%9E%A5%EC%B0%8C%EA%B0%9C.jpeg?dl=0"},
+                   {"name": "토스트", "image": "https://dl.dropbox.com/s/17q0vm86y4njnjc/%ED%86%A0%EC%8A%A4%ED%8A%B8.jpeg?dl=0"}]
+    elif time_div == "점심" or time_div == "lunch":
+        result += [{"name": "김치찌개"}, {"name": "짜장면"}, {"name": "가츠동"}]
+    elif time_div == "저녁" or time_div == "dinner":
+        result += [{"name": "족발"}, {"name": "가츠동"}, {"name": "돈까스"}]
+
+    return JSONResponse(content=result)
+
 @app.get("/{userid}/intakes/nutrients/day")
 async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends(get_db)):
     nutrients = db.query(IntakeNutrientTable).filter(
@@ -434,38 +472,17 @@ async def read_intake_nutrient_day(userid: str, date: str, db: Session = Depends
     return {"result": nut_sum}
     # return JSONResponse(content=json.dumps(nut_sum))
 
-
-def xml_to_dict(element):
-    data = {}
-    if element.attrib:
-        data['@attributes'] = element.attrib
-    if element.text and element.text.strip():
-        data['#text'] = element.text.strip()
-    for child in element:
-        tag = child.tag
-        if tag in data:
-            if not isinstance(data[tag], list):
-                data[tag] = [data[tag]]
-            data[tag].append(xml_to_dict(child))
-        else:
-            data[tag] = xml_to_dict(child)
-    return data
-
-def xml_to_json(xml_string):
-    root = ET.fromstring(xml_string.decode('EUC-KR'))
-    return json.dumps(xml_to_dict(root), indent=4)
-
 @app.get("/{userid}/supplements/recommand")
 async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)):
-    img = db.query(IntakeNutrientTable).filter(
-        and_(
-            IntakeNutrientTable.userid == userid,
-            IntakeNutrientTable.time_div == 'testt',
-            IntakeNutrientTable.date == '2023-02-21')
-    ).first().image
-    encoded_image = base64.b64encode(img).decode('utf-8')
+    # img = db.query(IntakeNutrientTable).filter(
+    #     and_(
+    #         IntakeNutrientTable.userid == userid,
+    #         IntakeNutrientTable.time_div == 'testt',
+    #         IntakeNutrientTable.date == '2023-02-21')
+    # ).first().image
+    # encoded_image = base64.b64encode(img).decode('utf-8')
 
-    sup_list = ["Doctor's Best 비타민 D3 5000IU"]
+    sup_list = ["힐링팩토리 블루마린 오메가3", "헬스프랜드 캐나다 슈퍼징코플러스"]
     data = []
     for sup in sup_list:
         data_dict = {}
@@ -481,9 +498,6 @@ async def read_recommanded_supplement(userid: str, db: Session = Depends(get_db)
         # return JSONResponse(content=xml_dict)
     return JSONResponse(content=data)
 
-    # # return {'sup_num': 2, "supplements": [{"image": encoded_image, "name": "영양제1", "link": "https//www.naver.com"},{"image": encoded_image, "name": "영양제2", "link": "https//www.google.com"}]}
-    # data = [{"image": encoded_image, "name": "영양제1", "link": "https://www.naver.com"}, {"image": encoded_image, "name": "영양제2", "link": "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=5349815024"}]
-    # return JSONResponse(content=data)
 
 @app.post("/supplements/classification")
 async def read_supplements_classification(file: UploadFile = File(...), db: Session = Depends(get_db)):
@@ -502,6 +516,20 @@ async def read_supplements_classification(file: UploadFile = File(...), db: Sess
     # return Response(content=, media_type="image/jpeg")
 
 
+@app.post("/{userid}/supplements")
+async def add_supplement(userid: str, supplement_name: str, db: Session = Depends(get_db)):
+    try:
+        new_sup = UserSupplementTable(userid=userid, sup_name=supplement_name)
+        db.add(new_sup)
+        db.commit()
+        db.refresh(new_sup)
+        return JSONResponse(content={"message": "add supplement success"}, status_code=status.HTTP_200_OK)
+    except Exception as e:
+        exp_msg = "Fail to Insert supplement to db"
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"{exp_msg}")
+
+
 @app.get("/error")
 async def raise_error():
     1 / 0
@@ -511,11 +539,25 @@ async def raise_error():
 async def init_database():
     init_db()
 
-
-#
 if __name__ == "__main__":
+    import subprocess
+    def kill_server(port=8000):
+        try:
+            cmd = f"lsof -i :{port}"
+            pid = subprocess.check_output(cmd.split()).decode().split()[10]
+            print(pid)
+            cmd = f"kill {pid}"
+            subprocess.call(cmd.split())
+            time.sleep(1)
+        except subprocess.CalledProcessError:
+            pass
+
+
+    kill_server(port=8000)
+
     init_db()
     uvicorn.run(app, host="0.0.0.0", port=8000)
+    # subprocess.call("uvicorn main:app --reload")
 
 # curl -L -o ./ai_service/yolov3/weights/best_403food_e200b150v2.pt https://www.dropbox.com/s/msz9yfrmsrs0zst/best_403food_e200b150v2.pt?dl=0
 # curl -L -o ./ai_service/food_volume_estimation_master/food_volume_estimation/monovideo_fine_tune_food_videos.h5 https://www.dropbox.com/s/zqo3qfzoy7b9spp/monovideo_fine_tune_food_videos.h5?dl=0

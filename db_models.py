@@ -172,6 +172,16 @@ class IntakeNutrientTable(Base):
     user = relationship("UserTable", backref="intakes")
 
 
+class UserSupplementTable(Base):
+    __tablename__ = "user_supplement"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    userid = Column(String(50), ForeignKey('users.userid'))
+    sup_name = Column(String(300))
+
+    user = relationship("UserTable", backref="supplements")
+
+
 '''
 db 초기 세팅: alembic init migrations
 revision 파일 생성: alembic revision --autogenerate \
