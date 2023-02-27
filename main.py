@@ -192,7 +192,7 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
     try:
         content = food_item.image
         content = np.array(Image.open(io.BytesIO(content)))
-        result = classification_yolov5(content)
+        result = await classification_yolov5(content)
         result['object_num'] = len(result['object'])
     except Exception as e:
         print(e)
@@ -201,8 +201,9 @@ async def get_classification(userid: str, time_div: str, date: str, db: Session 
     try:
         # qual_result = result.copy()
         # qual_result["volumes"] = 0.790214897124221
-        qual_result = qual(content, cls_results=result, estimator=estimator)
+        qual_result = await qual(content, cls_results=result, estimator=estimator)
         qual_result['running_time'] = time.time() - st
+        print(qual_result)
         return JSONResponse(content=qual_result)
     except Exception as e:
         print(e)
