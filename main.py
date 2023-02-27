@@ -236,6 +236,59 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"error at classify \n{e}")
 
 
+@app.post('/test/classification2')
+async def get_classification_test(userid: str, time_div: str, date: str, db: Session = Depends(get_db)):
+    from random import random
+    qual_result = {"object_num": 0, "object": [
+        {
+            "name": "배추김치",
+            "bndbox": {
+                "xmin": "222",
+                "ymin": "0",
+                "xmax": "976",
+                "ymax": "720"
+            },
+            "score": (random() + 0.4)/1.4 * 100,
+            "volumes": random() + 0.1
+        },
+        {
+            "name": "탕수육",
+            "bndbox": {
+                "xmin": "222",
+                "ymin": "0",
+                "xmax": "976",
+                "ymax": "720"
+            },
+            "score": (random() + 0.4) / 1.4 * 100,
+            "volumes": random() + 0.5
+        },
+        {
+            "name": "나가사끼짬뽕",
+            "bndbox": {
+                "xmin": "222",
+                "ymin": "0",
+                "xmax": "976",
+                "ymax": "720"
+            },
+            "score": (random() + 0.4) / 1.4 * 100,
+            "volumes": random() + 0.5
+        },
+        {
+            "name": "쌀밥",
+            "bndbox": {
+                "xmin": "222",
+                "ymin": "0",
+                "xmax": "976",
+                "ymax": "720"
+            },
+            "score": (random() + 0.4) / 1.4 * 100,
+            "volumes": random() + 0.4
+        },
+    ], 'running_time': 40.09215124}
+
+    return JSONResponse(content=qual_result)
+
+
 # @app.post('/test/volume')
 # async def get_volume_test(file: UploadFile = File(...), db: Session = Depends(get_db)):
 #     st = time.time()
@@ -553,8 +606,6 @@ async def read_supplements_classification(file: UploadFile = File(...), db: Sess
         logger.exception(f"create_food_item fail:\n\t{e}\nWrong image")
         print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong image")
-
-
 
     return JSONResponse(content=classification_supplement(image_data))
     # return Response(content=, media_type="image/jpeg")
