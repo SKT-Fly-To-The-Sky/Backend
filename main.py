@@ -395,14 +395,17 @@ async def create_intake_image(userid: str, time_div: str, date: str = None, time
 
 
 @app.post("/{userid}/intakes/nutrients")
-async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
+async def update_intake_nutrient(userid: str, time_div: str, date: str, nut_data: IntakeNutrientRequest, time: datetime=None,
                                  db: Session = Depends(get_db)):
+
+    if time is None:
+        time = datetime.now()
 
     intake = db.query(IntakeNutrientTable).filter(
         and_(
             IntakeNutrientTable.userid == userid,
-            IntakeNutrientTable.time_div == nut_data.time_div,
-            IntakeNutrientTable.date == nut_data.date)
+            IntakeNutrientTable.time_div == time_div,
+            IntakeNutrientTable.date == date)
     ).first()
     if intake is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no image in that date, time-div.")
@@ -413,7 +416,12 @@ async def update_intake_nutrient(userid: str, nut_data: IntakeNutrientRequest,
         for attr, value in vars(nut_data).items():
             if hasattr(intake, attr):
                 setattr(intake, attr, value)
-        intake = IntakeNutrientTable(userid=userid, time=datetime.now(), **IntakeNutrientRequest.to_dict(nut_data))
+
+        intake.userid = userid
+        intake.time_div = time_div
+        intake.date = date
+        intake.time = time
+        # intake = IntakeNutrientTable(userid=userid, time=time, time_div=time_div, date=date, **IntakeNutrientRequest.to_dict(nut_data))
         db.commit()
         db.refresh(intake)
     except Exception as e:
