@@ -684,18 +684,20 @@ async def init_page(db: Session = Depends(get_db)):
     if rows is None:
         raise HTTPException(status_code=404, detail="Row not found")
 
-    db.delete(rows)
-    db.commit()
-    db.refresh(rows)
+    for row in rows:
+        db.delete(row)
+        db.commit()
+        db.refresh(row)
 
     rows = db.query(IntakeFoodNameTable).all()
 
     if rows is None:
         raise HTTPException(status_code=404, detail="Row not found")
 
-    db.delete(rows)
-    db.commit()
-    db.refresh(rows)
+    for row in rows:
+        db.delete(row)
+        db.commit()
+        db.refresh(row)
 
     return {"message": "init success"}
 
