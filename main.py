@@ -677,6 +677,29 @@ async def raise_error():
     1 / 0
 
 
+@app.delete("/init")
+async def init_page(db: Session = Depends(get_db)):
+    rows = db.query(IntakeNutrientTable).all()
+
+    if rows is None:
+        raise HTTPException(status_code=404, detail="Row not found")
+
+    db.delete(rows)
+    db.commit()
+    db.refresh(rows)
+
+    rows = db.query(IntakeFoodNameTable).all()
+
+    if rows is None:
+        raise HTTPException(status_code=404, detail="Row not found")
+
+    db.delete(rows)
+    db.commit()
+    db.refresh(rows)
+
+    return {"message": "init success"}
+
+
 @app.get("/init")
 async def init_database():
     init_db()
