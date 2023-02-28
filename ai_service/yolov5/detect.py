@@ -305,7 +305,7 @@ def classification_yolov5(img0, weight_path ='best_dinner.pt'):
 
 
 def classification_supplement(img0):
-    opt = parse_opt(img0=img0, weight_path='best.pt')
+    opt = parse_opt(img0=img0, weight_path='best_dru.pt')
     img, result = main(opt)
     # cv2.imwrite("./supp.jpeg", img)
     return result

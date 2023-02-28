@@ -231,7 +231,7 @@ async def get_classification_test(file: UploadFile = File(...), db: Session = De
 
     try:
         content = np.array(Image.open(io.BytesIO(content)))
-        result = classification_yolov5(content, 'best_130.pt')
+        result = classification_yolov5(content, 'best_dinner.pt')
         # result = classification(content)
         result["volumes"]: 0.790214897124221
         result['object_num'] = len(result['object'])
